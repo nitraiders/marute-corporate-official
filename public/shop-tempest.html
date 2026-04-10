@@ -29,6 +29,12 @@
         .info-table { width: 100%; border-collapse: collapse; }
         .info-table th { text-align: left; padding: 15px 0; border-bottom: 1px solid #333; color: var(--primary-gold); width: 30%; }
         .info-table td { padding: 15px 0; border-bottom: 1px solid #333; }
+
+        .system-list { display: flex; flex-direction: column; gap: 20px; }
+        .system-item { border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .system-item .label { display: block; font-size: 0.8rem; color: var(--primary-gold); text-transform: uppercase; margin-bottom: 5px; }
+        .system-item .price { display: block; font-size: 1.3rem; font-weight: 700; }
+        .system-item small { color: var(--text-muted); font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -69,18 +75,58 @@
                 </div>
 
                 <div class="shop-detail-grid reveal">
-                    <div>
+                    <div id="info">
                         <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">Shop Information</h3>
                         <table class="info-table">
                             <tr><th>Name</th><td>Night Lounge Tempest</td></tr>
                             <tr><th>Category</th><td>ナイトラウンジ</td></tr>
-                            <tr><th>Location</th><td>埼玉県草加市 (詳細はお問い合わせください)</td></tr>
+                            <tr><th>Location</th><td>埼玉県草加市中央2-2-15</td></tr>
                             <tr><th>Hours</th><td>20:00 - Last</td></tr>
                         </table>
+                        <div style="margin-top: 20px;">
+                            <a href="https://www.google.com/maps/search/?api=1&query=埼玉県草加市中央2-2-15" target="_blank" class="btn-luxury" style="display: block; text-align: center;">Google Maps</a>
+                        </div>
                     </div>
                     <div style="border: 1px solid #333; padding: 20px;">
                         <img src="assets/images/tempest.png" alt="Tempest Interior">
                     </div>
+                </div>
+
+                <div id="system" class="reveal" style="margin-top: 80px;">
+                    <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 30px;">System</h2>
+                    <div class="system-list">
+                        <div class="system-item">
+                            <span class="label">1set (60min) 飲み放題</span>
+                            <span class="price">¥5,000</span>
+                            <small>焼酎・ウイスキー</small>
+                        </div>
+                        <div class="system-item">
+                            <span class="label">延長料金</span>
+                            <span class="price">30min ¥2,500 / 60min ¥5,000</span>
+                        </div>
+                        <div class="system-item">
+                            <span class="label">リクエスト / 追加</span>
+                            <span class="price">¥2,000 〜</span>
+                        </div>
+                        <div class="system-item">
+                            <span class="label">カラオケ歌い放題</span>
+                            <span class="price">¥1,000</span>
+                        </div>
+                        <div class="system-item">
+                            <span class="label">キャストドリンク</span>
+                            <span class="price">¥1,000</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                        ※TAX 20%
+                    </p>
+                </div>
+
+                <div id="sns" class="reveal" style="margin-top: 80px; text-align: center;">
+                    <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 30px;">Instagram</h2>
+                    <a href="https://www.instagram.com/explore/tags/NightLoungeTempest/" target="_blank" class="btn-luxury" style="padding: 20px 50px;">
+                        <i class="fab fa-instagram"></i> Follow Official SNS
+                    </a>
                 </div>
             </div>
         </section>
@@ -91,13 +137,13 @@
             <i class="fas fa-phone"></i>
             <span>Call</span>
         </a>
-        <a href="https://maps.google.com" target="_blank" class="mobile-action-btn">
+        <a href="#info" class="mobile-action-btn">
             <i class="fas fa-map-marker-alt"></i>
             <span>Access</span>
         </a>
-        <a href="#" class="mobile-action-btn">
-            <i class="fas fa-calendar-check"></i>
-            <span>Reserve</span>
+        <a href="#system" class="mobile-action-btn">
+            <i class="fas fa-coins"></i>
+            <span>System</span>
         </a>
     </div>
 
