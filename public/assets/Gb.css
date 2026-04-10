@@ -1,0 +1,327 @@
+@charset "UTF-8";
+/* CSS Document */
+
+* { -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/*--------------------------------------------------------------------------------
+　▼ body
+--------------------------------------------------------------------------------*/
+html,
+body {
+    width:100%;
+    margin:0;
+    padding:0;
+}
+
+img { max-width: 100%; height: auto;}
+
+ul li { list-style:none;}
+
+a { text-decoration: none !important;}
+
+.clearfix:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+
+/*--------------------------------------------------------------------------------
+　▼ nav
+--------------------------------------------------------------------------------*/
+#nav-box { width: 20%; position: fixed; z-index: 999; height: 100%; }
+#nav-box .for-pc { font-size: 12px !important;}
+#nav-box .logo { margin:10px auto; width: 80%;}
+
+#nav-box .nav:not(.mm-listview) { padding: 0; width: 100%; margin: 20px 0; }
+#nav-box .nav:not(.mm-listview) li {
+    display: block;
+    text-align: left;
+    margin: 0 auto;
+    padding: 2px 0;
+    width:90%;
+}
+#nav-box .nav:not(.mm-listview) li ul {
+    display:none;
+    padding: 0;
+}
+
+#nav-box .nav:not(.mm-listview) li a, #nav-box .nav:not(.mm-listview) li span {
+    display: block;
+    padding:5px 15px;
+    font-size:16px;
+}
+
+#nav-box .nav:not(.mm-listview) li ul li { width: 100%; }
+#nav-box .nav:not(.mm-listview) li ul li a {
+    padding-left: 40px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.nav:not(.mm-listview) li ul li { position: relative; }
+.nav:not(.mm-listview) li ul li:before {
+    display:inline;
+    position: absolute;
+    left: 10px; top: 5px !important;
+    content: "├";
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+
+/*--------------------------------------------------------------------------------
+　▼ contents
+--------------------------------------------------------------------------------*/
+#main_img img { width: 100%;}
+
+#contents-header { z-index:999; width: 100%; position: absolute; top: 0; left: 0; }
+
+#form-link  { z-index:999; font-size: 14px; float: right; margin: 0;}
+
+#address { z-index: 999; font-size: 14px; padding:3px 10px; float: left;}
+
+
+#address .tel { padding-left: 10px;}
+
+#contents {
+    width:80%;
+    margin-left:20%;
+    min-height: 700px;
+    height: auto;
+    position: relative;
+}
+#contents #main { width:70%; float: left; padding: 0 20px;}
+#main.full { width: 100% !important; padding: 0 20px; float: none; }
+
+#contents .title-box { padding-top: 60px;}
+
+#contents .pagetitle  {
+    font-size: 28px;
+    font-weight: bold;
+    padding: 50px 0px 10px 0;
+    margin: 0 20px 0px;
+    text-decoration: none;
+}
+
+
+/*--------------------------------------------------------------------------------
+　▼ トップページ
+--------------------------------------------------------------------------------*/
+.top-box { float: left;}
+.top-box .header { padding: 10px; border-radius: 5px 5px 0 0;}
+.top-box .header .more { padding:3px 5px !important; top:10px;}
+.top-box .body { border-radius: 0 0 5px 5px;}
+.top-box .body ul li  { padding: 10px 0px;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ 宿泊プランページ
+--------------------------------------------------------------------------------*/
+.item {
+    width: 100% !important;
+    margin: 0 auto 15px;
+    padding: 15px !important;
+}
+
+
+/*--------------------------------------------------------------------------------
+　▼ お部屋／お料理/お風呂
+--------------------------------------------------------------------------------*/
+#contents .post,
+.free-box {
+    padding: 20px 0 !important;
+    width: 100%;
+    margin: 0 auto;
+}
+
+#contents .body {
+    margin-top: 0;
+    padding: 20px 0;
+    line-height: 1.5em;
+}
+
+
+.shop_box {
+    padding: 15px !important;
+    border-radius: 5px;
+    width: 100% !important;
+    margin: 0 auto 40px;
+}
+
+
+/*--------------------------------------------------------------------------------
+　▼ side
+--------------------------------------------------------------------------------*/
+#side  {
+    width: 25%;
+    min-height: 100%;
+    height: 100%;
+    float: right;
+    margin-right: 40px;
+    margin-bottom: 40px;
+}
+
+#side h3 {
+    padding: 10px 10px;
+    font-size: 16px;
+    text-align: left;
+    margin: 0;
+}
+#side .side_box {
+    margin-bottom: 20px;
+    padding:15px 10px;
+    border-radius: 5px;
+}
+
+#side .side_ul {
+    padding-left: 0 !important;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+#side .side_ul li { padding:10px 0; font-size: 12px; font-weight: bold;}
+#side .side_ul li a { padding:10px;}
+#side ul li a:hover { text-decoration: underline !important;}
+#side .sub_blog .shortlist li p { font-weight: normal; font-size: 12px; padding-bottom: 5px;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ footer
+--------------------------------------------------------------------------------*/
+#footer { width: 100%; }
+#footer .inner {
+    width: 100%;
+}
+#footer .sns { width: 100%; margin-top: 10px; }
+#footer .sns li { list-style: none; display: inline-block; float: left; margin: 0 5px;}
+
+#footer { width:100%; text-align:center; padding:10px 0;  }
+
+
+
+@media screen and (max-width: 1023px) {
+
+    /*--------------------------------------------------------------------------------
+    　▼ nav
+    --------------------------------------------------------------------------------*/
+    #nav-box {
+        position: relative;
+        margin-top: 40px;
+        width: 100%;
+        height: auto;
+    }
+    #nav-box .logo {
+        padding: 10px;
+        width: 100%;
+        margin: 0;
+    }
+
+    #nav-box .nav:not(.mm-listview) {
+        top: 20px !important;
+        padding-left: 0;
+        width: 100%;
+        margin: 20px 0;
+    }
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ contents
+    --------------------------------------------------------------------------------*/
+    #address .tel { padding-left: 10px;}
+    #contents {
+        width:100%;
+        margin:0;
+    }
+    #contents #main { width: 100%; margin: 0 auto; float: none;}
+
+    #contents .title-box { padding-top: 0;}
+    #contents .pagetitle  {
+        font-size: 18px;
+        margin: 0px;
+        padding: 20px 20px 20px 20px ;
+    }
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ トップページ
+    --------------------------------------------------------------------------------*/
+    .top-box { float: none; margin: 10px 0 !important;}
+    .top-box .header { border-radius: 0;}
+    .top-box .body { font-size: 12px; border-radius: 0; overflow: inherit;}
+    .grid-sizer { display: none;}
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ 宿泊プランページ
+    --------------------------------------------------------------------------------*/
+    .item {
+        width: 95% !important;
+        margin: 0 auto !important;
+        padding: 15px 15px 0 !important;
+    }
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ お部屋／お料理/お風呂
+    --------------------------------------------------------------------------------*/
+    #contents .post,
+    .free-box {
+        padding:10px 0 0 !important;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #contents .body {
+        margin-top: 0;
+        padding: 20px 0;
+        line-height: 1.5em;
+    }
+    .free-box label { font-size: 14px;}
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ アクセスページ
+    --------------------------------------------------------------------------------*/
+    .comment { padding: 0 !important; font-size: 12px;}
+    .shop_box .datas { font-size: 14px;}
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ ニュースページ
+    --------------------------------------------------------------------------------*/
+    .post { font-size: 12px;}
+    .post label { font-weight: bold;}
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ side
+    --------------------------------------------------------------------------------*/
+    #side { display: none;}
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ footer
+    --------------------------------------------------------------------------------*/
+    #footer .inner { padding: 20px 0 80px;}
+
+
+    /*--------------------------------------------------------------------------------
+    　▼ mobile-bar
+    --------------------------------------------------------------------------------*/
+    #mobile-bar .sns { border: none; top: 10px !important;}
+}
+
+
+
+
+
+
+
+
+
+
+

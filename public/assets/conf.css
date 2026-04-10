@@ -1,0 +1,27 @@
+/* ---------------------------------------------------------------------- */
+/*	全般・レイアウト関連
+/* ---------------------------------------------------------------------- */
+.for-pc { display: none !important; }
+.for-mobile { display: none !important; }
+.for-tablet { display: none !important; }
+
+/*PC専用*/
+@media (min-width: 1024px)  {
+    .for-pc { display: inherit  !important; }
+    .nav li { cursor: pointer; }
+}
+
+/*タブレット&スマートフォン専用*/
+@media (max-width: 1023px)  {
+    
+}
+
+/*タブレット専用*/
+@media (min-width: 768px) and (max-width: 1023px) {
+    .for-tablet { display: inherit  !important; }
+}
+
+/*スマートフォン専用*/
+@media (max-width: 767px)  {
+    .for-mobile { display: inherit  !important; }
+}

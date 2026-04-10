@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Night Lounge Tempest | まるて株式会社</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .shop-hero {
+            height: 70vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/tempest.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .shop-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 60px;
+        }
+        @media (max-width: 768px) {
+            .shop-detail-grid { grid-template-columns: 1fr; }
+        }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th { text-align: left; padding: 15px 0; border-bottom: 1px solid #333; color: var(--primary-gold); width: 30%; }
+        .info-table td { padding: 15px 0; border-bottom: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <div class="container header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-main" style="font-size: 1.2rem;">MARUTE</span>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#shop-portal">Shops</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="shop-hero">
+            <div class="container">
+                <p class="subtitle" style="color: var(--primary-gold); letter-spacing: 0.5em;">Night Lounge</p>
+                <h1 style="font-size: 3.5rem;">Night Lounge<br><span class="serif">Tempest</span></h1>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="reveal">
+                    <h2 class="serif" style="font-size: 2.5rem; margin-bottom: 30px;">静寂と情熱が融け合う、<br>圧倒的なラグジュアリー。</h2>
+                    <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 700px;">
+                        「Tempest（テンペスト）」は、草加で最も重厚な空間を目指したナイトラウンジです。
+                        広々としたソファー席、計算し尽くされたライティング、そして厳選されたキャスト。
+                        日常を忘れ、至福のひとときを過ごすためのすべてがここにあります。
+                        接待や大切な会食、あるいは自分へのご褒美に。特別な夜をご用意してお待ちしております。
+                    </p>
+                </div>
+
+                <div class="shop-detail-grid reveal">
+                    <div>
+                        <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">Shop Information</h3>
+                        <table class="info-table">
+                            <tr><th>Name</th><td>Night Lounge Tempest</td></tr>
+                            <tr><th>Category</th><td>ナイトラウンジ</td></tr>
+                            <tr><th>Location</th><td>埼玉県草加市 (詳細はお問い合わせください)</td></tr>
+                            <tr><th>Hours</th><td>20:00 - Last</td></tr>
+                        </table>
+                    </div>
+                    <div style="border: 1px solid #333; padding: 20px;">
+                        <img src="assets/images/tempest.png" alt="Tempest Interior">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="mobile-actions">
+        <a href="tel:0000000000" class="mobile-action-btn">
+            <i class="fas fa-phone"></i>
+            <span>Call</span>
+        </a>
+        <a href="https://maps.google.com" target="_blank" class="mobile-action-btn">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Access</span>
+        </a>
+        <a href="#" class="mobile-action-btn">
+            <i class="fas fa-calendar-check"></i>
+            <span>Reserve</span>
+        </a>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-copyright">
+                &copy; 2026 Marute Co., Ltd.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
