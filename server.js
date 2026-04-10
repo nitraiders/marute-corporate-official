@@ -4,6 +4,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 静的ファイルの配信ディレクトリを指定
+app.use((req, res, next) => {
+    res.setHeader('Content-Language', 'ja');
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 404 エラーハンドリング（サイト内の他のパスへのアクセス時）
