@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Hide loading screen
+    const loader = document.getElementById('siteLoading');
+    if (loader) {
+        setTimeout(() => {
+            loader.classList.add('loaded');
+            setTimeout(() => loader.remove(), 600);
+        }, 300);
+    }
+
     const header = document.getElementById('header');
     const revealElements = document.querySelectorAll('.reveal');
 
