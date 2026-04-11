@@ -109,6 +109,12 @@ header.scrolled {
     color: var(--text-muted);
 }
 
+.logo-highlight {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--primary-gold);
+}
+
 nav ul {
     display: flex;
     gap: 40px;
@@ -522,6 +528,42 @@ footer {
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Recruit Page */
+.recruit-section {
+    margin-bottom: 60px;
+}
+
+.recruit-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.recruit-table th {
+    text-align: left;
+    padding: 15px;
+    background: rgba(204, 190, 124, 0.1);
+    color: var(--primary-gold);
+    width: 25%;
+    border-bottom: 1px solid #333;
+}
+
+.recruit-table td {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+}
+
+@media (max-width: 600px) {
+    .recruit-table th, .recruit-table td {
+        display: block;
+        width: 100%;
+    }
+    .recruit-table th {
+        border-bottom: none;
+        padding-bottom: 5px;
+    }
 }
 
 .mobile-menu-btn {
