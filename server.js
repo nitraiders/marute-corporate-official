@@ -10,7 +10,7 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 404 エラーハンドリング（サイト内の他のパスへのアクセス時）
+// 404 エラーハンドリング
 app.use((req, res) => {
     res.status(404).send('<h1>404 Not Found</h1><p>お探しのページは見つかりませんでした。</p>');
 });

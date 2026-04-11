@@ -31,8 +31,11 @@
         <div class="container header-inner">
             <div class="logo">
                 <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
-                    <img src="assets/images/marute_logo_mark.jpg" alt="Marute Group" style="height: 1.5rem; width: auto; border-radius: 4px;">
-                    <span class="logo-main" style="font-size: 1.2rem;">MARUTE</span>
+                    <img src="assets/images/marute_logo_mark.jpg" alt="Marute Group" style="height: 1.8rem; width: auto; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="logo-main">MARUTE</span>
+                        <span class="logo-sub">Marute Co., Ltd.</span>
+                    </div>
                 </a>
             </div>
             <nav>
@@ -65,62 +68,65 @@
             <div class="container">
                 <div class="reveal">
                     <p style="text-align: center; margin-bottom: 40px; color: var(--text-muted);">
-                        まるて株式会社へのお問い合わせ・ご質問は、以下のフォームより受け付けております。<br>
-                        必要事項をご記入の上、「送信内容を確認する」ボタンを押してください。
+                        まるて株式会社へのお問い合わせ・ご質問は、以下のフォームより受け付けております。
                     </p>
-
-                    <form class="contact-form">
+                    <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
+                        <!-- Web3Forms Config -->
+                        <input type="hidden" name="access_key" value="607c6e37-7da9-48c6-9a20-6fffd0fc30b3">
+                        <input type="hidden" name="subject" value="【公式サイト】新しいお問い合わせがありました">
+                        <input type="hidden" name="from_name" value="まるて株式会社 公式サイト">
+                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label>お名前<span class="required">必須</span></label>
-                                <input type="text" class="form-control" placeholder="例：山田 太郎" required>
+                                <input type="text" name="name" class="form-control" placeholder="例：山田 太郎" required>
                             </div>
                             <div class="form-group">
                                 <label>フリガナ</label>
-                                <input type="text" class="form-control" placeholder="例：ヤマダ タロウ">
+                                <input type="text" name="furigana" class="form-control" placeholder="例：ヤマダ タロウ">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label>電話番号</label>
-                                <input type="tel" class="form-control" placeholder="例：09012345678">
+                                <input type="tel" name="phone" class="form-control" placeholder="例：09012345678">
                             </div>
                             <div class="form-group">
                                 <label>会社名</label>
-                                <input type="text" class="form-control" placeholder="例：株式会社〇〇">
+                                <input type="text" name="company" class="form-control" placeholder="例：株式会社まるて">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label>メールアドレス<span class="required">必須</span></label>
-                                <input type="email" class="form-control" placeholder="例：example@mail.com" required>
+                                <input type="email" name="email" class="form-control" placeholder="例：example@mail.com" required>
                             </div>
                             <div class="form-group">
                                 <label>メールアドレス (確認)<span class="required">必須</span></label>
-                                <input type="email" class="form-control" placeholder="例：example@mail.com" required>
+                                <input type="email" name="email_confirm" class="form-control" placeholder="例：example@mail.com" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label>住所</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" class="form-control" style="width: 150px;" placeholder="郵便番号">
-                                <select class="form-control" style="width: 200px;">
+                                <input type="text" name="zip" class="form-control" style="width: 150px;" placeholder="郵便番号">
+                                <select name="prefecture" class="form-control" style="width: 200px;">
                                     <option value="">都道府県を選択</option>
                                     <option value="埼玉県">埼玉県</option>
                                     <option value="東京都">東京都</option>
                                     <option value="千葉県">千葉県</option>
-                                    <!-- 他の都道府県は省略 -->
+                                    <option value="神奈川県">神奈川県</option>
                                 </select>
                             </div>
-                            <input type="text" class="form-control" placeholder="市区町村・番地・マンション名など">
+                            <input type="text" name="address" class="form-control" placeholder="市区町村・番地・マンション名など">
                         </div>
 
                         <div class="form-group">
                             <label>お問い合わせ内容<span class="required">必須</span></label>
-                            <textarea class="form-control" rows="8" placeholder="お問い合わせ内容をご記入ください" required></textarea>
+                            <textarea name="message" class="form-control" rows="8" placeholder="お問い合わせ内容をご記入ください" required></textarea>
                         </div>
 
                         <div style="margin-top: 50px;">
@@ -151,7 +157,10 @@
         <div class="container">
             <div class="footer-inner">
                 <div class="footer-info" style="display: flex; flex-direction: column; align-items: center; width: 120px;">
-                    <span class="logo-main" style="font-size: 1.2rem; margin-bottom: 15px;">MARUTE</span>
+                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px;">
+                        <span class="logo-main" style="font-size: 1.2rem;">MARUTE</span>
+                        <span class="logo-sub" style="font-size: 0.6rem; color: var(--text-muted); line-height: 1.2;">Marute Co., Ltd.</span>
+                    </div>
                     <img src="assets/images/marute_logo_mark.jpg" alt="Marute Group" style="width: 100%; border-radius: 4px;">
                 </div>
                 <div class="footer-links">
@@ -168,8 +177,11 @@
                     <div>
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="https://www.instagram.com/yuzuki_by_silkhat?igsh=MTU0Y3R6MWpvaDF4OQ%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> しるくはっと</a></li>
-                            <li><a href="https://www.instagram.com/soka_tempest10?igsh=MWNqeDczNjdydnA0aA%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> Tempest</a></li>
+                            <li><a href="https://www.instagram.com/yuzuki_by_silkhat?igsh=MTU0Y3R6MWpvaDF4OQ%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> しるくはっと Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@yuzukibysikhat" target="_blank"><i class="fab fa-tiktok"></i> しるくはっと TikTok</a></li>
+                            <li><a href="https://www.instagram.com/soka_tempest10?igsh=MWNqeDczNjdydnA0aA%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> Tempest Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@...tempest96" target="_blank"><i class="fab fa-tiktok"></i> Tempest TikTok</a></li>
+                            <li><a href="https://ofuse.me/363a4964/letter" target="_blank" style="color: var(--primary-gold);"><i class="fas fa-gift"></i> OFUSE</a></li>
                         </ul>
                     </div>
                 </div>
