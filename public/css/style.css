@@ -500,15 +500,44 @@ footer {
 
     .footer-inner {
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         justify-content: space-between;
-        gap: 30px;
+        gap: 10px;
     }
 
     .footer-links {
         flex-direction: row;
-        flex-wrap: wrap;
-        gap: 20px;
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+
+    .footer-info {
+        width: 80px !important;
+        align-items: center;
+    }
+
+    .footer-info img {
+        width: 80px !important;
+        height: auto !important;
+    }
+
+    .footer-info .logo-main {
+        font-size: 0.9rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .footer-links h4 {
+        font-size: 0.65rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .footer-links ul li {
+        font-size: 0.6rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .footer-links ul li a i {
+        font-size: 0.6rem;
     }
 
     nav {
