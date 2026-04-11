@@ -30,10 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile menu toggle
     const menuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('nav');
-    if (menuBtn) {
+    if (menuBtn && nav) {
         menuBtn.addEventListener('click', () => {
             menuBtn.classList.toggle('open');
-            // nav.classList.toggle('active'); // Implementation of mobile nav overlay if needed
+            nav.classList.toggle('active');
+            document.body.classList.toggle('no-scroll');
+        });
+
+        // Close menu when clicking a link
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuBtn.classList.remove('open');
+                nav.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            });
         });
     }
 

@@ -29,6 +29,10 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+body.no-scroll {
+    overflow: hidden;
+}
+
 h1, h2, h3, .serif {
     font-family: 'Playfair Display', 'Noto Serif JP', serif;
     font-weight: 700;
@@ -123,12 +127,14 @@ nav a:hover {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
+    min-height: 100vh;
+    height: 100dvh;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    padding: 0; /* セクションのデフォルトパディングをリセット */
 }
 
 .hero-bg {
@@ -151,6 +157,10 @@ nav a:hover {
 .hero-content {
     text-align: center;
     max-width: 800px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    margin: auto;
 }
 
 .hero-tagline {
@@ -384,39 +394,48 @@ footer {
     }
 }
 
-@media (max-width: 600px) {
-    nav {
-        display: none;
-    }
-    .hero-title {
-        font-size: 2.8rem;
-    }
-    .hero-copy {
-        font-size: 1rem;
-        padding: 0 10px;
-    }
-    .shop-card {
-        height: auto; /* 固定高を解除して重なりを防ぐ */
-        min-height: 450px;
-        display: flex;
-        flex-direction: column;
-    }
-    .shop-card img {
-        height: 200px;
-        width: 100%;
-    }
-    .shop-card-content {
-        position: relative; /* absoluteを解除して安全に配置 */
-        background: var(--card-bg);
-        padding: 30px 20px;
-    }
-    .shop-card p {
-        max-width: 100%;
-    }
     .btn-luxury {
         width: 100%;
         text-align: center;
         padding: 15px 0; /* タップ領域の拡大 */
+    }
+
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100dvh;
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(15px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-slow);
+        z-index: 1000;
+    }
+
+    nav.active {
+        right: 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    nav a {
+        font-size: 1.5rem;
+        color: var(--primary-gold);
+        font-family: 'Playfair Display', serif;
+    }
+
+    .mobile-br {
+        display: block;
+        height: 0;
+        margin: 0;
+        content: "";
     }
 }
 
@@ -487,5 +506,14 @@ footer {
         background: var(--primary-gold);
         margin-bottom: 6px;
         transition: 0.3s;
+    }
+    .mobile-menu-btn.open span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .mobile-menu-btn.open span:nth-child(2) {
+        transform: translateY(0px) rotate(-45deg);
+    }
+    .mobile-menu-btn.open span:nth-child(3) {
+        opacity: 0;
     }
 }
