@@ -512,23 +512,6 @@ footer {
     .mobile-actions {
         display: flex;
     }
-/* Shop Hero Branding */
-.small-title {
-    font-size: 0.4em;
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    display: block;
-    margin-bottom: -0.2em;
-    color: var(--text-muted);
-}
-
-.large-title {
-    font-size: 1.4em;
-    font-weight: 700;
-    color: var(--primary-gold);
-    display: block;
-    line-height: 1.1;
-    text-shadow: 0 4px 15px rgba(0,0,0,0.6);
 }
 
 /* Screenshot-accurate System Styles */
