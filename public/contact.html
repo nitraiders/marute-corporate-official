@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CONTACT | まるて株式会社</title>
+    <meta name="google" content="notranslate">
+    <link rel="icon" href="assets/images/apple-touch-icon.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.jpg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .page-hero {
+            height: 40vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/images/hero.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <div class="container header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-main" style="font-size: 1.2rem;">MARUTE</span>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#hero">Home</a></li>
+                    <li><a href="index.html#shop-portal">Shops</a></li>
+                    <li><a href="index.html#corporate">Corporate</a></li>
+                    <li><a href="recruit.html">Recruit</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="index.html#access">Access</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <p class="subtitle" style="color: var(--primary-gold); letter-spacing: 0.5em;">Contact Us</p>
+                <h1 style="font-size: 3rem;">CONTACT</h1>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="reveal">
+                    <p style="text-align: center; margin-bottom: 40px; color: var(--text-muted);">
+                        まるて株式会社へのお問い合わせ・ご質問は、以下のフォームより受け付けております。<br>
+                        必要事項をご記入の上、「送信内容を確認する」ボタンを押してください。
+                    </p>
+
+                    <form class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>お名前<span class="required">必須</span></label>
+                                <input type="text" class="form-control" placeholder="例：山田 太郎" required>
+                            </div>
+                            <div class="form-group">
+                                <label>フリガナ</label>
+                                <input type="text" class="form-control" placeholder="例：ヤマダ タロウ">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>電話番号</label>
+                                <input type="tel" class="form-control" placeholder="例：09012345678">
+                            </div>
+                            <div class="form-group">
+                                <label>会社名</label>
+                                <input type="text" class="form-control" placeholder="例：株式会社〇〇">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>メールアドレス<span class="required">必須</span></label>
+                                <input type="email" class="form-control" placeholder="例：example@mail.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>メールアドレス (確認)<span class="required">必須</span></label>
+                                <input type="email" class="form-control" placeholder="例：example@mail.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>住所</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="text" class="form-control" style="width: 150px;" placeholder="郵便番号">
+                                <select class="form-control" style="width: 200px;">
+                                    <option value="">都道府県を選択</option>
+                                    <option value="埼玉県">埼玉県</option>
+                                    <option value="東京都">東京都</option>
+                                    <option value="千葉県">千葉県</option>
+                                    <!-- 他の都道府県は省略 -->
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" placeholder="市区町村・番地・マンション名など">
+                        </div>
+
+                        <div class="form-group">
+                            <label>お問い合わせ内容<span class="required">必須</span></label>
+                            <textarea class="form-control" rows="8" placeholder="お問い合わせ内容をご記入ください" required></textarea>
+                        </div>
+
+                        <div style="margin-top: 50px;">
+                            <label style="color: var(--primary-gold); margin-bottom: 15px; display: block;">個人情報保護方針</label>
+                            <div class="privacy-policy">
+                                当社は、お客様からお預かりした個人情報を適切に管理し、本来の目的（お問い合わせへの回答やサービスの提供）以外に使用することはありません。法令に基づき開示が必要な場合を除き、第三者に提供することはありません。
+                                <br><br>
+                                1. 個人情報の収集・利用<br>
+                                2. 個人情報の管理<br>
+                                3. 送信情報の機密保持
+                            </div>
+                            <div class="agree-check">
+                                <input type="checkbox" id="agree" required>
+                                <label for="agree" style="margin: 0;">個人情報保護方針に同意する</label>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center;">
+                            <button type="submit" class="btn-luxury" style="padding: 20px 80px; cursor: pointer; border: 1px solid var(--primary-gold);">送信内容を確認する</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-info">
+                    <div class="logo">
+                        <span class="logo-main" style="font-size: 1.2rem;">MARUTE</span>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div>
+                        <h4>Contents</h4>
+                        <ul>
+                            <li><a href="index.html#hero">Home</a></li>
+                            <li><a href="index.html#shop-portal">Shops</a></li>
+                            <li><a href="index.html#corporate">Corporate</a></li>
+                            <li><a href="recruit.html">Recruit</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="https://www.instagram.com/yuzuki_by_silkhat?igsh=MTU0Y3R6MWpvaDF4OQ%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> ゆづき by しるくはっと</a></li>
+                            <li><a href="https://www.instagram.com/soka_tempest10?igsh=MWNqeDczNjdydnA0aA%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> Night Lounge Tempest</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 Marute Co., Ltd.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

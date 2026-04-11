@@ -504,40 +504,132 @@ footer {
     .mobile-actions {
         display: flex;
     }
-    /* Shop Hero Branding */
-    .small-title {
-        font-size: 0.4em;
-        font-weight: 300;
-        letter-spacing: 0.2em;
-        display: block;
-        margin-bottom: -0.2em;
-        color: var(--text-muted);
-    }
+/* Shop Hero Branding */
+.small-title {
+    font-size: 0.4em;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    display: block;
+    margin-bottom: -0.2em;
+    color: var(--text-muted);
+}
 
-    .large-title {
-        font-size: 1.4em;
-        font-weight: 700;
-        color: var(--primary-gold);
-        display: block;
-        line-height: 1.1;
-        text-shadow: 0 4px 15px rgba(0,0,0,0.6);
-    }
+.large-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--primary-gold);
+    display: block;
+    line-height: 1.1;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+}
 
-    .system-item {
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding: 20px 0; /* 余白を広げて優雅に */
-    }
+/* Screenshot-accurate System Styles */
+.system-group {
+    margin-bottom: 40px;
+}
 
-    .system-item .label {
-        font-size: 0.9rem;
-        letter-spacing: 0.05em;
-        margin-bottom: 8px;
-    }
+.system-title-orange {
+    color: #ff9900; /* 画像のオレンジに合わせる */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
 
-    .system-item .price {
-        font-size: 1.5rem;
-        color: #fff;
-    }
+.system-title-yellow {
+    color: #ffcc00; /* 画像の黄色に合わせる */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.system-text-white {
+    color: #ccc;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.system-highlight-yellow {
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.system-separator {
+    border: none;
+    border-top: 1px solid #666; /* 画像の細い白/グレー線 */
+    margin: 25px 0;
+    width: 100%;
+}
+
+/* Contact Form Styles */
+.contact-form {
+    max-width: 800px;
+    margin: 60px auto;
+    background: #111;
+    padding: 40px;
+    border: 1px solid #333;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--primary-gold);
+}
+
+.form-group label .required {
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 10px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #444;
+    color: #fff;
+    font-family: inherit;
+    border-radius: 4px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+}
+
+.privacy-policy {
+    height: 150px;
+    overflow-y: scroll;
+    background: #000;
+    padding: 15px;
+    border: 1px solid #333;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.agree-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
 }
 
 .mobile-action-btn {
