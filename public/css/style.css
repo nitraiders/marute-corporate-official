@@ -271,7 +271,7 @@ nav a:hover {
 }
 
 .section-title h2 {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     color: var(--primary-gold);
     margin-bottom: 0.5rem;
 }
@@ -279,14 +279,14 @@ nav a:hover {
 .section-title .subtitle {
     font-size: 1.2rem;
     text-transform: uppercase;
-    letter-spacing: 0.3em;
-    color: var(--text-muted);
+    letter-spacing: 0.5em;
+    color: #fff;
 }
 
 @media (max-width: 600px) {
     .section-title .subtitle {
-        font-size: 0.65rem; /* キャッチコピーのサイズをさらに絞る */
-        letter-spacing: 0.15em;
+        font-size: 1.2rem;
+        letter-spacing: 0.5em;
     }
 }
 
@@ -499,13 +499,16 @@ footer {
     }
 
     .footer-inner {
-        flex-direction: column;
-        gap: 40px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 30px;
     }
 
     .footer-links {
-        flex-direction: column;
-        gap: 30px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
     }
 
     nav {
