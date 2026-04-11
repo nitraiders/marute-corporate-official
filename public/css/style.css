@@ -338,9 +338,9 @@ nav a:hover {
 }
 
 .corp-info {
-    display: flex;
-    align-items: center;
-    gap: 80px;
+    display: block; /* 1列にする */
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .corp-info-text {
@@ -358,9 +358,17 @@ nav a:hover {
 }
 
 .corp-image {
-    flex: 1;
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
     border: 1px solid var(--primary-gold);
     padding: 10px;
+}
+
+.corp-info-table-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto 0;
 }
 
 /* Footer */
@@ -528,36 +536,37 @@ footer {
     margin-bottom: 40px;
 }
 
-.system-title-orange {
-    color: #ff9900; /* 画像のオレンジに合わせる */
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.system-title-yellow {
-    color: #ffcc00; /* 画像の黄色に合わせる */
+.system-title-gold {
+    color: var(--primary-gold);
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
 .system-text-white {
-    color: #ccc;
-    font-size: 0.95rem;
+    color: #fff;
+    font-size: 1.5rem; /* タイトルと同じサイズに拡大 */
     line-height: 1.6;
 }
 
 .system-highlight-yellow {
-    color: #ffff00;
+    color: var(--primary-gold); /* 指示通りサイトカラーに合わせる */
     font-weight: bold;
 }
 
 .system-separator {
     border: none;
-    border-top: 1px solid #666; /* 画像の細い白/グレー線 */
+    border-top: 1px solid #666;
     margin: 25px 0;
     width: 100%;
+}
+
+.text-gold {
+    color: var(--primary-gold) !important;
+}
+
+.text-white {
+    color: #fff !important;
 }
 
 /* Contact Form Styles */
