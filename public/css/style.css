@@ -167,7 +167,7 @@ nav a:hover {
     position: relative;
     z-index: 10;
     margin: auto;
-    padding-top: 100px; /* 固定ヘッダーとの間隔を確保 */
+    padding-top: 80px; /* バランス調整 */
 }
 
 .hero-tagline {
@@ -401,8 +401,10 @@ footer {
 /* Responsive */
 @media (max-width: 600px) {
     .hero-title {
-        font-size: 1.85rem; /* 2行に収めるための最終サイズ */
-        line-height: 1.4;
+        font-size: 2.3rem; /* 圧倒的な存在感を復元 */
+        line-height: 1.25;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
     .hero-tagline {
         font-size: 0.7rem;
@@ -501,6 +503,40 @@ footer {
 @media (max-width: 768px) {
     .mobile-actions {
         display: flex;
+    }
+    /* Shop Hero Branding */
+    .small-title {
+        font-size: 0.4em;
+        font-weight: 300;
+        letter-spacing: 0.2em;
+        display: block;
+        margin-bottom: -0.2em;
+        color: var(--text-muted);
+    }
+
+    .large-title {
+        font-size: 1.4em;
+        font-weight: 700;
+        color: var(--primary-gold);
+        display: block;
+        line-height: 1.1;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+
+    .system-item {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 20px 0; /* 余白を広げて優雅に */
+    }
+
+    .system-item .label {
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+
+    .system-item .price {
+        font-size: 1.5rem;
+        color: #fff;
     }
 }
 
