@@ -71,14 +71,35 @@
             <div class="container">
                 <div class="reveal" style="text-align: center;">
                     <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 40px;">協力元・提携企業</h2>
-                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                        <a href="http://hl-linen.com/recruit.html" target="_blank" class="btn-luxury" style="padding: 15px 40px;">株式会社HL</a>
-                        <a href="https://www.nishinkougyou0401.com/" target="_blank" class="btn-luxury" style="padding: 15px 40px;">株式会社二信興業</a>
-                        <a href="https://smarthouse.annex-homes.jp/" target="_blank" class="btn-luxury" style="padding: 15px 40px;">株式会社スマートハウス</a>
+                    <div id="partner-list" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                        <p style="color: #666;">データを読み込み中...</p>
                     </div>
                 </div>
             </div>
         </section>
+
+        <script>
+            async function loadPartners() {
+                const partnerList = document.getElementById('partner-list');
+                try {
+                    const response = await fetch('/api/partners');
+                    const data = await response.json();
+                    
+                    if (data.length === 0) {
+                        partnerList.innerHTML = '<p style="color: #666;">提携企業は現在ありません。</p>';
+                        return;
+                    }
+
+                    partnerList.innerHTML = data.map(partner => `
+                        <a href="${partner.url}" target="_blank" class="btn-luxury" style="padding: 15px 40px;">${partner.name}</a>
+                    `).join('');
+                } catch (error) {
+                    console.error('Error loading partners:', error);
+                    partnerList.innerHTML = '<p style="color: #e74c3c;">データの取得に失敗しました。</p>';
+                }
+            }
+            window.addEventListener('DOMContentLoaded', loadPartners);
+        </script>
     </main>
 
     <footer>
