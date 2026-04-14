@@ -100,8 +100,14 @@
                 </div>
 
                 <!-- News Section -->
-                <div id="news" class="reveal" style="margin-bottom: 60px;">
+                <div id="news" class="reveal" style="margin-bottom: 60px; position: relative;">
                     <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">News</h3>
+                    
+                    <!-- Pull to Refresh Indicator -->
+                    <div id="pull-refresh-indicator">
+                        <i class="fas fa-spinner fa-spin"></i> 更新中...
+                    </div>
+
                     <div id="news-list" style="
                         height: 180px; 
                         overflow-y: auto; 
@@ -109,6 +115,7 @@
                         border: 1px solid rgba(204, 190, 124, 0.3); 
                         padding: 20px; 
                         border-radius: 4px;
+                        -webkit-overflow-scrolling: touch;
                     ">
                         <p style="color: #666; font-size: 0.9rem;">ニュースを読み込み中...</p>
                     </div>
@@ -143,8 +150,11 @@
                 </style>
 
                 <script>
+                    const newsList = document.getElementById('news-list');
+                    const refreshIndicator = document.getElementById('pull-refresh-indicator');
+                    let startY = 0;
+
                     async function loadNews() {
-                        const newsList = document.getElementById('news-list');
                         try {
                             const response = await fetch('/api/data?sheet=yuzuki_news');
                             const data = await response.json();
@@ -170,6 +180,30 @@
                             newsList.innerHTML = '<p style="color: #e74c3c; font-size: 0.8rem;">ニュースの取得に失敗しました。</p>';
                         }
                     }
+
+                    // Pull to Refresh Logic
+                    newsList.addEventListener('touchstart', (e) => {
+                        startY = e.touches[0].pageY;
+                    }, { passive: true });
+
+                    newsList.addEventListener('touchmove', (e) => {
+                        const moveY = e.touches[0].pageY;
+                        const pullDistance = moveY - startY;
+                        
+                        if (newsList.scrollTop === 0 && pullDistance > 70) {
+                            refreshIndicator.classList.add('active');
+                        }
+                    }, { passive: true });
+
+                    newsList.addEventListener('touchend', async () => {
+                        if (refreshIndicator.classList.contains('active')) {
+                            await loadNews();
+                            setTimeout(() => {
+                                refreshIndicator.classList.remove('active');
+                            }, 800);
+                        }
+                    });
+
                     window.addEventListener('DOMContentLoaded', loadNews);
                 </script>
 

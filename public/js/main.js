@@ -40,6 +40,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('nav');
     if (menuBtn && nav) {
+        // --- Web Share API Implementation ---
+        const navUl = nav.querySelector('ul');
+        if (navUl && navigator.share) {
+            const shareLi = document.createElement('li');
+            shareLi.className = 'mobile-share-item';
+            shareLi.innerHTML = `
+                <a href="javascript:void(0)" class="share-btn-nav">
+                    <i class="fas fa-share-nodes"></i> Share
+                </a>
+            `;
+            navUl.appendChild(shareLi);
+
+            const shareBtn = shareLi.querySelector('.share-btn-nav');
+            shareBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await navigator.share({
+                        title: document.title,
+                        text: 'まるて株式会社 公式サイト',
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Share failed or cancelled:', err);
+                }
+            });
+        }
+        // ------------------------------------
+
         menuBtn.addEventListener('click', () => {
             menuBtn.classList.toggle('open');
             nav.classList.toggle('active');
