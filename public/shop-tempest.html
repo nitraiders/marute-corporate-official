@@ -103,11 +103,6 @@
                 <div id="news" class="reveal" style="margin-bottom: 60px; position: relative;">
                     <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">News</h3>
                     
-                    <!-- Pull to Refresh Indicator -->
-                    <div id="pull-refresh-indicator">
-                        <i class="fas fa-spinner fa-spin"></i> 更新中...
-                    </div>
-
                     <div id="news-list" style="
                         height: 180px; 
                         overflow-y: auto; 
@@ -151,8 +146,6 @@
 
                 <script>
                     const newsList = document.getElementById('news-list');
-                    const refreshIndicator = document.getElementById('pull-refresh-indicator');
-                    let startY = 0;
 
                     async function loadNews() {
                         try {
@@ -181,35 +174,8 @@
                         }
                     }
 
-                    // Pull to Refresh Logic
-                    newsList.addEventListener('touchstart', (e) => {
-                        startY = e.touches[0].pageY;
-                    }, { passive: true });
-
-                    newsList.addEventListener('touchmove', (e) => {
-                        const moveY = e.touches[0].pageY;
-                        const pullDistance = moveY - startY;
-                        
-                        // scrollTopが0のときのみ、下に一定距離（50px）引っ張ったらインジケーター表示
-                        if (newsList.scrollTop <= 0 && pullDistance > 0) {
-                            if (pullDistance > 50) {
-                                refreshIndicator.classList.add('active');
-                            }
-                            refreshIndicator.style.opacity = Math.min(pullDistance / 50, 1);
-                        }
-                    }, { passive: true });
-
-                    newsList.addEventListener('touchend', async () => {
-                        if (refreshIndicator.classList.contains('active')) {
-                            await loadNews();
-                            setTimeout(() => {
-                                refreshIndicator.classList.remove('active');
-                                refreshIndicator.style.opacity = '0';
-                            }, 800);
-                        } else {
-                            refreshIndicator.style.opacity = '0';
-                        }
-                    });
+                    // Global refresh hook for main.js
+                    window.refreshPageContent = loadNews;
 
                     window.addEventListener('DOMContentLoaded', loadNews);
                 </script>

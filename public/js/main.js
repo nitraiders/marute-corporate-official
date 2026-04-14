@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if running in Standalone mode (iOS Home Screen)
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    if (isStandalone) {
+        document.body.classList.add('standalone');
+    }
+
     // Hide loading screen
     const loader = document.getElementById('siteLoading');
     if (loader) {
@@ -96,5 +102,87 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+    });
+
+    // --- Global Standalone Fix (Stay in App) ---
+    if (isStandalone) {
+        document.addEventListener('click', (e) => {
+            let target = e.target;
+            while (target && target.tagName !== 'A') {
+                target = target.parentNode;
+            }
+            if (target && target.href && !target.hasAttribute('data-no-pjax') && target.target !== '_blank') {
+                const url = new URL(target.href);
+                if (url.origin === window.location.origin) {
+                    e.preventDefault();
+                    window.location.href = target.href;
+                }
+            }
+        }, false);
+    }
+
+    // --- Global Pull to Refresh Implementation ---
+    const refreshIndicator = document.createElement('div');
+    refreshIndicator.id = 'global-pull-refresh';
+    refreshIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 更新中...';
+    document.body.appendChild(refreshIndicator);
+
+    let startY = 0;
+    let isPulling = false;
+
+    window.addEventListener('touchstart', (e) => {
+        if (window.scrollY <= 0) {
+            startY = e.touches[0].pageY;
+            isPulling = true;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isPulling) return;
+        const moveY = e.touches[0].pageY;
+        const pullDistance = moveY - startY;
+
+        if (pullDistance > 0 && window.scrollY <= 0) {
+            refreshIndicator.classList.add('pulling');
+            const opacity = Math.min(pullDistance / 80, 1);
+            const translateY = Math.min(pullDistance / 2, 60);
+            refreshIndicator.style.opacity = opacity;
+            refreshIndicator.style.transform = `translateY(${translateY}px)`;
+            
+            if (pullDistance > 100) {
+                refreshIndicator.classList.add('active');
+            } else {
+                refreshIndicator.classList.remove('active');
+            }
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchend', async () => {
+        if (isPulling && refreshIndicator.classList.contains('active')) {
+            // Success Pull
+            refreshIndicator.style.transform = 'translateY(60px)';
+            
+            // Check if page has a specific refresh function
+            if (typeof window.refreshPageContent === 'function') {
+                await window.refreshPageContent();
+            } else {
+                window.location.reload();
+                return; // reload will handle clearing the indicator
+            }
+
+            setTimeout(() => {
+                refreshIndicator.classList.remove('active');
+                refreshIndicator.classList.remove('pulling');
+                refreshIndicator.style.transform = 'translateY(0)';
+                refreshIndicator.style.opacity = '0';
+            }, 800);
+        } else {
+            // Cancel Pull
+            refreshIndicator.classList.remove('active');
+            refreshIndicator.classList.remove('pulling');
+            refreshIndicator.style.transform = 'translateY(0)';
+            refreshIndicator.style.opacity = '0';
+        }
+        isPulling = false;
     });
 });

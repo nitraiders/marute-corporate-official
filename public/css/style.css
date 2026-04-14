@@ -859,3 +859,36 @@ footer {
 #news-list, #partner-list {
     overscroll-behavior-y: contain;
 }
+
+/* Global Pull to Refresh (PWA) */
+body.standalone {
+    overscroll-behavior-y: contain;
+}
+
+#global-pull-refresh {
+    position: fixed;
+    top: -60px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.9);
+    color: var(--primary-gold);
+    font-size: 0.9rem;
+    z-index: 100000;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+    gap: 10px;
+}
+
+#global-pull-refresh.pulling {
+    opacity: 1;
+}
+
+#global-pull-refresh.active {
+    transform: translateY(60px);
+    opacity: 1;
+}
