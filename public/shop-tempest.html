@@ -7,6 +7,8 @@
     <meta name="google" content="notranslate">
     <link rel="icon" href="/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -188,8 +190,12 @@
                         const moveY = e.touches[0].pageY;
                         const pullDistance = moveY - startY;
                         
-                        if (newsList.scrollTop === 0 && pullDistance > 70) {
-                            refreshIndicator.classList.add('active');
+                        // scrollTopが0のときのみ、下に一定距離（50px）引っ張ったらインジケーター表示
+                        if (newsList.scrollTop <= 0 && pullDistance > 0) {
+                            if (pullDistance > 50) {
+                                refreshIndicator.classList.add('active');
+                            }
+                            refreshIndicator.style.opacity = Math.min(pullDistance / 50, 1);
                         }
                     }, { passive: true });
 
@@ -198,7 +204,10 @@
                             await loadNews();
                             setTimeout(() => {
                                 refreshIndicator.classList.remove('active');
+                                refreshIndicator.style.opacity = '0';
                             }, 800);
+                        } else {
+                            refreshIndicator.style.opacity = '0';
                         }
                     });
 

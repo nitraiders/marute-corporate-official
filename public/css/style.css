@@ -854,3 +854,8 @@ footer {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Fix for Swipe to Refresh interference */
+#news-list, #partner-list {
+    overscroll-behavior-y: contain;
+}
