@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Google Apps Script URL
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbx9zS4Ihv2nyUYiPcbqxPyds_xm7HwUlQnTJTWgtlXg4pZO_SE1aIXnVUwNU-umW3HLzQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzK8Ylb4-ag6whIYVK7LdkKLtd1vIUwzWm61fLs6ky3dfhBWGUA05a8Lp_nKeCWn4sUQ/exec';
 const ADMIN_PASSWORD = 'marute96';
 
 app.use(express.json());
@@ -79,6 +79,39 @@ app.post('/api/partners', async (req, res) => {
     } catch (error) {
         console.error('Post error:', error);
         res.status(500).json({ error: 'Failed to add data' });
+    }
+});
+
+// 3. 削除 API (POST)
+app.post('/api/delete', async (req, res) => {
+    const { row, password, targetSheet } = req.body;
+    const target = targetSheet || 'partners';
+
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(403).json({ error: 'Invalid password' });
+    }
+
+    if (!row) {
+        return res.status(400).json({ error: 'Row index is required' });
+    }
+
+    try {
+        const payload = { 
+            action: 'delete',
+            target: target,
+            row: row
+        };
+
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        res.json(result);
+    } catch (error) {
+        console.error('Delete error:', error);
+        res.status(500).json({ error: 'Failed to delete data' });
     }
 });
 
