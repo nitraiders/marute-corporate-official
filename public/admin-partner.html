@@ -106,13 +106,34 @@
         </div>
         <form id="partnerForm">
             <div class="form-group">
-                <label>社名</label>
-                <input type="text" id="name" class="form-control" placeholder="例：株式会社〇〇" required>
+                <label>投稿先を選択</label>
+                <select id="targetSheet" class="form-control">
+                    <option value="partners">提携企業 (Partner)</option>
+                    <option value="yuzuki_news">結月新着 (News)</option>
+                    <option value="tempest_news">テンペスト新着 (News)</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label>URL</label>
-                <input type="url" id="url" class="form-control" placeholder="https://..." required>
+
+            <!-- 提携企業用フィールド -->
+            <div id="partnerFields">
+                <div class="form-group">
+                    <label>社名</label>
+                    <input type="text" id="name" class="form-control" placeholder="例：株式会社〇〇">
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="url" class="form-control" placeholder="https://...">
+                </div>
             </div>
+
+            <!-- ニュース用フィールド -->
+            <div id="newsFields" style="display: none;">
+                <div class="form-group">
+                    <label>内容</label>
+                    <textarea id="content" class="form-control" placeholder="新着情報の内容を入力" rows="4"></textarea>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label>管理パスワード</label>
                 <input type="password" id="password" class="form-control" required>
@@ -120,19 +141,38 @@
             <button type="submit" id="submitBtn" class="btn-submit">追加する</button>
             <div id="message" class="message"></div>
         </form>
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="partner.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">ページを確認する</a>
+        <div style="text-align: center; margin-top: 40px; display: flex; flex-direction: column; gap: 10px;">
+            <a href="partner.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">提携企業ページ</a>
+            <a href="shop-yuzuki.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">結月ページ</a>
+            <a href="shop-tempest.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">テンペストページ</a>
         </div>
     </div>
 
     <script>
+        const targetSelect = document.getElementById('targetSheet');
+        const partnerFields = document.getElementById('partnerFields');
+        const newsFields = document.getElementById('newsFields');
+
+        // 表示切り替え
+        targetSelect.addEventListener('change', () => {
+            if (targetSelect.value === 'partners') {
+                partnerFields.style.display = 'block';
+                newsFields.style.display = 'none';
+            } else {
+                partnerFields.style.display = 'none';
+                newsFields.style.display = 'block';
+            }
+        });
+
         document.getElementById('partnerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
             const messageDiv = document.getElementById('message');
             
+            const targetSheet = targetSelect.value;
             const name = document.getElementById('name').value;
             const url = document.getElementById('url').value;
+            const content = document.getElementById('content').value;
             const password = document.getElementById('password').value;
 
             submitBtn.disabled = true;
@@ -143,7 +183,13 @@
                 const response = await fetch('/api/partners', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, url, password })
+                    body: JSON.stringify({ 
+                        targetSheet,
+                        name: targetSheet === 'partners' ? name : undefined,
+                        url: targetSheet === 'partners' ? url : undefined,
+                        content: targetSheet !== 'partners' ? content : undefined,
+                        password 
+                    })
                 });
 
                 const result = await response.json();
@@ -151,7 +197,10 @@
                 if (response.ok) {
                     messageDiv.textContent = '✅ 追加に成功しました！';
                     messageDiv.className = 'message success';
-                    document.getElementById('partnerForm').reset();
+                    // 入力欄のみリセット（パスワードと投稿先は維持）
+                    document.getElementById('name').value = '';
+                    document.getElementById('url').value = '';
+                    document.getElementById('content').value = '';
                 } else {
                     messageDiv.textContent = '❌ エラー: ' + (result.error || '不明なエラー');
                     messageDiv.className = 'message error';
