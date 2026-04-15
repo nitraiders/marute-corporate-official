@@ -3,9 +3,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Google Apps Script URL (環境変数から取得)
-const GAS_URL = process.env.GAS_URL;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+// Google Apps Script URL
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzK8Ylb4-ag6whIYVK7LdkKLtd1vIUwzWm61fLs6ky3dfhBWGUA05a8Lp_nKeCWn4sUQ/exec';
+const ADMIN_PASSWORD = 'marute96';
 
 app.use(express.json());
 
