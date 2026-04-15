@@ -260,6 +260,18 @@
             loadItems();
         });
 
+        // HTMLエスケープ処理（XSS対策）
+        function escapeHTML(str) {
+            if (!str) return "";
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                .replace(/\n/g, "<br>");
+        }
+
         // データ読み込み
         async function loadItems() {
             const listContent = document.getElementById('listContent');
@@ -282,13 +294,16 @@
                     const content = targetSheet === 'partners' ? item.name : item.content;
                     const subText = targetSheet === 'partners' ? item.url : '';
 
+                    const escapedContent = escapeHTML(content);
+                    const escapedSubText = escapeHTML(subText);
+
                     return `
                         <div class="item-card">
                             <div class="item-main">
-                                <div class="item-text">${content}</div>
+                                <div class="item-text">${escapedContent}</div>
                                 <div class="item-meta">
                                     <span>${dateStr}</span>
-                                    ${subText ? `<span style="color:#444;">|</span> <span>${subText}</span>` : ''}
+                                    ${subText ? `<span style="color:#444;">|</span> <span>${escapedSubText}</span>` : ''}
                                 </div>
                             </div>
                             <button onclick="deleteItem(${item._row})" class="btn-icon-delete" title="削除">

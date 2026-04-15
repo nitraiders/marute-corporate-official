@@ -79,6 +79,16 @@
         </section>
 
         <script>
+            function escapeHTML(str) {
+                if (!str) return "";
+                return str
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
             async function loadPartners() {
                 const partnerList = document.getElementById('partner-list');
                 try {
@@ -91,7 +101,7 @@
                     }
 
                     partnerList.innerHTML = data.map(partner => `
-                        <a href="${partner.url}" target="_blank" class="btn-luxury" style="padding: 15px 40px;">${partner.name}</a>
+                        <a href="${partner.url}" target="_blank" class="btn-luxury" style="padding: 15px 40px;">${escapeHTML(partner.name)}</a>
                     `).join('');
                 } catch (error) {
                     console.error('Error loading partners:', error);
