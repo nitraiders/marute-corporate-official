@@ -7,6 +7,9 @@
     <meta name="google" content="notranslate">
     <link rel="icon" href="/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -100,8 +103,9 @@
                 </div>
 
                 <!-- News Section -->
-                <div id="news" class="reveal" style="margin-bottom: 60px;">
+                <div id="news" class="reveal" style="margin-bottom: 60px; position: relative;">
                     <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">News</h3>
+                    
                     <div id="news-list" style="
                         height: 180px; 
                         overflow-y: auto; 
@@ -109,6 +113,7 @@
                         border: 1px solid rgba(204, 190, 124, 0.3); 
                         padding: 20px; 
                         border-radius: 4px;
+                        -webkit-overflow-scrolling: touch;
                     ">
                         <div class="premium-loader">
                             <div class="loader-pulse-logo"></div>
@@ -156,8 +161,9 @@
                             .replace(/'/g, "&#039;");
                     }
 
+                    const newsList = document.getElementById('news-list');
+
                     async function loadNews() {
-                        const newsList = document.getElementById('news-list');
                         try {
                             const response = await fetch('/api/data?sheet=tempest_news');
                             const data = await response.json();
@@ -183,6 +189,10 @@
                             newsList.innerHTML = '<p style="color: #e74c3c; font-size: 0.8rem;">ニュースの取得に失敗しました。</p>';
                         }
                     }
+
+                    // Global refresh hook for main.js
+                    window.refreshPageContent = loadNews;
+
                     window.addEventListener('DOMContentLoaded', loadNews);
                 </script>
 
