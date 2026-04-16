@@ -190,7 +190,11 @@ header.scrolled {
 
 nav ul {
     display: flex;
-    gap: 40px;
+    gap: clamp(10px, 2.5vw, 40px);
+}
+
+.mobile-share-item {
+    display: none; /* PCでは非表示にしてレイアウトを保護 */
 }
 
 nav a {
@@ -314,7 +318,7 @@ nav a:hover {
     color: #fff;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
     .section-title .subtitle {
         font-size: 1.2rem;
         letter-spacing: 0.5em;
@@ -487,7 +491,7 @@ footer {
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
     .hero-title {
         font-size: 2.3rem; /* 圧倒的な存在感を復元 */
         line-height: 1.25;
@@ -605,6 +609,10 @@ footer {
         font-size: 1.5rem;
         color: var(--primary-gold);
         font-family: 'Playfair Display', serif;
+    }
+
+    .mobile-share-item {
+        display: block; /* ハンバーガーメニュー内では表示 */
     }
 
     .mobile-br {
@@ -726,7 +734,7 @@ footer {
     gap: 20px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
     .form-row { grid-template-columns: 1fr; }
 }
 
