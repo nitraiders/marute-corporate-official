@@ -371,7 +371,7 @@ nav a:hover {
 .shop-card p {
     font-size: 0.9rem;
     color: var(--text-muted);
-    margin-bottom: 2rem;
+    margin: 0 auto 2rem;
     max-width: 300px;
 }
 
