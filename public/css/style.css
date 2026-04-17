@@ -344,6 +344,7 @@ nav a:hover {
     height: 250px;
     object-fit: cover;
     transition: var(--transition-slow);
+    max-width: 90% !important;
 }
 
 .shop-card:hover img {
