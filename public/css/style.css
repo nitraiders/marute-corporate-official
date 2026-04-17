@@ -28,6 +28,7 @@
     justify-content: center;
     z-index: 99999;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none; /* Failsafe: Ensure interaction is never blocked */
 }
 
 .site-loading.loaded {
