@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Covers basic mobile devices including iPhone, Android, iPad
             const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
             
-            // 2. Set Device Specific Timeout
-            // PC: 2400ms (Cut early to rigorously prevent the slightest hint of a 2nd loop)
-            // Mobile (iPhone): 3400ms (Show full logo drawing animation, as mobile browsers often chew up a few ms handling the WebP)
-            const targetTimeout = isMobile ? 3400 : 2400;
+            // 2. Set Device Specific Timeout (Golden Ratio)
+            // PC: 2700ms (Show the logo's full dignity with a 0.3s buffer before fading)
+            // Mobile (iPhone): 3700ms (Catch the exact landing instant of the animation and melt into the site)
+            const targetTimeout = isMobile ? 3700 : 2700;
 
             const startTransitionTimer = () => {
                 if (transitionStarted) return;
