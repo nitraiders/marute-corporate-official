@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (splashImage) {
+            // Force WebP animation to restart from 0s by busting the browser cache
+            splashImage.src = splashImage.src.split('?')[0] + '?t=' + new Date().getTime();
+
             let transitionStarted = false;
             
             const startTransitionTimer = () => {
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 splashImage.addEventListener('load', startTransitionTimer);
                 splashImage.addEventListener('error', hideLoader);
                 // Backup timer in case the event is missed
-                setTimeout(startTransitionTimer, 1000);
+                setTimeout(startTransitionTimer, 1500);
             }
         } else {
             // Fallback if no splash image found
