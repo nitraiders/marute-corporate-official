@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using exact "2s play + 1s fade" logic to brutally prevent 4s looping
+    // Hide loading screen using strict "3s play + 1s fade" logic AFTER pure load
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashImage = document.getElementById('splashImage');
@@ -18,17 +18,33 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (splashImage) {
-            // Force WebP animation to restart from 0s by busting the browser cache
-            splashImage.src = splashImage.src.split('?')[0] + '?t=' + new Date().getTime();
-
-            // Start countdown the absolute millisecond the image SRC begins changing,
-            // DO NOT wait for network payload to finish. This guarantees a brisk load perception.
-            // 2000ms playback + 1000ms CSS fade = 3.0s total. WebP loop is at 4.0s.
-            // Result: 100% physically impossible to see the 2nd loop frame.
-            setTimeout(hideLoader, 2000);
+            // Hide image momentarily to prevent old cache flash
+            splashImage.style.opacity = '0';
             
-            // Backup in case the browser stalls
-            splashImage.addEventListener('error', hideLoader);
+            let transitionStarted = false;
+            const startTransitionTimer = () => {
+                if (transitionStarted) return;
+                transitionStarted = true;
+                
+                // Show the image now that it is fully loaded
+                splashImage.style.opacity = '1';
+                
+                // Wait exactly 3.0s after the WebP starts playing visually, then crossfade
+                setTimeout(hideLoader, 3000); 
+            };
+
+            // Force WebP animation to restart from 0s by busting the browser cache
+            const baseSrc = splashImage.src.split('?')[0];
+            
+            // Set up the load listener BEFORE assigning the new src
+            splashImage.onload = startTransitionTimer;
+            splashImage.onerror = hideLoader;
+            
+            // Trigger the fresh load
+            splashImage.src = baseSrc + '?t=' + new Date().getTime();
+
+            // Backup in case the onload event entirely fails on extremely slow/weird browsers
+            setTimeout(startTransitionTimer, 4000); 
         } else {
             // Fallback if no splash image found
             setTimeout(hideLoader, 1000);
