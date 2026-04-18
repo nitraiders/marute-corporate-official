@@ -5,12 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using 3s overlap schedule with 100% reliable WebP image
+    // Hide loading screen using exact "2s play + 1s fade" logic to brutally prevent 4s looping
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashImage = document.getElementById('splashImage');
         
         const hideLoader = () => {
+            if (loader.classList.contains('loaded')) return;
             loader.classList.add('loaded');
             // Remove from DOM after the transition (1.0s) completes with some buffer
             setTimeout(() => loader.remove(), 1500);
@@ -20,27 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Force WebP animation to restart from 0s by busting the browser cache
             splashImage.src = splashImage.src.split('?')[0] + '?t=' + new Date().getTime();
 
-            let transitionStarted = false;
+            // Start countdown the absolute millisecond the image SRC begins changing,
+            // DO NOT wait for network payload to finish. This guarantees a brisk load perception.
+            // 2000ms playback + 1000ms CSS fade = 3.0s total. WebP loop is at 4.0s.
+            // Result: 100% physically impossible to see the 2nd loop frame.
+            setTimeout(hideLoader, 2000);
             
-            const startTransitionTimer = () => {
-                if (transitionStarted) return;
-                transitionStarted = true;
-                // Wait exactly 3.0s after the WebP starts playing visually, then crossfade
-                setTimeout(hideLoader, 3000); 
-            };
-
-            // Start timer when image is fully loaded and starts playing its animation
-            if (splashImage.complete) {
-                startTransitionTimer();
-            } else {
-                splashImage.addEventListener('load', startTransitionTimer);
-                splashImage.addEventListener('error', hideLoader);
-                // Backup timer in case the event is missed
-                setTimeout(startTransitionTimer, 1500);
-            }
+            // Backup in case the browser stalls
+            splashImage.addEventListener('error', hideLoader);
         } else {
             // Fallback if no splash image found
-            setTimeout(hideLoader, 2000);
+            setTimeout(hideLoader, 1000);
         }
     }
 

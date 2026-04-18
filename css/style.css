@@ -35,10 +35,10 @@
 
 .splash-video {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 45%;
+    max-width: 400px;
+    height: auto;
     object-fit: contain;
-    background: #000;
 }
 
 /* Premium Crossfade Reveal */
