@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using 3s overlap schedule
+    // Hide loading screen using 3s overlap schedule with 100% reliable WebP image
     const loader = document.getElementById('siteLoading');
     if (loader) {
-        const splashVideo = document.getElementById('splashVideo');
+        const splashImage = document.getElementById('splashImage');
         
         const hideLoader = () => {
             loader.classList.add('loaded');
@@ -16,49 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => loader.remove(), 1500);
         };
 
-        if (splashVideo) {
-            // Force JS level muted attributes to bypass strict iOS policies
-            splashVideo.muted = true;
-            splashVideo.defaultMuted = true;
-            splashVideo.setAttribute('playsinline', '');
-
-            // Force playback immediately to break through iOS autoplay blocks
-            const forcePlay = () => {
-                const playPromise = splashVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(e => {
-                        console.warn("[Autoplay prevented. Immediate fallback triggered...]", e);
-                        // If rejected, immediately show the site. Don't leave a black screen.
-                        hideLoader();
-                    });
-                }
-            };
-            
-            // Wait until enough video is buffered to play without stalling
-            splashVideo.addEventListener('canplaythrough', forcePlay);
-            
-            // Fallback if 'canplaythrough' doesn't fire fast enough
-            setTimeout(forcePlay, 1000); 
-
-            // Trigger hide sequence exactly at 3.0s into playback
+        if (splashImage) {
             let transitionStarted = false;
             
             const startTransitionTimer = () => {
                 if (transitionStarted) return;
                 transitionStarted = true;
+                // Wait exactly 3.0s after the WebP starts playing visually, then crossfade
                 setTimeout(hideLoader, 3000); 
             };
 
-            // Start timer ONLY when the video successfully begins playing
-            splashVideo.addEventListener('playing', startTransitionTimer);
-            
-            // Fallback in case 'playing' event is blocked indefinitely
-            setTimeout(startTransitionTimer, 4500); 
-            
-            // Backup in case of errors
-            splashVideo.addEventListener('error', hideLoader);
+            // Start timer when image is fully loaded and starts playing its animation
+            if (splashImage.complete) {
+                startTransitionTimer();
+            } else {
+                splashImage.addEventListener('load', startTransitionTimer);
+                splashImage.addEventListener('error', hideLoader);
+                // Backup timer in case the event is missed
+                setTimeout(startTransitionTimer, 1000);
+            }
         } else {
-            // Fallback if no video found
+            // Fallback if no splash image found
             setTimeout(hideLoader, 2000);
         }
     }
