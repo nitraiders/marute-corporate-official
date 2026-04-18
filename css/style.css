@@ -1,0 +1,942 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap');
+
+:root {
+    --bg-color: #0a0a0a;
+    --card-bg: #111111;
+    --primary-gold: #ccbe7c;
+    --accent-gold: #e2d1a4;
+    --text-main: #f0f0f0;
+    --text-muted: #8e8e8e;
+    --accent-white: #FFFFFF;
+    --transition-slow: 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+    --transition-fast: 0.3s ease;
+    --container-width: 1200px;
+    --safe-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* Loading Screen - Premium Experience */
+.site-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000; /* 深い漆黒 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none; /* Failsafe: Ensure interaction is never blocked */
+}
+
+.site-loading.loaded {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.site-loading .loading-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.8em;
+    color: var(--primary-gold);
+    animation: logoLuxuryPulse 2.5s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(204, 190, 124, 0.3);
+    margin-right: -0.8em; /* 最後の文字の間隔分を補正 */
+}
+
+@keyframes logoLuxuryPulse {
+    0%, 100% { opacity: 0.4; filter: brightness(0.7) blur(1px); transform: scale(0.96); }
+    50% { opacity: 1; filter: brightness(1.1) blur(0); transform: scale(1); }
+}
+
+/* Image Optimization & Premium FX */
+.img-premium {
+    image-rendering: -webkit-optimize-contrast; /* iOS/WebKitでの解像感向上 */
+    transform: translateZ(0); /* GPUアクセラレーション */
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+}
+
+/* Dynamic Content Loader (Premium Skeleton Ersatz) */
+.premium-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    gap: 20px;
+}
+
+.loader-pulse-logo {
+    width: 50px;
+    height: 50px;
+    background: url('../assets/images/marute_logo_mark.jpg') no-repeat center;
+    background-size: contain;
+    border-radius: 4px;
+    filter: sepia(1) saturate(2) hue-rotate(10deg); /* 擬似的なゴールド化 */
+    animation: logoLuxuryPulse 2s ease-in-out infinite;
+}
+
+.loader-status {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--primary-gold);
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+h1, h2, h3, .serif {
+    font-family: 'Playfair Display', 'Noto Serif JP', serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Base Layout */
+.container {
+    width: 90%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+section {
+    padding: 100px 0;
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 20px 0;
+    transition: var(--transition-fast);
+}
+
+header.scrolled {
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(204, 190, 124, 0.2);
+    padding: 10px 0;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.logo-main {
+    font-size: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-gold);
+    letter-spacing: 0.2em;
+}
+
+.logo-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.logo-highlight {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--primary-gold);
+}
+
+nav ul {
+    display: flex;
+    gap: clamp(10px, 2.5vw, 40px);
+}
+
+.mobile-share-item {
+    display: none; /* PCでは非表示にしてレイアウトを保護 */
+}
+
+nav a {
+    font-size: 0.9rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+nav a:hover {
+    color: var(--primary-gold);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    height: 100dvh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0; /* セクションのデフォルトパディングをリセット */
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5; /* 少し不透明度を下げて背景を暗く */
+    filter: brightness(0.6) contrast(1.1) sepia(0.1); /* 明度をさらに落とす */
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    margin: auto;
+    padding-top: 80px; /* バランス調整 */
+}
+
+.hero-tagline {
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    color: var(--primary-gold);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.hero-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    letter-spacing: 0.15em; /* 視認性のために少し広げる */
+    text-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.hero-copy {
+    font-size: 1.2rem;
+    font-weight: 500; /* iPhone実機で見えるように太さをアップ */
+    color: var(--text-main); /* mutedからメインカラーへ変更 */
+    letter-spacing: 0.1em;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Animation Classes */
+.fade-up {
+    animation: fadeUp 1.2s forwards cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Shop Portal */
+.shop-portal {
+    background: linear-gradient(to bottom, #0a0a0a, #111111);
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.section-title h2 {
+    font-size: 1.8rem;
+    color: var(--primary-gold);
+    margin-bottom: 0.5rem;
+}
+
+.section-title .subtitle {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: #fff;
+}
+
+@media (max-width: 1024px) {
+    .section-title .subtitle {
+        font-size: 1.2rem;
+        letter-spacing: 0.5em;
+    }
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+}
+
+.shop-card {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.shop-card img,
+.shop-logo-img {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    object-fit: contain !important;
+    transition: var(--transition-slow);
+}
+
+@media (max-width: 1024px) {
+    .shop-logo-img {
+        max-width: 90% !important;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
+.shop-card:hover img {
+    transform: scale(1.05);
+}
+
+.shop-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 50px;
+    background: linear-gradient(to top, rgba(5,5,5,0.9), transparent);
+    z-index: 2;
+    transition: var(--transition-fast);
+    text-align: center;
+}
+
+.shop-card h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--accent-white);
+}
+
+.shop-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0 auto 2rem;
+    max-width: 300px;
+}
+
+.btn-luxury {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 1px solid var(--primary-gold);
+    color: var(--primary-gold);
+    background-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 1rem; /* iOSでの拡大防止（16px相当） */
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.btn-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-gold);
+    transition: var(--transition-fast);
+    z-index: -1;
+}
+
+.btn-luxury:hover {
+    color: var(--bg-color);
+}
+
+.btn-luxury:hover::before {
+    left: 0;
+}
+
+/* Corporate Section */
+.corporate {
+    background-color: var(--card-bg);
+}
+
+.corp-info {
+    display: block; /* 1列にする */
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.corp-info-text {
+    flex: 1;
+}
+
+.corp-info h2 {
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+}
+
+.corp-info p {
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+}
+
+.corp-image {
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    border: 1px solid var(--primary-gold);
+    padding: 10px;
+}
+
+.corp-info-table-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto 0;
+}
+
+/* Footer */
+footer {
+    padding: 80px 0 40px;
+    border-top: 1px solid rgba(201, 160, 99, 0.2);
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: flex-start;
+    gap: 80px;
+    margin-bottom: 50px;
+}
+
+.footer-info .logo-main {
+    margin-bottom: 1rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 60px;
+}
+
+.footer-links h4 {
+    color: var(--primary-gold);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.footer-copyright {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hero-title {
+        font-size: 2.3rem; /* 圧倒的な存在感を復元 */
+        line-height: 1.25;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .hero-tagline {
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+    }
+    .hero-copy {
+        font-size: 0.9rem;
+        padding: 0 10px;
+    }
+    .shop-card {
+        height: auto;
+        min-height: 380px;
+        display: flex;
+        flex-direction: column;
+    }
+    .shop-card img {
+        height: 160px;
+        width: 100%;
+        padding: 5px;
+    }
+    .shop-card-content {
+        position: relative;
+        background: var(--card-bg);
+        padding: 15px;
+        text-align: center;
+    }
+    .shop-card h3, .shop-card span {
+        display: none !important; /* ロゴ内に含まれているため、テキストとしての名前を完全排除 */
+    }
+    .shop-card p {
+        max-width: 100%;
+        margin-bottom: 1.2rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-luxury {
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+    }
+
+    .footer-inner {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .footer-links {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+
+    .footer-info {
+        width: 80px !important;
+        align-items: center;
+    }
+
+    .footer-info img {
+        width: 80px !important;
+        height: auto !important;
+    }
+
+    .footer-info .logo-main {
+        font-size: 0.9rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .footer-links h4 {
+        font-size: 0.65rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .footer-links ul li {
+        font-size: 0.6rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .footer-links ul li a i {
+        font-size: 0.6rem;
+    }
+
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100dvh;
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(15px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-slow);
+        z-index: 1000;
+    }
+
+    nav.active {
+        right: 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    nav a {
+        font-size: 1.5rem;
+        color: var(--primary-gold);
+        font-family: 'Playfair Display', serif;
+    }
+
+    .mobile-share-item {
+        display: block; /* ハンバーガーメニュー内では表示 */
+    }
+
+    .mobile-br {
+        display: block;
+        height: 0;
+        margin: 0;
+        content: "";
+    }
+}
+
+/* Mobile Quick Actions (for detail pages) */
+.mobile-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(5, 5, 5, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    padding: 15px var(--safe-bottom);
+    border-top: 1px solid var(--primary-gold);
+    z-index: 1000;
+    display: none; /* Shown only on shops + mobile */
+}
+
+@media (max-width: 768px) {
+    .mobile-actions {
+        display: flex;
+    }
+}
+
+/* System Styles - matched to Shop Information */
+.system-group {
+    margin-bottom: 0;
+    padding: 8px 0;
+}
+
+.system-title-gold {
+    color: var(--primary-gold);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.system-text-white {
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.system-highlight-yellow {
+    color: var(--primary-gold); /* 指示通りサイトカラーに合わせる */
+    font-weight: bold;
+}
+
+.system-separator {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 0;
+    width: 100%;
+}
+
+.text-gold {
+    color: var(--primary-gold) !important;
+}
+
+.text-white {
+    color: #fff !important;
+}
+
+/* Contact Form Styles */
+.contact-form {
+    max-width: 800px;
+    margin: 60px auto;
+    background: #111;
+    padding: 40px;
+    border: 1px solid #333;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--primary-gold);
+}
+
+.form-group label .required {
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 10px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #444;
+    color: #fff;
+    font-family: inherit;
+    font-size: 16px; /* iOSでの入力時ズーム防止 */
+    border-radius: 4px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 1024px) {
+    .form-row { grid-template-columns: 1fr; }
+}
+
+.privacy-policy {
+    height: 150px;
+    overflow-y: scroll;
+    background: #000;
+    padding: 15px;
+    border: 1px solid #333;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.agree-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.mobile-action-btn {
+    flex: 1;
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--primary-gold);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mobile-action-btn i {
+    font-size: 1.2rem;
+}
+
+/* Reveal Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 1s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Recruit Page */
+.recruit-section {
+    margin-bottom: 60px;
+}
+
+.recruit-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.recruit-table th {
+    text-align: left;
+    padding: 15px;
+    background: rgba(204, 190, 124, 0.1);
+    color: var(--primary-gold);
+    width: 25%;
+    border-bottom: 1px solid #333;
+}
+
+.recruit-table td {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+}
+
+@media (max-width: 600px) {
+    .recruit-table th, .recruit-table td {
+        display: block;
+        width: 100%;
+    }
+    .recruit-table th {
+        border-bottom: none;
+        padding-bottom: 5px;
+    }
+}
+
+.mobile-menu-btn {
+    display: none;
+    cursor: pointer;
+    width: 30px;
+    height: 20px;
+    position: relative;
+    z-index: 1001;
+}
+
+@media (max-width: 600px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+    .mobile-menu-btn span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-gold);
+        margin-bottom: 6px;
+        transition: 0.3s;
+    }
+    .mobile-menu-btn.open span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .mobile-menu-btn.open span:nth-child(2) {
+        transform: translateY(0px) rotate(-45deg);
+    }
+    .mobile-menu-btn.open span:nth-child(3) {
+        opacity: 0;
+    }
+
+    /* Share Button in Mobile Menu */
+    .mobile-share-item {
+        margin-top: 20px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(204, 190, 124, 0.2);
+        width: 100%;
+        text-align: center;
+    }
+    .share-btn-nav {
+        font-size: 1.2rem !important;
+        background: rgba(204, 190, 124, 0.1);
+        padding: 15px 40px;
+        border-radius: 50px;
+        border: 1px solid var(--primary-gold);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* Pull to Refresh Indicator */
+#pull-refresh-indicator {
+    display: none;
+    text-align: center;
+    padding: 10px;
+    color: var(--primary-gold);
+    font-size: 0.9rem;
+    background: rgba(10, 10, 10, 0.8);
+    border-radius: 20px;
+    margin-bottom: 10px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+#pull-refresh-indicator.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fix for Swipe to Refresh interference */
+#news-list, #partner-list {
+    overscroll-behavior-y: contain;
+}
+
+/* Global Pull to Refresh (PWA) */
+body.standalone {
+    overscroll-behavior-y: contain;
+}
+
+#global-pull-refresh {
+    position: fixed;
+    top: -60px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.9);
+    color: var(--primary-gold);
+    font-size: 0.9rem;
+    z-index: 100000;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+    gap: 10px;
+}
+
+#global-pull-refresh.pulling {
+    opacity: 1;
+}
+
+#global-pull-refresh.active {
+    transform: translateY(60px);
+    opacity: 1;
+}

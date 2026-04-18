@@ -1,0 +1,137 @@
+@charset "UTF-8";
+/* CSS Document */
+
+/*--------------------------------------------------------------------------------
+　▼ body
+--------------------------------------------------------------------------------*/
+body { color: #8e8e8e; background: #000; }
+a { color: #b9c5bd !important;}
+a:hover { color: #ccbe7c !important; text-decoration: none;}
+.thumbnail-box { border: #222 solid 3px; !important;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ head
+--------------------------------------------------------------------------------*/
+#address { color: #9a9690;}
+#form-link li { border-right: 1px solid #333;}
+#form-link li a { color: #9a9690 !important; }
+#form-link li a:hover { color: #ccbe7c !important;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ nav
+--------------------------------------------------------------------------------*/
+#nav-box { background: #141414;}
+#nav-box .for-pc { color: #a29465;}
+#nav-box .nav:not(.mm-listview) li a, .nav:not(.mm-listview) li span {
+    color: #fff !important;
+}
+#nav-box .nav:not(.mm-listview) li a:hover {
+    background:url("icon-right.png") no-repeat rgba(255, 255, 255, 0.10);
+    background-position: 90% 50% ;
+    color: #fff !important;
+}
+#nav-box .nav:not(.mm-listview) li span:hover {
+    background:url("icon-down.png") no-repeat rgba(255, 255, 255, 0.11);
+    background-position: 90% 50% ;
+    color: #fff !important;
+    cursor: pointer;
+}
+#nav-box .nav:not(.mm-listview) li ul li:before { color: #666;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ contents
+--------------------------------------------------------------------------------*/
+#contents, #contents.full .body { background: #000;}
+#contents-header { background: rgba(0, 0, 0, 0.80);}
+#contents .pagetitle  { color: #7b7771; }
+
+
+/*--------------------------------------------------------------------------------
+　▼ メイン
+--------------------------------------------------------------------------------*/
+.top-box .header { color:#7b7771; border-bottom: 1px solid #333;}
+.top-box .header .more { background: #928557; color: #fff !important; border: none;}
+.top-box .header .more:hover { background: #ccbe7c; }
+
+.type-blog li { border-bottom: 1px dotted #333;}
+
+.type-item li:hover {color: #ccbe7c;}
+
+.free-box label, .header label, .shop_box .datas, .shop_box .datas div .title
+ { color: #ccc !important;}
+.shop_box .comment { }
+
+.post, .free-box, .item{ border-top: 1px dotted #333;}
+.post:first-child { border-top: none;}
+.free-box:first-child { border-top: none;}
+.item:first-child { border-top: none;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ side
+--------------------------------------------------------------------------------*/
+#side h3 { color: #7b7771;}
+#side .side_box { background: #141414; }
+#side .side_box li { border-bottom: 1px dotted #333;}
+
+
+/*--------------------------------------------------------------------------------
+　▼ footer
+--------------------------------------------------------------------------------*/
+#footer .inner { border-top: 1px solid #47443E !important; }
+#footer small { color: #555; }
+
+
+
+
+
+
+/*================================================================
+    Mobile
+================================================================*/
+
+@media screen and (max-width: 1023px) {
+
+    #mobile_header { background: #000; }
+    #mobile_header h1 { color: #a29465; }
+    #mobile_header #bt_mobile_nav { color: #fff;}
+    #mobile_header #bt_mobile_nav:hover { color: #9e9a94;}
+
+    /*--------------------------------------------------------------------------------
+    　▼ nav 上からスライド　
+    --------------------------------------------------------------------------------*/
+    #nav-box .nav:not(.mm-listview) li a:hover,
+    #nav-box .nav:not(.mm-listview) li span:hover { background-image: none;}
+    #nav-box .nav:not(.mm-listview) li ul li:before { display: none;}
+    .nav:not(.mm-listview){ background: #7b7771; }
+    .nav:not(.mm-listview) li { border-top:1px solid #726e68 !important; }
+    .nav:not(.mm-listview) li a,.nav li span { color: #fff !important; }
+    .nav:not(.mm-listview) li a:hover, .nav li a:hover { color: #fff !important; background: rgba(255, 255, 255, 0.20); }
+    .nav:not(.mm-listview) li:first-child { border: none; }
+    .nav:not(.mm-listview) li:last-child { border-right: none !important; }
+    .nav:not(.mm-listview) li ul { background: rgba(255, 255, 255, 0.1) !important; }
+    .nav:not(.mm-listview) li ul li {  background: none !important; border: none !important; }
+    .nav:not(.mm-listview) li ul li:nth-child(even) { border-left: #333 solid 0px !important; }
+
+    
+    /*--------------------------------------------------------------------------------
+    　▼ nav 左からスライド　
+    --------------------------------------------------------------------------------*/
+    .nav { background: none;}
+    .mm-listview li span { color: #fff;}
+    .mm-listview li a:hover { background: none; color: #fff;}
+    .mm-listview li:hover,
+    .mm-listview li:hover span,
+    .mm-listview li a:active { background: #000 !important; color: #fff !important; z-index: 1; }
+
+}
+
+
+
+
+
+
+.loading-overlay, #loading, .now-loading, #overlay { display: none !important; }

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ゆづき by しるくはっと | まるて株式会社</title>
+    <meta name="google" content="notranslate">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .shop-hero {
+            height: 70vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/images/yuzuki_interior.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            image-rendering: -webkit-optimize-contrast;
+            transform: translateZ(0);
+        }
+        .shop-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 60px;
+        }
+        @media (max-width: 768px) {
+            .shop-detail-grid { grid-template-columns: 1fr; }
+        }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th { text-align: left; padding: 15px 0; border-bottom: 1px solid #333; color: var(--primary-gold); width: 30%; }
+        .info-table td { padding: 15px 0; border-bottom: 1px solid #333; }
+
+        .system-list { display: flex; flex-direction: column; gap: 20px; }
+        .system-item { border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .system-item .label { display: block; font-size: 0.8rem; color: var(--primary-gold); text-transform: uppercase; margin-bottom: 5px; }
+        .system-item .price { display: block; font-size: 1.3rem; font-weight: 700; }
+        .system-item small { color: var(--text-muted); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="site-loading" id="siteLoading">
+        <div class="loading-logo">MARUTE</div>
+        <!-- スピナーを廃止し、ロゴのパルス演出（CSS）のみで高級感を表現 -->
+    </div>
+    <header id="header" class="scrolled">
+        <div class="container header-inner">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+                    <img src="assets/images/marute_logo_mark.jpg" alt="Marute Group" class="img-premium" style="height: 1.8rem; width: auto; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="logo-main">MARUTE</span>
+                        <span class="logo-sub">Marute Co., Ltd.</span>
+                    </div>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#hero">Home</a></li>
+                    <li><a href="index.html#shop-portal">Shops</a></li>
+                    <li><a href="index.html#corporate">Corporate</a></li>
+                    <li><a href="recruit.html">Recruit</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#info">Access</a></li>
+                    <li><a href="partner.html">Partner</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="shop-hero">
+            <div class="container">
+                <h1 style="font-size: 3.2rem; line-height: 1.2;">
+                    <span class="text-gold" style="font-size: 1rem; letter-spacing: 0.5em; display: block; margin-bottom: 15px;">Karaoke Bar</span>
+                    <span class="text-white" style="font-family: 'Playfair Display', 'Noto Serif JP', serif;">ゆづきby<br>しるくはっと</span>
+                </h1>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="reveal">
+                    <h2 class="serif" style="font-size: 2.5rem; margin-bottom: 30px;">歌声と美酒が<br>交差する<br>至福の隠れ家</h2>
+                    <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 700px;">
+                        「ゆづき by しるくはっと」は、草加の喧騒を離れた場所にある、大人のためのカラオケバーです。
+                        選び抜かれたウィスキーやカクテルと共に、最新の音響設備で心ゆくまで歌と会話をお楽しみいただけます。
+                        お一人様でも、大切なご友人との語らいでも。上質な夜をお約束します。
+                    </p>
+                </div>
+
+                <!-- News Section -->
+                <div id="news" class="reveal" style="margin-bottom: 60px; position: relative;">
+                    <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">News</h3>
+                    
+                    <div id="news-list" style="
+                        height: 180px; 
+                        overflow-y: auto; 
+                        background: rgba(204, 190, 124, 0.05); 
+                        border: 1px solid rgba(204, 190, 124, 0.3); 
+                        padding: 20px; 
+                        border-radius: 4px;
+                        -webkit-overflow-scrolling: touch;
+                    ">
+                        <div class="premium-loader">
+                            <div class="loader-pulse-logo"></div>
+                            <div class="loader-status">Fetching Latest News</div>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    /* Custom Scrollbar for News */
+                    #news-list::-webkit-scrollbar { width: 6px; }
+                    #news-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+                    #news-list::-webkit-scrollbar-thumb { background: var(--primary-gold); border-radius: 10px; }
+                    
+                    .news-item {
+                        margin-bottom: 15px;
+                        padding-bottom: 12px;
+                        border-bottom: 1px solid rgba(204, 190, 124, 0.1);
+                    }
+                    .news-item:last-child { border-bottom: none; margin-bottom: 0; }
+                    .news-date {
+                        display: block;
+                        font-size: 0.75rem;
+                        color: var(--primary-gold);
+                        margin-bottom: 4px;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .news-content {
+                        display: block;
+                        font-size: 0.95rem;
+                        color: #fff;
+                        line-height: 1.6;
+                        white-space: pre-wrap;
+                    }
+                </style>
+
+                <script>
+                    function escapeHTML(str) {
+                        if (!str) return "";
+                        return str
+                            .replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/"/g, "&quot;")
+                            .replace(/'/g, "&#039;");
+                    }
+
+                    const newsList = document.getElementById('news-list');
+
+                    async function loadNews() {
+                        try {
+                            const response = await fetch('/api/data?sheet=yuzuki_news');
+                            const data = await response.json();
+                            
+                            if (data.length === 0) {
+                                newsList.innerHTML = '<p style="color: #666; font-size: 0.9rem;">現在、新しいお知らせはありません。</p>';
+                                return;
+                            }
+
+                            newsList.innerHTML = data.map(news => {
+                                const date = new Date(news.date).toLocaleDateString('ja-JP', {
+                                    year: 'numeric', month: '2-digit', day: '2-digit'
+                                });
+                                return `
+                                    <div class="news-item">
+                                        <span class="news-date">${date}</span>
+                                        <span class="news-content">${escapeHTML(news.content)}</span>
+                                    </div>
+                                `;
+                            }).join('');
+                        } catch (error) {
+                            console.error('Error loading news:', error);
+                            newsList.innerHTML = '<p style="color: #e74c3c; font-size: 0.8rem;">ニュースの取得に失敗しました。</p>';
+                        }
+                    }
+
+                    // Global refresh hook for main.js
+                    window.refreshPageContent = loadNews;
+
+                    window.addEventListener('DOMContentLoaded', loadNews);
+                </script>
+
+                <div class="shop-detail-grid reveal">
+                    <div id="info">
+                        <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">Shop Information</h3>
+                        <table class="info-table">
+                            <tr><th>Name</th><td>ゆづき by しるくはっと</td></tr>
+                            <tr><th>Category</th><td>カラオケバー / バー</td></tr>
+                            <tr><th>Location</th><td>埼玉県草加市金明町246-16-2F</td></tr>
+                            <tr><th>Hours</th><td>21:00 - Last</td></tr>
+                            <tr><th>Holiday</th><td>日曜日</td></tr>
+                            <tr><th>Access</th><td>新田駅東口徒歩1分</td></tr>
+                        </table>
+                        <div style="margin-top: 20px;">
+                            <a href="https://www.google.com/maps/search/?api=1&query=埼玉県草加市金明町246-16-2F" target="_blank" class="btn-luxury" style="display: block; text-align: center;">Google Maps</a>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="assets/images/yuzuki_interior.jpg" alt="Interior" class="img-premium" style="width: 100%; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div id="system" class="reveal" style="margin-top: 80px;">
+                    <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 30px;">System</h2>
+                    <div class="system-list" style="max-width: 600px;">
+                        <div class="system-group">
+                            <div class="system-title-gold">飲み放題(60分)</div>
+                            <div class="system-text-white">
+                                男性 - ¥2,500<br>
+                                女性 - ¥2,000<br>
+                                <span class="system-highlight-yellow">Beer + ¥1,000</span>
+                            </div>
+                        </div>
+                        <hr class="system-separator">
+                        
+                        <div class="system-group">
+                            <div class="system-title-gold">ボトルキープ(60分)</div>
+                            <div class="system-text-white">
+                                男性 - ¥2,000<br>
+                                女性 - ¥1,000<br>
+                                ピッチャー - ¥600〜
+                            </div>
+                        </div>
+                        <hr class="system-separator">
+                        
+                        <div class="system-group">
+                            <div class="system-text-white">
+                                単品ドリンク - ¥600〜<br>
+                                瓶ビール - ¥1,000〜<br>
+                                キャストドリンク - ¥1,000〜
+                            </div>
+                        </div>
+                        <hr class="system-separator">
+                        
+                        <div class="system-group">
+                            <div class="system-title-gold">Set割あり!</div>
+                            <div class="system-text-white">
+                                テキーラ - ¥2,000<br>
+                                コカレロ - ¥2,000<br>
+                                クライナー - ¥1,500<br>
+                                イエガー - ¥1,500<br>
+                                テキーラボール - ¥1,500<br>
+                                ガリウォッカ - ¥1,500<br>
+                                オリジナルシャンパン-¥33,000-
+                            </div>
+                        </div>
+                        <hr class="system-separator">
+                        <div class="system-text-white" style="font-size: 1.2rem;">Tax 20%</div>
+                    </div>
+                </div>
+
+                <div id="sns" class="reveal" style="margin-top: 80px; text-align: center;">
+                    <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 30px;">Official SNS</h2>
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                        <a href="https://www.instagram.com/yuzuki_by_silkhat?igsh=MTU0Y3R6MWpvaDF4OQ%3D%3D&utm_source=qr" target="_blank" class="btn-luxury" style="padding: 20px 50px;">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="https://www.tiktok.com/@yuzukibysikhat" target="_blank" class="btn-luxury" style="padding: 20px 50px;">
+                            <i class="fab fa-tiktok"></i> TikTok
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="mobile-actions">
+        <a href="tel:0000000000" class="mobile-action-btn">
+            <i class="fas fa-phone"></i>
+            <span>Call</span>
+        </a>
+        <a href="#info" class="mobile-action-btn">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Access</span>
+        </a>
+        <a href="#system" class="mobile-action-btn">
+            <i class="fas fa-coins"></i>
+            <span>System</span>
+        </a>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-info" style="display: flex; flex-direction: column; align-items: center; width: 120px;">
+                    <span class="logo-main" style="font-size: 1.2rem; margin-bottom: 15px;">MARUTE</span>
+                    <a href="https://ofuse.me/363a4964/letter" target="_blank" style="display: block; width: 100%; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                        <img src="assets/images/marute_logo_mark.jpg" alt="OFUSE Support" class="img-premium" style="width: 100%; border-radius: 4px;">
+                    </a>
+                    <div style="margin-top: 15px; opacity: 0.7;">
+                        <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fmarute-96.com&label=VISITORS&labelColor=%23222222&countColor=%23d4af37&style=flat" alt="Access Counter" style="width: auto; height: 20px;">
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div>
+                        <h4>Contents</h4>
+                        <ul>
+                            <li><a href="index.html#hero">Home</a></li>
+                            <li><a href="index.html#shop-portal">Shops</a></li>
+                            <li><a href="index.html#corporate">Corporate</a></li>
+                            <li><a href="recruit.html">Recruit</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="partner.html">Partner</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="https://www.instagram.com/yuzuki_by_silkhat?igsh=MTU0Y3R6MWpvaDF4OQ%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> しるくはっと Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@yuzukibysikhat" target="_blank"><i class="fab fa-tiktok"></i> しるくはっと TikTok</a></li>
+                            <li><a href="https://www.instagram.com/soka_tempest10?igsh=MWNqeDczNjdydnA0aA%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> Tempest Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@...tempest96" target="_blank"><i class="fab fa-tiktok"></i> Tempest TikTok</a></li>
+                            <li><a href="https://ofuse.me/363a4964/letter" target="_blank" style="color: var(--primary-gold);"><i class="fas fa-gift"></i> OFUSE</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 Marute Co., Ltd.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Night Lounge Tempest | まるて株式会社</title>
+    <meta name="google" content="notranslate">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .shop-hero {
+            height: 70vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/tempest_bar.jpg'); /* カウンター実写素材 */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            image-rendering: -webkit-optimize-contrast;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform, opacity;
+        }
+        .shop-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 60px;
+        }
+        @media (max-width: 768px) {
+            .shop-detail-grid { grid-template-columns: 1fr; }
+        }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th { text-align: left; padding: 15px 0; border-bottom: 1px solid #333; color: var(--primary-gold); width: 30%; }
+        .info-table td { padding: 15px 0; border-bottom: 1px solid #333; }
+
+        .system-list { display: flex; flex-direction: column; gap: 20px; }
+        .system-item { border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .system-item .label { display: block; font-size: 0.8rem; color: var(--primary-gold); text-transform: uppercase; margin-bottom: 5px; }
+        .system-item .price { display: block; font-size: 1.3rem; font-weight: 700; }
+        .system-item small { color: var(--text-muted); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="site-loading" id="siteLoading">
+        <div class="loading-logo">MARUTE</div>
+        <!-- スピナーを廃止し、ロゴのパルス演出（CSS）のみで高級感を表現 -->
+    </div>
+    <header id="header" class="scrolled">
+        <div class="container header-inner">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+                    <img src="assets/images/marute_logo_mark.jpg" alt="Marute Group" class="img-premium" style="height: 1.8rem; width: auto; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="logo-main">MARUTE</span>
+                        <span class="logo-sub">Marute Co., Ltd.</span>
+                    </div>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#hero">Home</a></li>
+                    <li><a href="index.html#shop-portal">Shops</a></li>
+                    <li><a href="index.html#corporate">Corporate</a></li>
+                    <li><a href="recruit.html">Recruit</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#info">Access</a></li>
+                    <li><a href="partner.html">Partner</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="shop-hero">
+            <div class="container">
+                <h1 style="font-size: 3.2rem; line-height: 1.2;">
+                    <span class="text-gold" style="font-size: 1rem; letter-spacing: 0.5em; display: block; margin-bottom: 15px;">Night Lounge</span>
+                    <span class="text-white">Tempest</span>
+                </h1>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="reveal">
+                    <h2 class="serif" style="font-size: 2.5rem; margin-bottom: 30px;">静寂と情熱が<br>融け合う<br>圧倒的な<br>ラグジュアリー</h2>
+                    <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 700px;">
+                        「Tempest（テンペスト）」は、草加で最も重厚な空間を目指したナイトラウンジです。
+                        広々としたソファー席、計算し尽くされたライティング、そして厳選されたキャスト。
+                        日常を忘れ、至福のひとときを過ごすためのすべてがここにあります。
+                        接待や大切な会食、あるいは自分へのご褒美に。特別な夜をご用意してお待ちしております。
+                    </p>
+                </div>
+
+                <!-- News Section -->
+                <div id="news" class="reveal" style="margin-bottom: 60px; position: relative;">
+                    <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">News</h3>
+                    
+                    <div id="news-list" style="
+                        height: 180px; 
+                        overflow-y: auto; 
+                        background: rgba(204, 190, 124, 0.05); 
+                        border: 1px solid rgba(204, 190, 124, 0.3); 
+                        padding: 20px; 
+                        border-radius: 4px;
+                        -webkit-overflow-scrolling: touch;
+                    ">
+                        <div class="premium-loader">
+                            <div class="loader-pulse-logo"></div>
+                            <div class="loader-status">Fetching Latest News</div>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    /* Custom Scrollbar for News */
+                    #news-list::-webkit-scrollbar { width: 6px; }
+                    #news-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+                    #news-list::-webkit-scrollbar-thumb { background: var(--primary-gold); border-radius: 10px; }
+                    
+                    .news-item {
+                        margin-bottom: 15px;
+                        padding-bottom: 12px;
+                        border-bottom: 1px solid rgba(204, 190, 124, 0.1);
+                    }
+                    .news-item:last-child { border-bottom: none; margin-bottom: 0; }
+                    .news-date {
+                        display: block;
+                        font-size: 0.75rem;
+                        color: var(--primary-gold);
+                        margin-bottom: 4px;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .news-content {
+                        display: block;
+                        font-size: 0.95rem;
+                        color: #fff;
+                        line-height: 1.6;
+                        white-space: pre-wrap;
+                    }
+                </style>
+
+                <script>
+                    function escapeHTML(str) {
+                        if (!str) return "";
+                        return str
+                            .replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/"/g, "&quot;")
+                            .replace(/'/g, "&#039;");
+                    }
+
+                    const newsList = document.getElementById('news-list');
+
+                    async function loadNews() {
+                        try {
+                            const response = await fetch('/api/data?sheet=tempest_news');
+                            const data = await response.json();
+                            
+                            if (data.length === 0) {
+                                newsList.innerHTML = '<p style="color: #666; font-size: 0.9rem;">現在、新しいお知らせはありません。</p>';
+                                return;
+                            }
+
+                            newsList.innerHTML = data.map(news => {
+                                const date = new Date(news.date).toLocaleDateString('ja-JP', {
+                                    year: 'numeric', month: '2-digit', day: '2-digit'
+                                });
+                                return `
+                                    <div class="news-item">
+                                        <span class="news-date">${date}</span>
+                                        <span class="news-content">${escapeHTML(news.content)}</span>
+                                    </div>
+                                `;
+                            }).join('');
+                        } catch (error) {
+                            console.error('Error loading news:', error);
+                            newsList.innerHTML = '<p style="color: #e74c3c; font-size: 0.8rem;">ニュースの取得に失敗しました。</p>';
+                        }
+                    }
+
+                    // Global refresh hook for main.js
+                    window.refreshPageContent = loadNews;
+
+                    window.addEventListener('DOMContentLoaded', loadNews);
+                </script>
+
+                <div class="shop-detail-grid reveal">
+                    <div id="info">
+                        <h3 class="serif" style="color: var(--primary-gold); margin-bottom: 20px;">Shop Information</h3>
+                        <table class="info-table">
+                            <tr><th>Name</th><td>Night Lounge Tempest</td></tr>
+                            <tr><th>Category</th><td>ナイトラウンジ</td></tr>
+                            <tr><th>TEL</th><td></td></tr>
+                            <tr><th>Location</th><td>埼玉県草加市氷川町2116-32-5F</td></tr>
+                            <tr><th>Hours</th><td>21:00 - Last</td></tr>
+                            <tr><th>Holiday</th><td>不定休</td></tr>
+                            <tr><th>Access</th><td>草加駅西口徒歩5分</td></tr>
+                        </table>
+                        <div style="margin-top: 20px;">
+                            <a href="https://www.google.com/maps/search/?api=1&query=埼玉県草加市氷川町2116-32-5F" target="_blank" class="btn-luxury" style="display: block; text-align: center;">Google Maps</a>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="assets/images/tempest_interior.jpg" alt="Tempest Sofa Area" class="img-premium" style="width: 100%; height: 380px; object-fit: cover; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div id="system" class="reveal" style="margin-top: 80px;">
+                    <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 30px;">System</h2>
+                    <div class="system-list" style="max-width: 600px;">
+                        <div class="system-group">
+                            <div class="system-title-gold">1set(60min)</div>
+                            <div class="system-text-white">焼酎・ウイスキー飲み放題 - ¥5,000</div>
+                        </div>
+                        <hr class="system-separator">
+                        <div class="system-group">
+                            <div class="system-title-gold">延長</div>
+                            <div class="system-text-white">
+                                30min - ¥2,500<br>
+                                60min - ¥5,000
+                            </div>
+                        </div>
+                        <hr class="system-separator">
+                        <div class="system-group">
+                            <div class="system-text-white">
+                                リクエスト - ¥2,000〜<br>
+                                追加 - ¥2,000〜
+                            </div>
+                        </div>
+                        <hr class="system-separator">
+                        <div class="system-group">
+                            <div class="system-text-white">カラオケ歌い放題 - ¥1,000</div>
+                        </div>
+                        <hr class="system-separator">
+                        <div class="system-group">
+                            <div class="system-title-gold">キャストドリンク</div>
+                            <div class="system-text-white">¥1,000</div>
+                        </div>
+                        <hr class="system-separator">
+                        <div class="system-text-white" style="font-size: 1.2rem;">TAX 20%</div>
+                    </div>
+                </div>
+
+                <div id="sns" class="reveal" style="margin-top: 80px; text-align: center;">
+                    <h2 class="serif" style="color: var(--primary-gold); margin-bottom: 30px;">Official SNS</h2>
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                        <a href="https://www.instagram.com/soka_tempest10?igsh=MWNqeDczNjdydnA0aA%3D%3D&utm_source=qr" target="_blank" class="btn-luxury" style="padding: 20px 50px;">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="https://www.tiktok.com/@...tempest96" target="_blank" class="btn-luxury" style="padding: 20px 50px;">
+                            <i class="fab fa-tiktok"></i> TikTok
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="mobile-actions">
+        <a href="tel:000-000-0000" class="mobile-action-btn">
+            <i class="fas fa-phone"></i>
+            <span>Call</span>
+        </a>
+        <a href="#info" class="mobile-action-btn">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Access</span>
+        </a>
+        <a href="#system" class="mobile-action-btn">
+            <i class="fas fa-coins"></i>
+            <span>System</span>
+        </a>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-info" style="display: flex; flex-direction: column; align-items: center; width: 120px;">
+                    <span class="logo-main" style="font-size: 1.2rem; margin-bottom: 15px;">MARUTE</span>
+                    <a href="https://ofuse.me/363a4964/letter" target="_blank" style="display: block; width: 100%; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                        <img src="assets/images/marute_logo_mark.jpg" alt="OFUSE Support" class="img-premium" style="width: 100%; border-radius: 4px;">
+                    </a>
+                    <div style="margin-top: 15px; opacity: 0.7;">
+                        <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fmarute-96.com&label=VISITORS&labelColor=%23222222&countColor=%23d4af37&style=flat" alt="Access Counter" style="width: auto; height: 20px;">
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div>
+                        <h4>Contents</h4>
+                        <ul>
+                            <li><a href="index.html#hero">Home</a></li>
+                            <li><a href="index.html#shop-portal">Shops</a></li>
+                            <li><a href="index.html#corporate">Corporate</a></li>
+                            <li><a href="recruit.html">Recruit</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="partner.html">Partner</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="https://www.instagram.com/yuzuki_by_silkhat?igsh=MTU0Y3R6MWpvaDF4OQ%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> しるくはっと Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@yuzukibysikhat" target="_blank"><i class="fab fa-tiktok"></i> しるくはっと TikTok</a></li>
+                            <li><a href="https://www.instagram.com/soka_tempest10?igsh=MWNqeDczNjdydnA0aA%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> Tempest Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@...tempest96" target="_blank"><i class="fab fa-tiktok"></i> Tempest TikTok</a></li>
+                            <li><a href="https://ofuse.me/363a4964/letter" target="_blank" style="color: var(--primary-gold);"><i class="fas fa-gift"></i> OFUSE</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 Marute Co., Ltd.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

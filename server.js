@@ -14,7 +14,7 @@ app.use((req, res, next) => {
     res.setHeader('Content-Language', 'ja');
     next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 // --- 共通データ API (提携企業 & ニュース) ---
 

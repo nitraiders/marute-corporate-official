@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Partner Manager | まるて株式会社</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+            padding: 20px;
+        }
+        .admin-card {
+            background: #111;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border: 1px solid rgba(204, 190, 124, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .admin-header h1 {
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+        }
+        .admin-header p {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            color: var(--primary-gold);
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+        }
+        .form-control {
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 15px;
+            font-size: 16px; /* iOS zoom prevention */
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-gold);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.3s;
+        }
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+        .message.success { color: #2ecc71; }
+        .message.error { color: #e74c3c; }
+
+        /* Item List Styles */
+        .item-list-container {
+            margin-top: 50px;
+            border-top: 1px solid rgba(204, 190, 124, 0.2);
+            padding-top: 30px;
+        }
+        .item-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .item-list-header h2 {
+            font-size: 1rem;
+            color: var(--primary-gold);
+            letter-spacing: 0.1em;
+        }
+        .item-card {
+            background: #000;
+            border: 1px solid #222;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+        .item-card:hover {
+            border-color: rgba(204, 190, 124, 0.5);
+            background: #050505;
+        }
+        .item-main {
+            flex: 1;
+            padding-right: 15px;
+        }
+        .item-text {
+            font-size: 0.9rem;
+            color: #ddd;
+            margin-bottom: 5px;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+        .item-meta {
+            font-size: 0.7rem;
+            color: #666;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 10px;
+            word-break: break-all;
+        }
+        .btn-icon-delete {
+            background: transparent;
+            border: 1px solid #444;
+            color: #666;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-icon-delete:hover {
+            color: #e74c3c;
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        #listContent {
+            min-height: 100px;
+        }
+        .loading-text {
+            text-align: center;
+            color: #555;
+            padding: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* App-like feel for mobile home screen */
+        @media (max-width: 600px) {
+            .admin-card {
+                border: none;
+                box-shadow: none;
+                padding: 20px 10px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-card">
+        <div class="admin-header">
+            <h1 class="serif">ADMIN</h1>
+            <p>提携企業の新規追加</p>
+        </div>
+        <form id="partnerForm">
+            <div class="form-group">
+                <label>投稿先を選択</label>
+                <select id="targetSheet" class="form-control">
+                    <option value="partners">提携企業 (Partner)</option>
+                    <option value="yuzuki_news">しるくはっと新着 (News)</option>
+                    <option value="tempest_news">Tempest新着 (News)</option>
+                </select>
+            </div>
+
+            <!-- 提携企業用フィールド -->
+            <div id="partnerFields">
+                <div class="form-group">
+                    <label>社名</label>
+                    <input type="text" id="name" class="form-control" placeholder="例：株式会社〇〇">
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="url" class="form-control" placeholder="https://...">
+                </div>
+            </div>
+
+            <!-- ニュース用フィールド -->
+            <div id="newsFields" style="display: none;">
+                <div class="form-group">
+                    <label>内容</label>
+                    <textarea id="content" class="form-control" placeholder="新着情報の内容を入力" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>管理パスワード</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
+            <button type="submit" id="submitBtn" class="btn-submit">追加する</button>
+            <div id="message" class="message"></div>
+        </form>
+
+        <!-- 現在の投稿一覧 -->
+        <div class="item-list-container">
+            <div class="item-list-header">
+                <h2 id="listTitle">現在の投稿一覧</h2>
+                <button onclick="loadItems()" style="background:none; border:none; color:var(--primary-gold); cursor:pointer; font-size:0.8rem;">
+                    <i class="fas fa-sync-alt"></i> 更新
+                </button>
+            </div>
+            <div id="listContent">
+                <div class="loading-text">読み込み中...</div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 40px; display: flex; flex-direction: column; gap: 10px;">
+            <a href="partner.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">提携企業ページ</a>
+            <a href="shop-yuzuki.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">しるくはっとページ</a>
+            <a href="shop-tempest.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">Tempestページ</a>
+        </div>
+    </div>
+
+    <script>
+        const targetSelect = document.getElementById('targetSheet');
+        const partnerFields = document.getElementById('partnerFields');
+        const newsFields = document.getElementById('newsFields');
+
+        // 表示切り替え
+        targetSelect.addEventListener('change', () => {
+            if (targetSelect.value === 'partners') {
+                partnerFields.style.display = 'block';
+                newsFields.style.display = 'none';
+                document.getElementById('listTitle').textContent = '現在の提携企業';
+            } else if (targetSelect.value === 'yuzuki_news') {
+                partnerFields.style.display = 'none';
+                newsFields.style.display = 'block';
+                document.getElementById('listTitle').textContent = '現在のしるくはっと新着';
+            } else {
+                partnerFields.style.display = 'none';
+                newsFields.style.display = 'block';
+                document.getElementById('listTitle').textContent = '現在のTempest新着';
+            }
+            loadItems();
+        });
+
+        // HTMLエスケープ処理（XSS対策）
+        function escapeHTML(str) {
+            if (!str) return "";
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                .replace(/\n/g, "<br>");
+        }
+
+        // データ読み込み
+        async function loadItems() {
+            const listContent = document.getElementById('listContent');
+            const targetSheet = targetSelect.value;
+            listContent.innerHTML = '<div class="loading-text">読み込み中...</div>';
+
+            try {
+                const response = await fetch(`/api/data?sheet=${targetSheet}`);
+                const data = await response.json();
+
+                if (!data || data.length === 0) {
+                    listContent.innerHTML = '<div class="loading-text">投稿はありません</div>';
+                    return;
+                }
+
+                listContent.innerHTML = data.map(item => {
+                    const dateStr = new Date(item.date).toLocaleDateString('ja-JP', {
+                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                    });
+                    const content = targetSheet === 'partners' ? item.name : item.content;
+                    const subText = targetSheet === 'partners' ? item.url : '';
+
+                    const escapedContent = escapeHTML(content);
+                    const escapedSubText = escapeHTML(subText);
+
+                    return `
+                        <div class="item-card">
+                            <div class="item-main">
+                                <div class="item-text">${escapedContent}</div>
+                                <div class="item-meta">
+                                    <span>${dateStr}</span>
+                                    ${subText ? `<span style="color:#444;">|</span> <span>${escapedSubText}</span>` : ''}
+                                </div>
+                            </div>
+                            <button onclick="deleteItem(${item._row})" class="btn-icon-delete" title="削除">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                listContent.innerHTML = '<div class="loading-text" style="color:#e74c3c;">読み込みに失敗しました</div>';
+            }
+        }
+
+        // 削除処理
+        async function deleteItem(row) {
+            const password = document.getElementById('password').value;
+            if (!password) {
+                alert('削除するには管理パスワードを入力してください。');
+                document.getElementById('password').focus();
+                return;
+            }
+
+            if (!confirm('本当に削除しますか？この操作は取り消せません。')) {
+                return;
+            }
+
+            const targetSheet = targetSelect.value;
+            
+            try {
+                const response = await fetch('/api/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ targetSheet, row, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('✅ 削除に成功しました');
+                    loadItems();
+                } else {
+                    alert('❌ エラー: ' + (result.error || '削除に失敗しました'));
+                }
+            } catch (error) {
+                alert('❌ 通信エラーが発生しました');
+            }
+        }
+
+        // 初期読み込み
+        loadItems();
+
+        document.getElementById('partnerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            
+            const targetSheet = targetSelect.value;
+            const name = document.getElementById('name').value;
+            const url = document.getElementById('url').value;
+            const content = document.getElementById('content').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            messageDiv.textContent = '送信中...';
+            messageDiv.className = 'message';
+
+            try {
+                const response = await fetch('/api/partners', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        targetSheet,
+                        name: targetSheet === 'partners' ? name : undefined,
+                        url: targetSheet === 'partners' ? url : undefined,
+                        content: targetSheet !== 'partners' ? content : undefined,
+                        password 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    messageDiv.textContent = '✅ 追加に成功しました！';
+                    messageDiv.className = 'message success';
+                    // 入力欄のみリセット（パスワードと投稿先は維持）
+                    document.getElementById('name').value = '';
+                    document.getElementById('url').value = '';
+                    document.getElementById('content').value = '';
+                    // リストを更新
+                    loadItems();
+                } else {
+                    messageDiv.textContent = '❌ エラー: ' + (result.error || '不明なエラー');
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = '❌ 通信エラーが発生しました';
+                messageDiv.className = 'message error';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
