@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loading screen
     const loader = document.getElementById('siteLoading');
     if (loader) {
-        // Extended time for SVG Line Art animation (3s drawing + buffer)
+        // Optimized timing for a snappy, premium feel (2.5s total)
         setTimeout(() => {
             loader.classList.add('loaded');
-            setTimeout(() => loader.remove(), 1500);
-        }, 4000);
+            setTimeout(() => loader.remove(), 1200);
+        }, 2500);
     }
 
     const header = document.getElementById('header');
