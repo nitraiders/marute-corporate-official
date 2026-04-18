@@ -17,16 +17,28 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (splashVideo) {
+            // Force JS level muted attributes to bypass strict iOS policies
+            splashVideo.muted = true;
+            splashVideo.defaultMuted = true;
+            splashVideo.setAttribute('playsinline', '');
+
             // Force playback immediately to break through iOS autoplay blocks
             const forcePlay = () => {
-                splashVideo.play().catch(e => {
-                    console.log("[Autoplay prevented. Silent fallback...]", e);
-                });
+                const playPromise = splashVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        console.warn("[Autoplay prevented. Immediate fallback triggered...]", e);
+                        // If rejected, immediately show the site. Don't leave a black screen.
+                        hideLoader();
+                    });
+                }
             };
             
-            forcePlay();
-            // Also try on window load as an extra guarantee
-            window.addEventListener('load', forcePlay);
+            // Wait until enough video is buffered to play without stalling
+            splashVideo.addEventListener('canplaythrough', forcePlay);
+            
+            // Fallback if 'canplaythrough' doesn't fire fast enough
+            setTimeout(forcePlay, 1000); 
 
             // Trigger hide sequence exactly at 3.0s into playback
             let transitionStarted = false;
