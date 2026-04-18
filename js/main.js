@@ -5,31 +5,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using video duration
+    // Hide loading screen using 3s overlap schedule
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashVideo = document.getElementById('splashVideo');
         
         const hideLoader = () => {
             loader.classList.add('loaded');
-            // Remove from DOM only after the deep 2s CSS transition completes
-            setTimeout(() => loader.remove(), 2500);
+            // Remove from DOM after the transition (1.0s) completes with some buffer
+            setTimeout(() => loader.remove(), 1500);
         };
 
         if (splashVideo) {
-            // Unmute if possible or let iOS handle muted autoplay
-            splashVideo.addEventListener('ended', hideLoader);
+            // Trigger hide sequence exactly at 3.0s into playback
+            let transitionStarted = false;
+            
+            const startTransitionTimer = () => {
+                if (transitionStarted) return;
+                transitionStarted = true;
+                setTimeout(hideLoader, 3000); 
+            };
+
+            // Start timer as soon as the video successfully begins playing
+            splashVideo.addEventListener('playing', startTransitionTimer);
+            
+            // Fallback in case 'playing' event is blocked or missed
+            setTimeout(startTransitionTimer, 4000); 
+            
+            // Backup in case of errors
             splashVideo.addEventListener('error', hideLoader);
-            
-            // Backup timeout in case video gets stuck or 'ended' doesn't fire due to browser policies
-            let durationTimeout = setTimeout(hideLoader, 6000); // Max wait 6s
-            
-            splashVideo.addEventListener('playing', () => {
-                clearTimeout(durationTimeout);
-                // Set fallback based on actual duration + a small buffer
-                const duration = splashVideo.duration || 4;
-                setTimeout(hideLoader, (duration * 1000) + 500);
-            });
         } else {
             // Fallback if no video found
             setTimeout(hideLoader, 2000);

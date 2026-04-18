@@ -52,8 +52,8 @@
     align-items: center;
     justify-content: center;
     z-index: 99999;
-    /* Slow, deep transition for the "Emerging from darkness" effect */
-    transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 1.0s transition for the overlap schedule */
+    transition: opacity 1.0s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
 }
 
@@ -64,10 +64,10 @@
 .site-loading.loaded .loader-container {
     opacity: 0;
     transform: scale(1.02);
-    /* Logo and text fade out slightly faster than the background to create depth */
+    /* Fade out loader internal elements simultaneously */
     transition: 
-        opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
-        transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity 1.0s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 1.0s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
