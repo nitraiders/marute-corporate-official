@@ -33,41 +33,11 @@
     justify-content: center;
 }
 
-.authentic-logo {
-    width: 120px;
-    height: 120px;
+.splash-video {
+    width: 100vw;
+    height: 100dvh;
     object-fit: contain;
-    border-radius: 8px;
-    filter: brightness(0.9) contrast(1.1);
-    animation: logoAuthenticGlow 4s ease-in-out infinite;
-    z-index: 2;
-}
-
-.particles-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-/* Logo Breathing Animation (Silence & Dignity) */
-@keyframes logoAuthenticGlow {
-    0%, 100% { opacity: 0.2; transform: scale(0.98); filter: brightness(0.6); }
-    50% { opacity: 1; transform: scale(1); filter: brightness(1.2); }
-}
-
-.loading-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    letter-spacing: 0.8em;
-    color: var(--primary-gold);
-    margin-top: 20px;
-    opacity: 0;
-    transition: opacity 1.5s ease;
-    margin-right: -0.8em;
-    text-shadow: 0 0 10px rgba(204, 190, 124, 0.3);
+    background: #000;
 }
 
 /* Premium Crossfade Reveal */

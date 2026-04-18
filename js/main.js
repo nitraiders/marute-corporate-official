@@ -5,22 +5,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen
+    // Hide loading screen using video duration
     const loader = document.getElementById('siteLoading');
     if (loader) {
-        // "Silence & Dignity" timing: 3.0s splash + 2s deep crossfade transition
-        const loadingText = loader.querySelector('.loading-text');
+        const splashVideo = document.getElementById('splashVideo');
         
-        // Deep, slow fade-in for the text
-        setTimeout(() => {
-            if (loadingText) loadingText.style.opacity = '1';
-        }, 1000);
-
-        setTimeout(() => {
+        const hideLoader = () => {
             loader.classList.add('loaded');
             // Remove from DOM only after the deep 2s CSS transition completes
             setTimeout(() => loader.remove(), 2500);
-        }, 3000);
+        };
+
+        if (splashVideo) {
+            // Unmute if possible or let iOS handle muted autoplay
+            splashVideo.addEventListener('ended', hideLoader);
+            splashVideo.addEventListener('error', hideLoader);
+            
+            // Backup timeout in case video gets stuck or 'ended' doesn't fire due to browser policies
+            let durationTimeout = setTimeout(hideLoader, 6000); // Max wait 6s
+            
+            splashVideo.addEventListener('playing', () => {
+                clearTimeout(durationTimeout);
+                // Set fallback based on actual duration + a small buffer
+                const duration = splashVideo.duration || 4;
+                setTimeout(hideLoader, (duration * 1000) + 500);
+            });
+        } else {
+            // Fallback if no video found
+            setTimeout(hideLoader, 2000);
+        }
     }
 
     const header = document.getElementById('header');
