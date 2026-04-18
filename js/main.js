@@ -8,11 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loading screen
     const loader = document.getElementById('siteLoading');
     if (loader) {
-        // Optimized timing for a snappy, premium feel (2.5s total)
+        // "Silence & Dignity" timing: 2.2s splash + 2s crossfade transition
+        const loadingText = loader.querySelector('.loading-text');
+        
+        // Elegant text fade-in tied to logo breath
+        setTimeout(() => {
+            if (loadingText) loadingText.style.opacity = '1';
+        }, 800);
+
         setTimeout(() => {
             loader.classList.add('loaded');
-            setTimeout(() => loader.remove(), 1200);
-        }, 2500);
+            // Remove from DOM only after the long 2s CSS transition completes
+            setTimeout(() => loader.remove(), 2500);
+        }, 2200);
     }
 
     const header = document.getElementById('header');
