@@ -17,6 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (splashVideo) {
+            // Force playback immediately to break through iOS autoplay blocks
+            const forcePlay = () => {
+                splashVideo.play().catch(e => {
+                    console.log("[Autoplay prevented. Silent fallback...]", e);
+                });
+            };
+            
+            forcePlay();
+            // Also try on window load as an extra guarantee
+            window.addEventListener('load', forcePlay);
+
             // Trigger hide sequence exactly at 3.0s into playback
             let transitionStarted = false;
             
@@ -26,11 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(hideLoader, 3000); 
             };
 
-            // Start timer as soon as the video successfully begins playing
+            // Start timer ONLY when the video successfully begins playing
             splashVideo.addEventListener('playing', startTransitionTimer);
             
-            // Fallback in case 'playing' event is blocked or missed
-            setTimeout(startTransitionTimer, 4000); 
+            // Fallback in case 'playing' event is blocked indefinitely
+            setTimeout(startTransitionTimer, 4500); 
             
             // Backup in case of errors
             splashVideo.addEventListener('error', hideLoader);
