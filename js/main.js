@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using strict "2.7s play + 1.0s fade" logic to guarantee anti-loop and anti-flash
+    // Hide loading screen using device-specific timing logic
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashImage = document.getElementById('splashImage');
@@ -19,6 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (splashImage) {
             let transitionStarted = false;
+            
+            // 1. User Agent Check for Mobile/Smartphone
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            // Covers basic mobile devices including iPhone, Android, iPad
+            const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+            
+            // 2. Set Device Specific Timeout
+            // PC: 2400ms (Cut early to rigorously prevent the slightest hint of a 2nd loop)
+            // Mobile (iPhone): 3400ms (Show full logo drawing animation, as mobile browsers often chew up a few ms handling the WebP)
+            const targetTimeout = isMobile ? 3400 : 2400;
+
             const startTransitionTimer = () => {
                 if (transitionStarted) return;
                 transitionStarted = true;
@@ -26,9 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show the image smoothly now that it is functionally freshly loaded
                 splashImage.style.opacity = '1';
                 
-                // Wait exactly 2.7s after the WebP starts playing visually, then crossfade
-                // 2.7s + 1.0s fade = 3.7s total, perfectly cutting off before the 4.0s loop cycle begins.
-                setTimeout(hideLoader, 2700); 
+                // Trigger precise device-specific overlap
+                setTimeout(hideLoader, targetTimeout); 
             };
 
             // Force WebP animation to restart from 0s by busting the browser cache
@@ -42,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             splashImage.src = baseSrc + '?t=' + new Date().getTime();
 
             // Backup in case the onload event entirely fails on extremely slow/weird browsers
-            setTimeout(startTransitionTimer, 4000); 
+            setTimeout(startTransitionTimer, targetTimeout + 1000); 
         } else {
             // Fallback if no splash image found
             setTimeout(hideLoader, 1000);
