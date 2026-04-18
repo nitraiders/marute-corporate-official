@@ -39,6 +39,9 @@
     max-width: 400px;
     height: auto;
     object-fit: contain;
+    /* Physically hide the element on initial render to prevent cached frame flash */
+    opacity: 0;
+    transition: opacity 0.3s ease-out; /* Smoothly fade it in when JS removes opacity: 0 */
 }
 
 /* Premium Crossfade Reveal */

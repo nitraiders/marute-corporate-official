@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using strict "3s play + 1s fade" logic AFTER pure load
+    // Hide loading screen using strict "2.7s play + 1.0s fade" logic to guarantee anti-loop and anti-flash
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashImage = document.getElementById('splashImage');
@@ -18,19 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (splashImage) {
-            // Hide image momentarily to prevent old cache flash
-            splashImage.style.opacity = '0';
-            
             let transitionStarted = false;
             const startTransitionTimer = () => {
                 if (transitionStarted) return;
                 transitionStarted = true;
                 
-                // Show the image now that it is fully loaded
+                // Show the image smoothly now that it is functionally freshly loaded
                 splashImage.style.opacity = '1';
                 
-                // Wait exactly 3.0s after the WebP starts playing visually, then crossfade
-                setTimeout(hideLoader, 3000); 
+                // Wait exactly 2.7s after the WebP starts playing visually, then crossfade
+                // 2.7s + 1.0s fade = 3.7s total, perfectly cutting off before the 4.0s loop cycle begins.
+                setTimeout(hideLoader, 2700); 
             };
 
             // Force WebP animation to restart from 0s by busting the browser cache
