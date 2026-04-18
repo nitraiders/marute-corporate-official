@@ -8,10 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loading screen
     const loader = document.getElementById('siteLoading');
     if (loader) {
+        // Extended time for SVG Line Art animation (3s drawing + buffer)
         setTimeout(() => {
             loader.classList.add('loaded');
-            setTimeout(() => loader.remove(), 600);
-        }, 300);
+            setTimeout(() => loader.remove(), 1500);
+        }, 4000);
     }
 
     const header = document.getElementById('header');
@@ -26,10 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Reveal on scroll (Intersection Observer)
+    // Reveal on scroll (Intersection Observer with Premium Stagger)
     const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
+                // Check for grid items to apply stagger
+                const isGridItem = entry.target.closest('.shop-grid');
+                if (isGridItem) {
+                    const siblings = Array.from(isGridItem.querySelectorAll('.reveal'));
+                    const itemIndex = siblings.indexOf(entry.target);
+                    entry.target.style.transitionDelay = `${itemIndex * 0.2}s`;
+                }
+                
                 entry.target.classList.add('active');
                 revealObserver.unobserve(entry.target);
             }

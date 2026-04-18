@@ -21,14 +21,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: #000; /* 深い漆黒 */
+    background: #000;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 99999;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none; /* Failsafe: Ensure interaction is never blocked */
+    transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
 }
 
 .site-loading.loaded {
@@ -36,19 +35,47 @@
     pointer-events: none;
 }
 
-.site-loading .loading-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    letter-spacing: 0.8em;
-    color: var(--primary-gold);
-    animation: logoLuxuryPulse 2.5s ease-in-out infinite;
-    text-shadow: 0 0 30px rgba(204, 190, 124, 0.3);
-    margin-right: -0.8em; /* 最後の文字の間隔分を補正 */
+.loader-container {
+    text-align: center;
+    position: relative;
 }
 
-@keyframes logoLuxuryPulse {
-    0%, 100% { opacity: 0.4; filter: brightness(0.7) blur(1px); transform: scale(0.96); }
-    50% { opacity: 1; filter: brightness(1.1) blur(0); transform: scale(1); }
+.loader-svg {
+    width: 200px;
+    height: 200px;
+}
+
+.logo-path, .logo-path-inner {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: lineDraw 3s ease forwards;
+}
+
+.logo-path-inner {
+    animation-delay: 0.5s;
+}
+
+.sparkle {
+    filter: drop-shadow(0 0 5px var(--accent-gold));
+}
+
+.loading-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.8em;
+    color: var(--primary-gold);
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 2.5s;
+    margin-right: -0.8em;
+}
+
+@keyframes lineDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
 }
 
 /* Image Optimization & Premium FX */
@@ -227,15 +254,22 @@ nav a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    overflow: hidden;
 }
 
 .hero-bg img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.5; /* 少し不透明度を下げて背景を暗く */
+    opacity: 0.5;
+    transform: scale(1) translateZ(0);
+    animation: kenBurns 20s ease-in-out infinite alternate;
     filter: brightness(0.6) contrast(1.1) sepia(0.1); /* 明度をさらに落とす */
+}
+
+@keyframes kenBurns {
+    0% { transform: scale(1) translateZ(0); }
+    100% { transform: scale(1.08) translateZ(0); }
 }
 
 .hero-content {
@@ -783,13 +817,18 @@ footer {
 /* Reveal Animation */
 .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: 1s cubic-bezier(0.2, 1, 0.3, 1);
+    transform: translateY(30px) scale(0.95);
+    filter: blur(10px);
+    transition: 
+        opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 1.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.active {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
 }
 
 /* Recruit Page */
