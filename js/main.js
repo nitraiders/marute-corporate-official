@@ -8,19 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loading screen
     const loader = document.getElementById('siteLoading');
     if (loader) {
-        // "Silence & Dignity" timing: 2.2s splash + 2s crossfade transition
+        // "Silence & Dignity" timing: 3.0s splash + 2s deep crossfade transition
         const loadingText = loader.querySelector('.loading-text');
         
-        // Elegant text fade-in tied to logo breath
+        // Deep, slow fade-in for the text
         setTimeout(() => {
             if (loadingText) loadingText.style.opacity = '1';
-        }, 800);
+        }, 1000);
 
         setTimeout(() => {
             loader.classList.add('loaded');
-            // Remove from DOM only after the long 2s CSS transition completes
+            // Remove from DOM only after the deep 2s CSS transition completes
             setTimeout(() => loader.remove(), 2500);
-        }, 2200);
+        }, 3000);
     }
 
     const header = document.getElementById('header');
