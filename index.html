@@ -151,6 +151,9 @@
                 const newsList = document.getElementById('marute-news-list');
                 try {
                     const response = await fetch('/api/news?sheet=marute_news');
+                    if (!response.ok) {
+                        throw new Error(`Server returned ${response.status}`);
+                    }
                     const data = await response.json();
                     
                     if (!data || data.length === 0) {
@@ -171,9 +174,13 @@
                     }).join('');
                 } catch (error) {
                     console.error('Error loading news:', error);
+                    // エラーが発生しても他のコンテンツに影響を与えないよう、ニュースエリアのみエラー表示にする
                     newsList.innerHTML = '<p style="color: #e74c3c; font-size: 0.8rem; text-align: center; padding-top: 20px;">ニュースの取得に失敗しました。</p>';
                 }
             }
+
+            // Global refresh hook for main.js (Pull to Refresh)
+            window.refreshPageContent = loadMaruteNews;
 
             function escapeHTML(str) {
                 if (!str) return "";

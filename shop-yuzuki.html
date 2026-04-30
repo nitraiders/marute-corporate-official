@@ -166,6 +166,7 @@
                     async function loadNews() {
                         try {
                             const response = await fetch('/api/news?sheet=yuzuki_news');
+                            if (!response.ok) throw new Error(`Server returned ${response.status}`);
                             const data = await response.json();
                             
                             if (data.length === 0) {
