@@ -290,7 +290,7 @@
             listContent.innerHTML = '<div class="loading-text">読み込み中...</div>';
 
             try {
-                const response = await fetch(`/api/data?sheet=${targetSheet}`);
+                const response = await fetch(`/api/news?sheet=${targetSheet}`);
                 const data = await response.json();
 
                 if (!data || data.length === 0) {

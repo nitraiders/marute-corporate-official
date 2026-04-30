@@ -168,7 +168,7 @@
 
                     async function loadNews() {
                         try {
-                            const response = await fetch('/api/data?sheet=tempest_news');
+                            const response = await fetch('/api/news?sheet=tempest_news');
                             const data = await response.json();
                             
                             if (data.length === 0) {

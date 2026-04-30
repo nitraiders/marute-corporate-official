@@ -150,7 +150,7 @@
             async function loadMaruteNews() {
                 const newsList = document.getElementById('marute-news-list');
                 try {
-                    const response = await fetch('/api/data?sheet=marute_news');
+                    const response = await fetch('/api/news?sheet=marute_news');
                     const data = await response.json();
                     
                     if (!data || data.length === 0) {

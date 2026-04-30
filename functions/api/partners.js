@@ -5,7 +5,7 @@ export async function onRequest(context) {
 
     if (request.method === "GET") {
         // 後方互換性のため /api/data?sheet=partners へリダイレクト
-        return Response.redirect(new URL("/api/data?sheet=partners", request.url), 302);
+        return Response.redirect(new URL("/api/news?sheet=partners", request.url), 302);
     }
 
     if (request.method === "POST") {
