@@ -16,7 +16,6 @@ export async function onRequestGet(context) {
     }
     
     try {
-        console.log("Using GAS_URL:", context.env.GAS_URL);
         const response = await fetch(`${GAS_URL}?sheet=${sheet}`);
         
         if (!response.ok) {
@@ -58,7 +57,6 @@ export async function onRequestGet(context) {
             }
         });
     } catch (error) {
-        console.error(error);
         return new Response(JSON.stringify({ 
             error: 'Fetch Error', 
             details: error.message 
