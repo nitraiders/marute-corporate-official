@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Google Apps Script URL
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzK8Ylb4-ag6whIYVK7LdkKLtd1vIUwzWm61fLs6ky3dfhBWGUA05a8Lp_nKeCWn4sUQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzE0IFfIHFFs4tdURFfj1HIwgI95TTijbT7FU4o37gQwXL96FpTVq6q-T8qv_5PUkJ54Q/exec';
 const ADMIN_PASSWORD = 'marute96';
 
 app.use(express.json());
