@@ -91,6 +91,103 @@
             </div>
         </section>
 
+        <section id="news" class="reveal" style="padding: 60px 0; background: #050505;">
+            <div class="container">
+                <div class="section-title reveal">
+                    <p class="subtitle">News</p>
+                    <h2>新着情報</h2>
+                </div>
+                
+                <div id="marute-news-list" class="reveal" style="
+                    max-width: 800px;
+                    margin: 0 auto;
+                    height: 200px; 
+                    overflow-y: auto; 
+                    background: rgba(204, 190, 124, 0.05); 
+                    border: 1px solid rgba(204, 190, 124, 0.3); 
+                    padding: 25px; 
+                    border-radius: 4px;
+                    -webkit-overflow-scrolling: touch;
+                ">
+                    <div class="premium-loader">
+                        <div class="loader-pulse-logo"></div>
+                        <div class="loader-status">Fetching Latest News</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            /* News List Styles */
+            #marute-news-list::-webkit-scrollbar { width: 6px; }
+            #marute-news-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+            #marute-news-list::-webkit-scrollbar-thumb { background: var(--primary-gold); border-radius: 10px; }
+            
+            .news-item {
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid rgba(204, 190, 124, 0.1);
+            }
+            .news-item:last-child { border-bottom: none; margin-bottom: 0; }
+            .news-date {
+                display: block;
+                font-size: 0.8rem;
+                color: var(--primary-gold);
+                margin-bottom: 6px;
+                font-family: 'Inter', sans-serif;
+                letter-spacing: 0.1em;
+            }
+            .news-content {
+                display: block;
+                font-size: 1rem;
+                color: #fff;
+                line-height: 1.7;
+                white-space: pre-wrap;
+            }
+        </style>
+
+        <script>
+            async function loadMaruteNews() {
+                const newsList = document.getElementById('marute-news-list');
+                try {
+                    const response = await fetch('/api/data?sheet=marute_news');
+                    const data = await response.json();
+                    
+                    if (!data || data.length === 0) {
+                        newsList.innerHTML = '<p style="color: #666; font-size: 0.9rem; text-align: center; padding-top: 20px;">現在、新しいお知らせはありません。</p>';
+                        return;
+                    }
+
+                    newsList.innerHTML = data.map(news => {
+                        const date = new Date(news.date).toLocaleDateString('ja-JP', {
+                            year: 'numeric', month: '2-digit', day: '2-digit'
+                        });
+                        return `
+                            <div class="news-item">
+                                <span class="news-date">${date}</span>
+                                <span class="news-content">${escapeHTML(news.content)}</span>
+                            </div>
+                        `;
+                    }).join('');
+                } catch (error) {
+                    console.error('Error loading news:', error);
+                    newsList.innerHTML = '<p style="color: #e74c3c; font-size: 0.8rem; text-align: center; padding-top: 20px;">ニュースの取得に失敗しました。</p>';
+                }
+            }
+
+            function escapeHTML(str) {
+                if (!str) return "";
+                return str
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            window.addEventListener('DOMContentLoaded', loadMaruteNews);
+        </script>
+
         <section id="corporate" class="corporate">
             <div class="container">
                 <div class="reveal">

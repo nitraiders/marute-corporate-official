@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Partner Manager | まるて株式会社</title>
+    <title>Admin Manager | まるて株式会社</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
@@ -183,13 +183,14 @@
     <div class="admin-card">
         <div class="admin-header">
             <h1 class="serif">ADMIN</h1>
-            <p>提携企業の新規追加</p>
+            <p>サイト内データの管理</p>
         </div>
         <form id="partnerForm">
             <div class="form-group">
                 <label>投稿先を選択</label>
                 <select id="targetSheet" class="form-control">
                     <option value="partners">提携企業 (Partner)</option>
+                    <option value="marute_news">まるて株式会社 新着 (News)</option>
                     <option value="yuzuki_news">しるくはっと新着 (News)</option>
                     <option value="tempest_news">Tempest新着 (News)</option>
                 </select>
@@ -236,6 +237,7 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 40px; display: flex; flex-direction: column; gap: 10px;">
+            <a href="index.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">メインページ</a>
             <a href="partner.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">提携企業ページ</a>
             <a href="shop-yuzuki.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">しるくはっとページ</a>
             <a href="shop-tempest.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">Tempestページ</a>
@@ -253,6 +255,10 @@
                 partnerFields.style.display = 'block';
                 newsFields.style.display = 'none';
                 document.getElementById('listTitle').textContent = '現在の提携企業';
+            } else if (targetSelect.value === 'marute_news') {
+                partnerFields.style.display = 'none';
+                newsFields.style.display = 'block';
+                document.getElementById('listTitle').textContent = '現在のまるて新着';
             } else if (targetSelect.value === 'yuzuki_news') {
                 partnerFields.style.display = 'none';
                 newsFields.style.display = 'block';
