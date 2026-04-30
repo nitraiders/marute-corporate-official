@@ -20,7 +20,7 @@ app.use(express.static(__dirname));
 
 // 1. 取得 API (GET)
 // パラメータ ?sheet=... で対象切り替え
-app.get('/api/data', async (req, res) => {
+app.get('/api/news', async (req, res) => {
     const sheet = req.query.sheet || 'partners';
     try {
         const response = await fetch(`${GAS_URL}?sheet=${sheet}`);
@@ -42,7 +42,11 @@ app.get('/api/data', async (req, res) => {
 });
 
 // 後方互換性のため古いパスも残す
-app.get('/api/partners', (req, res) => res.redirect('/api/data?sheet=partners'));
+app.get('/api/data', (req, res) => {
+    const sheet = req.query.sheet || 'partners';
+    res.redirect(`/api/news?sheet=${sheet}`);
+});
+app.get('/api/partners', (req, res) => res.redirect('/api/news?sheet=partners'));
 
 // 2. 追加 API (POST)
 app.post('/api/partners', async (req, res) => {
