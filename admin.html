@@ -305,15 +305,15 @@
                 <div class="form-group">
                     <label>投稿先を選択</label>
                     <select id="targetSheet" class="form-control">
-                        <option value="partners">提携企業 (Partner)</option>
                         <option value="marute_news">まるて株式会社 新着 (News)</option>
                         <option value="yuzuki_news">しるくはっと新着 (News)</option>
                         <option value="tempest_news">Tempest新着 (News)</option>
+                        <option value="partners">提携企業 (Partner)</option>
                     </select>
                 </div>
 
                 <!-- 提携企業用フィールド -->
-                <div id="partnerFields">
+                <div id="partnerFields" style="display: none;">
                     <div class="form-group">
                         <label>社名</label>
                         <input type="text" id="name" class="form-control" placeholder="例：株式会社〇〇">
@@ -325,7 +325,7 @@
                 </div>
 
                 <!-- ニュース用フィールド -->
-                <div id="newsFields" style="display: none;">
+                <div id="newsFields">
                     <div class="form-group">
                         <label>内容</label>
                         <textarea id="content" class="form-control" placeholder="新着情報の内容を入力" rows="4"></textarea>
@@ -339,7 +339,7 @@
             <!-- 現在の投稿一覧 -->
             <div class="item-list-container">
                 <div class="item-list-header">
-                    <h2 id="listTitle">現在の投稿一覧</h2>
+                    <h2 id="listTitle">現在のまるて新着</h2>
                     <button onclick="loadItems()" style="background:none; border:none; color:var(--primary-gold); cursor:pointer; font-size:0.8rem;">
                         <i class="fas fa-sync-alt"></i> 更新
                     </button>
