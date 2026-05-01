@@ -19,16 +19,106 @@
             justify-content: center;
             min-height: 100dvh;
             padding: 20px;
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
         }
-        .admin-card {
-            background: #111;
+        
+        /* ログイン画面のスタイル */
+        #login-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             max-width: 400px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .login-card {
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 50px 40px;
+            border: 1px solid rgba(204, 190, 124, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-size: 2rem;
+            color: var(--primary-gold);
+            letter-spacing: 0.3em;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .login-input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .login-input-group label {
+            display: block;
+            color: var(--primary-gold);
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+        }
+
+        .login-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(204, 190, 124, 0.3);
+            color: #fff;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .login-control:focus {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 15px rgba(201, 160, 99, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #c9a063, #a6814c);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 160, 99, 0.4);
+        }
+
+        /* メインコンテンツのスタイル */
+        #admin-main {
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .admin-card {
+            background: #111;
             padding: 40px 30px;
             border: 1px solid rgba(204, 190, 124, 0.3);
             border-radius: 8px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
+
         .admin-header {
             text-align: center;
             margin-bottom: 40px;
@@ -59,7 +149,7 @@
             border: 1px solid #333;
             color: #fff;
             padding: 15px;
-            font-size: 16px; /* iOS zoom prevention */
+            font-size: 16px;
             border-radius: 4px;
             transition: border-color 0.3s;
         }
@@ -93,7 +183,6 @@
         .message.success { color: #2ecc71; }
         .message.error { color: #e74c3c; }
 
-        /* Item List Styles */
         .item-list-container {
             margin-top: 50px;
             border-top: 1px solid rgba(204, 190, 124, 0.2);
@@ -168,9 +257,18 @@
             font-size: 0.8rem;
         }
 
-        /* App-like feel for mobile home screen */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 600px) {
-            .admin-card {
+            .admin-card, .login-card {
                 border: none;
                 box-shadow: none;
                 padding: 20px 10px;
@@ -180,111 +278,155 @@
     </style>
 </head>
 <body>
-    <div class="admin-card">
-        <div class="admin-header">
+    <!-- 🔑 ログインセクション -->
+    <div id="login-section">
+        <div class="login-card">
             <h1 class="serif">ADMIN</h1>
-            <p>サイト内データの管理</p>
+            <div class="login-input-group">
+                <label>PASSWORD</label>
+                <input type="password" id="admin-password-input" class="login-control" placeholder="••••••••" onkeypress="if(event.key==='Enter') attemptLogin()">
+            </div>
+            <button class="btn-login" onclick="attemptLogin()">ENTER</button>
+            <div id="login-error" style="color:#e74c3c; font-size:0.8rem; margin-top:15px; min-height:1.2em;"></div>
         </div>
-        <form id="partnerForm">
-            <div class="form-group">
-                <label>投稿先を選択</label>
-                <select id="targetSheet" class="form-control">
-                    <option value="partners">提携企業 (Partner)</option>
-                    <option value="marute_news">まるて株式会社 新着 (News)</option>
-                    <option value="yuzuki_news">しるくはっと新着 (News)</option>
-                    <option value="tempest_news">Tempest新着 (News)</option>
-                </select>
-            </div>
+        <a href="index.html" style="font-size: 0.8rem; color: #555; text-decoration: none; margin-top: 30px;">
+            <i class="fas fa-arrow-left"></i> サイトに戻る
+        </a>
+    </div>
 
-            <!-- 提携企業用フィールド -->
-            <div id="partnerFields">
+    <!-- 🏗️ メイン管理セクション -->
+    <div id="admin-main">
+        <div class="admin-card">
+            <div class="admin-header">
+                <h1 class="serif">MANAGEMENT</h1>
+                <p>サイト内データの管理</p>
+            </div>
+            <form id="partnerForm">
                 <div class="form-group">
-                    <label>社名</label>
-                    <input type="text" id="name" class="form-control" placeholder="例：株式会社〇〇">
+                    <label>投稿先を選択</label>
+                    <select id="targetSheet" class="form-control">
+                        <option value="partners">提携企業 (Partner)</option>
+                        <option value="marute_news">まるて株式会社 新着 (News)</option>
+                        <option value="yuzuki_news">しるくはっと新着 (News)</option>
+                        <option value="tempest_news">Tempest新着 (News)</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label>URL</label>
-                    <input type="url" id="url" class="form-control" placeholder="https://...">
+
+                <!-- 提携企業用フィールド -->
+                <div id="partnerFields">
+                    <div class="form-group">
+                        <label>社名</label>
+                        <input type="text" id="name" class="form-control" placeholder="例：株式会社〇〇">
+                    </div>
+                    <div class="form-group">
+                        <label>URL</label>
+                        <input type="url" id="url" class="form-control" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- ニュース用フィールド -->
+                <div id="newsFields" style="display: none;">
+                    <div class="form-group">
+                        <label>内容</label>
+                        <textarea id="content" class="form-control" placeholder="新着情報の内容を入力" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-submit">追加する</button>
+                <div id="message" class="message"></div>
+            </form>
+
+            <!-- 現在の投稿一覧 -->
+            <div class="item-list-container">
+                <div class="item-list-header">
+                    <h2 id="listTitle">現在の投稿一覧</h2>
+                    <button onclick="loadItems()" style="background:none; border:none; color:var(--primary-gold); cursor:pointer; font-size:0.8rem;">
+                        <i class="fas fa-sync-alt"></i> 更新
+                    </button>
+                </div>
+                <div id="listContent">
+                    <div class="loading-text">読み込み中...</div>
                 </div>
             </div>
 
-            <!-- ニュース用フィールド -->
-            <div id="newsFields" style="display: none;">
-                <div class="form-group">
-                    <label>内容</label>
-                    <textarea id="content" class="form-control" placeholder="新着情報の内容を入力" rows="4"></textarea>
+            <div style="text-align: center; margin-top: 40px; display: flex; flex-direction: column; gap: 15px;">
+                <button onclick="logout()" style="background:none; border:1px solid #333; color:#888; padding:10px; border-radius:4px; cursor:pointer; font-size:0.8rem;">ログアウト</button>
+                <div style="display: flex; justify-content: center; gap: 15px; opacity: 0.6;">
+                    <a href="index.html" style="font-size: 0.7rem; color: #fff; text-decoration: underline;">メイン</a>
+                    <a href="partner.html" style="font-size: 0.7rem; color: #fff; text-decoration: underline;">提携企業</a>
+                    <a href="shop-yuzuki.html" style="font-size: 0.7rem; color: #fff; text-decoration: underline;">しるく</a>
+                    <a href="shop-tempest.html" style="font-size: 0.7rem; color: #fff; text-decoration: underline;">Tempest</a>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>管理パスワード</label>
-                <input type="password" id="password" class="form-control" required>
-            </div>
-            <button type="submit" id="submitBtn" class="btn-submit">追加する</button>
-            <div id="message" class="message"></div>
-        </form>
-
-        <!-- 現在の投稿一覧 -->
-        <div class="item-list-container">
-            <div class="item-list-header">
-                <h2 id="listTitle">現在の投稿一覧</h2>
-                <button onclick="loadItems()" style="background:none; border:none; color:var(--primary-gold); cursor:pointer; font-size:0.8rem;">
-                    <i class="fas fa-sync-alt"></i> 更新
-                </button>
-            </div>
-            <div id="listContent">
-                <div class="loading-text">読み込み中...</div>
-            </div>
-        </div>
-        <div style="text-align: center; margin-top: 40px; display: flex; flex-direction: column; gap: 10px;">
-            <a href="index.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">メインページ</a>
-            <a href="partner.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">提携企業ページ</a>
-            <a href="shop-yuzuki.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">しるくはっとページ</a>
-            <a href="shop-tempest.html" style="font-size: 0.8rem; color: #555; text-decoration: underline;">Tempestページ</a>
         </div>
     </div>
 
     <script>
+        let currentPassword = sessionStorage.getItem('admin_pass') || '';
+
+        // ページロード時の認証チェック
+        window.addEventListener('DOMContentLoaded', () => {
+            if (currentPassword) {
+                showAdmin();
+            }
+        });
+
+        function attemptLogin() {
+            const pass = document.getElementById('admin-password-input').value;
+            if (!pass) return;
+            
+            // 簡易的な認証チェック（本来はサーバーで行うが、Kazu様のサイト構成に合わせる）
+            // marute96 はマニュアルに記載されているデフォルトパスワード
+            if (pass === 'marute96') {
+                currentPassword = pass;
+                sessionStorage.setItem('admin_pass', pass);
+                showAdmin();
+            } else {
+                document.getElementById('login-error').textContent = '❌ パスワードが正しくありません';
+                document.getElementById('admin-password-input').value = '';
+            }
+        }
+
+        function showAdmin() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('admin-main').style.display = 'block';
+            loadItems();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('admin_pass');
+            location.reload();
+        }
+
         const targetSelect = document.getElementById('targetSheet');
         const partnerFields = document.getElementById('partnerFields');
         const newsFields = document.getElementById('newsFields');
 
-        // 表示切り替え
         targetSelect.addEventListener('change', () => {
             if (targetSelect.value === 'partners') {
                 partnerFields.style.display = 'block';
                 newsFields.style.display = 'none';
                 document.getElementById('listTitle').textContent = '現在の提携企業';
-            } else if (targetSelect.value === 'marute_news') {
-                partnerFields.style.display = 'none';
-                newsFields.style.display = 'block';
-                document.getElementById('listTitle').textContent = '現在のまるて新着';
-            } else if (targetSelect.value === 'yuzuki_news') {
-                partnerFields.style.display = 'none';
-                newsFields.style.display = 'block';
-                document.getElementById('listTitle').textContent = '現在のしるくはっと新着';
             } else {
                 partnerFields.style.display = 'none';
                 newsFields.style.display = 'block';
-                document.getElementById('listTitle').textContent = '現在のTempest新着';
+                const labels = {
+                    'marute_news': '現在のまるて新着',
+                    'yuzuki_news': '現在のしるくはっと新着',
+                    'tempest_news': '現在のTempest新着'
+                };
+                document.getElementById('listTitle').textContent = labels[targetSelect.value];
             }
             loadItems();
         });
 
-        // HTMLエスケープ処理（XSS対策）
         function escapeHTML(str) {
             if (!str) return "";
-            return str
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;")
-                .replace(/\n/g, "<br>");
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/\n/g, "<br>");
         }
 
-        // データ読み込み
         async function loadItems() {
+            if (!currentPassword) return;
             const listContent = document.getElementById('listContent');
             const targetSheet = targetSelect.value;
             listContent.innerHTML = '<div class="loading-text">読み込み中...</div>';
@@ -305,16 +447,13 @@
                     const content = targetSheet === 'partners' ? item.name : item.content;
                     const subText = targetSheet === 'partners' ? item.url : '';
 
-                    const escapedContent = escapeHTML(content);
-                    const escapedSubText = escapeHTML(subText);
-
                     return `
                         <div class="item-card">
                             <div class="item-main">
-                                <div class="item-text">${escapedContent}</div>
+                                <div class="item-text">${escapeHTML(content)}</div>
                                 <div class="item-meta">
                                     <span>${dateStr}</span>
-                                    ${subText ? `<span style="color:#444;">|</span> <span>${escapedSubText}</span>` : ''}
+                                    ${subText ? `<span style="color:#444;">|</span> <span>${escapeHTML(subText)}</span>` : ''}
                                 </div>
                             </div>
                             <button onclick="deleteItem(${item._row})" class="btn-icon-delete" title="削除">
@@ -328,43 +467,29 @@
             }
         }
 
-        // 削除処理
         async function deleteItem(row) {
-            const password = document.getElementById('password').value;
-            if (!password) {
-                alert('削除するには管理パスワードを入力してください。');
-                document.getElementById('password').focus();
-                return;
-            }
-
-            if (!confirm('本当に削除しますか？この操作は取り消せません。')) {
-                return;
-            }
+            if (!confirm('本当に削除しますか？')) return;
 
             const targetSheet = targetSelect.value;
-            
             try {
                 const response = await fetch('/api/delete', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ targetSheet, row, password })
+                    body: JSON.stringify({ targetSheet, row, password: currentPassword })
                 });
 
                 const result = await response.json();
-
                 if (response.ok) {
-                    alert('✅ 削除に成功しました');
+                    alert('✅ 削除しました');
                     loadItems();
                 } else {
                     alert('❌ エラー: ' + (result.error || '削除に失敗しました'));
+                    if (response.status === 403) logout();
                 }
             } catch (error) {
                 alert('❌ 通信エラーが発生しました');
             }
         }
-
-        // 初期読み込み
-        loadItems();
 
         document.getElementById('partnerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -375,7 +500,6 @@
             const name = document.getElementById('name').value;
             const url = document.getElementById('url').value;
             const content = document.getElementById('content').value;
-            const password = document.getElementById('password').value;
 
             submitBtn.disabled = true;
             messageDiv.textContent = '送信中...';
@@ -390,24 +514,22 @@
                         name: targetSheet === 'partners' ? name : undefined,
                         url: targetSheet === 'partners' ? url : undefined,
                         content: targetSheet !== 'partners' ? content : undefined,
-                        password 
+                        password: currentPassword 
                     })
                 });
 
                 const result = await response.json();
-
                 if (response.ok) {
                     messageDiv.textContent = '✅ 追加に成功しました！';
                     messageDiv.className = 'message success';
-                    // 入力欄のみリセット（パスワードと投稿先は維持）
                     document.getElementById('name').value = '';
                     document.getElementById('url').value = '';
                     document.getElementById('content').value = '';
-                    // リストを更新
                     loadItems();
                 } else {
                     messageDiv.textContent = '❌ エラー: ' + (result.error || '不明なエラー');
                     messageDiv.className = 'message error';
+                    if (response.status === 403) logout();
                 }
             } catch (error) {
                 messageDiv.textContent = '❌ 通信エラーが発生しました';
