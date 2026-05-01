@@ -280,15 +280,15 @@
 <body>
     <!-- 🔑 ログインセクション -->
     <div id="login-section">
-        <div class="login-card">
+        <form class="login-card" onsubmit="event.preventDefault(); attemptLogin();">
             <h1 class="serif">ADMIN</h1>
             <div class="login-input-group">
                 <label>PASSWORD</label>
-                <input type="password" id="admin-password-input" class="login-control" placeholder="" onkeypress="if(event.key==='Enter') attemptLogin()">
+                <input type="password" id="admin-password-input" class="login-control" placeholder="" autocomplete="current-password">
             </div>
-            <button class="btn-login" onclick="attemptLogin()">ENTER</button>
+            <button type="submit" class="btn-login">ENTER</button>
             <div id="login-error" style="color:#e74c3c; font-size:0.8rem; margin-top:15px; min-height:1.2em;"></div>
-        </div>
+        </form>
         <a href="index.html" style="font-size: 0.8rem; color: #555; text-decoration: none; margin-top: 30px;">
             <i class="fas fa-arrow-left"></i> サイトに戻る
         </a>
