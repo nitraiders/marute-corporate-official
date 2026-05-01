@@ -362,14 +362,7 @@
     </div>
 
     <script>
-        let currentPassword = sessionStorage.getItem('admin_pass') || '';
-
-        // ページロード時の認証チェック
-        window.addEventListener('DOMContentLoaded', () => {
-            if (currentPassword) {
-                showAdmin();
-            }
-        });
+        let currentPassword = '';
 
         function attemptLogin() {
             const pass = document.getElementById('admin-password-input').value;
@@ -379,7 +372,6 @@
             // marute96 はマニュアルに記載されているデフォルトパスワード
             if (pass === 'marute96') {
                 currentPassword = pass;
-                sessionStorage.setItem('admin_pass', pass);
                 showAdmin();
             } else {
                 document.getElementById('login-error').textContent = '❌ パスワードが正しくありません';
@@ -394,7 +386,6 @@
         }
 
         function logout() {
-            sessionStorage.removeItem('admin_pass');
             location.reload();
         }
 
