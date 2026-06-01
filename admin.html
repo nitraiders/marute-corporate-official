@@ -286,7 +286,7 @@
                 <label>PASSWORD</label>
                 <input type="password" id="admin-password-input" class="login-control" placeholder="パスワードを入力" autocomplete="current-password">
             </div>
-            <button type="submit" class="btn-login">ENTER</button>
+            <button type="submit" class="btn-login" id="login-submit-btn">ENTER</button>
             <div id="login-error" style="color:#e74c3c; font-size:0.8rem; margin-top:15px; min-height:1.2em;"></div>
         </form>
         <a href="index.html" style="font-size: 0.8rem; color: #555; text-decoration: none; margin-top: 30px;">
@@ -362,20 +362,38 @@
     </div>
 
     <script>
-        let currentPassword = '';
+        let currentToken = '';
 
-        function attemptLogin() {
-            const pass = document.getElementById('admin-password-input').value;
+        async function attemptLogin() {
+            const passwordInput = document.getElementById('admin-password-input');
+            const loginError = document.getElementById('login-error');
+            const loginButton = document.getElementById('login-submit-btn');
+            const pass = passwordInput.value;
             if (!pass) return;
-            
-            // 簡易的な認証チェック（本来はサーバーで行うが、Kazu様のサイト構成に合わせる）
-            // marute96 はマニュアルに記載されているデフォルトパスワード
-            if (pass === 'marute96') {
-                currentPassword = pass;
+
+            loginButton.disabled = true;
+            loginError.textContent = '確認中...';
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass })
+                });
+                const result = await response.json();
+
+                if (!response.ok || !result.token) {
+                    throw new Error(result.error || 'Invalid password');
+                }
+
+                currentToken = result.token;
+                passwordInput.value = '';
                 showAdmin();
-            } else {
-                document.getElementById('login-error').textContent = '❌ パスワードが正しくありません';
-                document.getElementById('admin-password-input').value = '';
+            } catch (error) {
+                loginError.textContent = '❌ パスワードが正しくありません';
+                passwordInput.value = '';
+            } finally {
+                loginButton.disabled = false;
             }
         }
 
@@ -386,6 +404,7 @@
         }
 
         function logout() {
+            currentToken = '';
             location.reload();
         }
 
@@ -417,7 +436,7 @@
         }
 
         async function loadItems() {
-            if (!currentPassword) return;
+            if (!currentToken) return;
             const listContent = document.getElementById('listContent');
             const targetSheet = targetSelect.value;
             listContent.innerHTML = '<div class="loading-text">読み込み中...</div>';
@@ -466,7 +485,7 @@
                 const response = await fetch('/api/delete', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ targetSheet, row, password: currentPassword })
+                    body: JSON.stringify({ targetSheet, row, token: currentToken })
                 });
 
                 const result = await response.json();
@@ -505,7 +524,7 @@
                         name: targetSheet === 'partners' ? name : undefined,
                         url: targetSheet === 'partners' ? url : undefined,
                         content: targetSheet !== 'partners' ? content : undefined,
-                        password: currentPassword 
+                        token: currentToken
                     })
                 });
 

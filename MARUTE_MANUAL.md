@@ -61,7 +61,7 @@
 *   **管理画面**: `/admin.html`
     *   提携企業（Partner）と全店舗のニュース（News）を一括管理。
     *   秘密のURLとして運用。スマホの「ホーム画面に追加」を推奨。
-*   **認証パスワード**: `marute96`
+*   **認証パスワード**: Cloudflare Pages/Functions の環境変数 `MARUTE_ADMIN_PASSWORD` で管理する。値はリポジトリに記録しない。
 *   **データ保存先**: Googleスプレッドシート
     *   `partners`: 提携企業データ（日付, 社名, URL）
     *   `yuzuki_news`: しるくはっと新着情報（日付, 内容）

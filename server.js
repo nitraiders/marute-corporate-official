@@ -1,11 +1,56 @@
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Google Apps Script URL
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzE0IFfIHFFs4tdURFfj1HIwgI95TTijbT7FU4o37gQwXL96FpTVq6q-T8qv_5PUkJ54Q/exec';
-const ADMIN_PASSWORD = 'marute96';
+const ADMIN_PASSWORD = process.env.MARUTE_ADMIN_PASSWORD;
+const TOKEN_TTL_SECONDS = 60 * 60 * 4;
+
+function base64UrlEncode(value) {
+    return Buffer.from(value, 'utf8').toString('base64url');
+}
+
+function base64UrlDecode(value) {
+    return Buffer.from(value, 'base64url').toString('utf8');
+}
+
+function sign(value, secret) {
+    return crypto.createHmac('sha256', secret).update(value).digest('hex');
+}
+
+function createAdminToken(secret) {
+    const payload = base64UrlEncode(JSON.stringify({
+        exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS
+    }));
+    return `${payload}.${sign(payload, secret)}`;
+}
+
+function verifyAdminToken(token, secret) {
+    if (!token || !secret) return false;
+
+    const [payload, signature] = token.split('.');
+    if (!payload || !signature) return false;
+
+    const expectedSignature = sign(payload, secret);
+    const signatureBuffer = Buffer.from(signature);
+    const expectedSignatureBuffer = Buffer.from(expectedSignature);
+    if (
+        signatureBuffer.length !== expectedSignatureBuffer.length ||
+        !crypto.timingSafeEqual(signatureBuffer, expectedSignatureBuffer)
+    ) {
+        return false;
+    }
+
+    try {
+        const parsedPayload = JSON.parse(base64UrlDecode(payload));
+        return Number(parsedPayload.exp) > Math.floor(Date.now() / 1000);
+    } catch (error) {
+        return false;
+    }
+}
 
 app.use(express.json());
 
@@ -48,12 +93,32 @@ app.get('/api/data', (req, res) => {
 });
 app.get('/api/partners', (req, res) => res.redirect('/api/news?sheet=partners'));
 
+app.post('/api/auth', (req, res) => {
+    if (!ADMIN_PASSWORD) {
+        return res.status(500).json({ error: 'Admin password is not configured' });
+    }
+
+    const { password } = req.body;
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(403).json({ error: 'Invalid password' });
+    }
+
+    res.json({
+        token: createAdminToken(ADMIN_PASSWORD),
+        expiresIn: TOKEN_TTL_SECONDS
+    });
+});
+
 // 2. 追加 API (POST)
 app.post('/api/partners', async (req, res) => {
-    const { name, url, content, password, targetSheet } = req.body;
+    if (!ADMIN_PASSWORD) {
+        return res.status(500).json({ error: 'Admin password is not configured' });
+    }
+
+    const { name, url, content, token, targetSheet } = req.body;
     const target = targetSheet || 'partners';
 
-    if (password !== ADMIN_PASSWORD) {
+    if (!verifyAdminToken(token, ADMIN_PASSWORD)) {
         return res.status(403).json({ error: 'Invalid password' });
     }
 
@@ -88,10 +153,14 @@ app.post('/api/partners', async (req, res) => {
 
 // 3. 削除 API (POST)
 app.post('/api/delete', async (req, res) => {
-    const { row, password, targetSheet } = req.body;
+    if (!ADMIN_PASSWORD) {
+        return res.status(500).json({ error: 'Admin password is not configured' });
+    }
+
+    const { row, token, targetSheet } = req.body;
     const target = targetSheet || 'partners';
 
-    if (password !== ADMIN_PASSWORD) {
+    if (!verifyAdminToken(token, ADMIN_PASSWORD)) {
         return res.status(403).json({ error: 'Invalid password' });
     }
 
@@ -128,6 +197,6 @@ app.listen(PORT, () => {
     console.log(`-----------------------------------------`);
     console.log(`  🚀 サーバーが起動しました！`);
     console.log(`  🌐 URL: http://localhost:${PORT}`);
-    console.log(`  📂 配信元ディレクトリ: ${path.join(__dirname, 'public')}`);
+    console.log(`  📂 配信元ディレクトリ: ${__dirname}`);
     console.log(`-----------------------------------------`);
 });

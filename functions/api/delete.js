@@ -1,12 +1,21 @@
+import { verifyAdminToken } from './auth.js';
+
 export async function onRequestPost(context) {
     const { request, env } = context;
     const GAS_URL = env.GAS_URL || 'https://script.google.com/macros/s/AKfycbzE0IFfIHFFs4tdURFfj1HIwgI95TTijbT7FU4o37gQwXL96FpTVq6q-T8qv_5PUkJ54Q/exec';
-    const ADMIN_PASSWORD = env.ADMIN_PASSWORD || 'marute96';
+    const ADMIN_PASSWORD = env.MARUTE_ADMIN_PASSWORD;
 
-    const { row, password, targetSheet } = await request.json();
+    if (!ADMIN_PASSWORD) {
+        return new Response(JSON.stringify({ error: 'Admin password is not configured' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    const { row, token, targetSheet } = await request.json();
     const target = targetSheet || 'partners';
 
-    if (password !== ADMIN_PASSWORD) {
+    if (!(await verifyAdminToken(token, ADMIN_PASSWORD))) {
         return new Response(JSON.stringify({ error: 'Invalid password' }), {
             status: 403,
             headers: { 'Content-Type': 'application/json' }
