@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (splashImage) {
             let transitionStarted = false;
+            const isVideo = splashImage.tagName === 'VIDEO';
             
             // 1. User Agent Check for Mobile/Smartphone
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -33,23 +34,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const startTransitionTimer = () => {
                 if (transitionStarted) return;
                 transitionStarted = true;
+
+                if (isVideo) {
+                    splashImage.currentTime = 0;
+                    const playPromise = splashImage.play();
+                    if (playPromise) {
+                        playPromise.catch(() => {});
+                    }
+                }
                 
-                // Show the image smoothly now that it is functionally freshly loaded
+                // Show the opening media smoothly now that it is freshly loaded
                 splashImage.style.opacity = '1';
                 
                 // Trigger precise device-specific overlap
                 setTimeout(hideLoader, targetTimeout); 
             };
 
-            // Force WebP animation to restart from 0s by busting the browser cache
+            // Force opening media to restart from 0s by busting the browser cache
             const baseSrc = splashImage.src.split('?')[0];
             
-            // Set up the load listener BEFORE assigning the new src
-            splashImage.onload = startTransitionTimer;
-            splashImage.onerror = hideLoader;
+            if (isVideo) {
+                splashImage.muted = true;
+                splashImage.playsInline = true;
+                splashImage.autoplay = true;
+                splashImage.addEventListener('loadeddata', startTransitionTimer, { once: true });
+                splashImage.addEventListener('canplay', startTransitionTimer, { once: true });
+                splashImage.addEventListener('error', hideLoader, { once: true });
+            } else {
+                // Set up the load listener BEFORE assigning the new src
+                splashImage.onload = startTransitionTimer;
+                splashImage.onerror = hideLoader;
+            }
             
             // Trigger the fresh load
             splashImage.src = baseSrc + '?t=' + new Date().getTime();
+            if (isVideo) {
+                splashImage.load();
+            }
 
             // Backup in case the onload event entirely fails on extremely slow/weird browsers
             setTimeout(startTransitionTimer, targetTimeout + 1000); 
