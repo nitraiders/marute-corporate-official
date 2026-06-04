@@ -60,9 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 hideLoader();
             };
 
-            const markPlaybackStarted = () => {
-                if (!isVideo || playbackStarted || splashImage.currentTime <= 0) return;
+            const markPlaybackStarted = (force = false) => {
+                if (!isVideo || playbackStarted || (!force && splashImage.currentTime <= 0)) return;
                 playbackStarted = true;
+                loader.classList.add('media-playing');
                 if (startupTimer) {
                     clearTimeout(startupTimer);
                     startupTimer = null;
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 splashImage.addEventListener('canplay', startOpening, { once: true });
                 splashImage.addEventListener('canplaythrough', startOpening, { once: true });
                 splashImage.addEventListener('ended', finishOpening, { once: true });
-                splashImage.addEventListener('playing', markPlaybackStarted);
+                splashImage.addEventListener('playing', () => markPlaybackStarted(true));
                 splashImage.addEventListener('timeupdate', finishWhenVideoIsComplete);
                 splashImage.addEventListener('error', hideLoader, { once: true });
             } else {

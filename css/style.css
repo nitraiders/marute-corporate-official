@@ -39,9 +39,29 @@
     max-width: 400px;
     height: auto;
     object-fit: contain;
+    z-index: 2;
     /* Physically hide the element on initial render to prevent cached frame flash */
     opacity: 0;
     transition: opacity 0.3s ease-out; /* Smoothly fade it in when JS removes opacity: 0 */
+}
+
+.splash-loading-logo {
+    position: fixed;
+    top: 50vh;
+    left: 50vw;
+    width: clamp(72px, 18vw, 136px);
+    height: auto;
+    border-radius: 8px;
+    opacity: 0.82;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 20px rgba(204, 190, 124, 0.18));
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    z-index: 1;
+}
+
+.site-loading.media-playing .splash-loading-logo {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
 }
 
 /* Premium Crossfade Reveal */
