@@ -20,7 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (splashImage) {
             let transitionStarted = false;
             let completionTimer = null;
+            let startupTimer = null;
+            let playbackStarted = false;
             const isVideo = splashImage.tagName === 'VIDEO';
+            const assetVersion = '20260604';
 
             const setCompletionTimer = (delay) => {
                 if (completionTimer) {
@@ -29,12 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 completionTimer = setTimeout(finishOpening, delay);
             };
 
-            const getVideoCompletionDelay = () => {
-                const durationMs = splashImage.duration * 1000;
-                if (Number.isFinite(durationMs) && durationMs > 0) {
-                    return Math.min(Math.max(durationMs + 700, 3500), 8000);
+            const getVersionedSrc = () => {
+                const source = splashImage.getAttribute('src') || splashImage.src;
+                const url = new URL(source, window.location.href);
+                if (!url.searchParams.has('v')) {
+                    url.searchParams.set('v', assetVersion);
                 }
-                return 8000;
+                return url.href;
+            };
+
+            const hasVideoFinished = () => {
+                if (!isVideo) return false;
+                if (splashImage.ended) return true;
+                const duration = splashImage.duration;
+                return Number.isFinite(duration) && duration > 0 && splashImage.currentTime >= duration - 0.15;
             };
 
             const finishOpening = () => {
@@ -42,7 +53,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearTimeout(completionTimer);
                     completionTimer = null;
                 }
+                if (startupTimer) {
+                    clearTimeout(startupTimer);
+                    startupTimer = null;
+                }
                 hideLoader();
+            };
+
+            const markPlaybackStarted = () => {
+                if (!isVideo || playbackStarted || splashImage.currentTime <= 0) return;
+                playbackStarted = true;
+                if (startupTimer) {
+                    clearTimeout(startupTimer);
+                    startupTimer = null;
+                }
+                setCompletionTimer(12000);
+            };
+
+            const finishWhenVideoIsComplete = () => {
+                markPlaybackStarted();
+                if (hasVideoFinished()) {
+                    finishOpening();
+                }
             };
 
             const startOpening = () => {
@@ -58,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 splashImage.currentTime = 0;
-                setCompletionTimer(getVideoCompletionDelay());
+                startupTimer = setTimeout(finishOpening, 10000);
 
                 const playPromise = splashImage.play();
                 if (playPromise) {
@@ -68,9 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
 
-            // Force opening media to restart from 0s by busting the browser cache
-            const baseSrc = splashImage.src.split('?')[0];
-            
+            // Use a fixed version query so new assets update without defeating browser video cache on every visit.
+            const versionedSrc = getVersionedSrc();
+
             if (isVideo) {
                 splashImage.muted = true;
                 splashImage.playsInline = true;
@@ -79,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 splashImage.addEventListener('canplay', startOpening, { once: true });
                 splashImage.addEventListener('canplaythrough', startOpening, { once: true });
                 splashImage.addEventListener('ended', finishOpening, { once: true });
+                splashImage.addEventListener('playing', markPlaybackStarted);
+                splashImage.addEventListener('timeupdate', finishWhenVideoIsComplete);
                 splashImage.addEventListener('error', hideLoader, { once: true });
             } else {
                 // Set up the load listener BEFORE assigning the new src
@@ -87,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Trigger the fresh load
-            splashImage.src = baseSrc + '?t=' + new Date().getTime();
+            splashImage.src = versionedSrc;
             if (isVideo) {
                 splashImage.load();
             }
 
-            // Backup in case the onload event entirely fails on extremely slow/weird browsers
+            // Backup in case the load events entirely fail on extremely slow/weird browsers
             setTimeout(() => {
                 if (!transitionStarted) {
                     if (isVideo) {
@@ -101,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         startOpening();
                     }
                 }
-            }, 8000);
+            }, 15000);
         } else {
             // Fallback if no splash image found
             setTimeout(hideLoader, 1000);
