@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashImage = document.getElementById('splashImage');
-        const loadingLogo = loader.querySelector('.splash-loading-logo');
         
         const hideLoader = () => {
             if (loader.classList.contains('loaded')) return;
@@ -64,11 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const markPlaybackStarted = (force = false) => {
                 if (!isVideo || playbackStarted || (!force && splashImage.currentTime <= 0)) return;
                 playbackStarted = true;
-                loader.classList.add('media-playing');
-                if (loadingLogo) {
-                    loadingLogo.style.opacity = '0';
-                    loadingLogo.style.transform = 'translate3d(-50%, -50%, 0) scale(0.96)';
-                }
                 if (startupTimer) {
                     clearTimeout(startupTimer);
                     startupTimer = null;

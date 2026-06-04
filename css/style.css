@@ -34,39 +34,16 @@
 }
 
 .splash-video {
+    display: block;
     position: relative;
     width: 45%;
     max-width: 400px;
     height: auto;
+    aspect-ratio: 16 / 9;
     object-fit: contain;
     z-index: 2;
-    /* Physically hide the element on initial render to prevent cached frame flash */
-    opacity: 0;
-    transition: opacity 0.3s ease-out; /* Smoothly fade it in when JS removes opacity: 0 */
-}
-
-.splash-loading-logo {
-    position: fixed !important;
-    top: 50vh;
-    left: 50vw;
-    display: block;
-    width: min(38vw, 160px) !important;
-    max-width: 160px !important;
-    min-width: 96px;
-    height: auto !important;
-    max-height: 160px;
-    object-fit: contain !important;
-    border-radius: 8px;
-    opacity: 0.82;
-    transform: translate3d(-50%, -50%, 0);
-    filter: drop-shadow(0 0 20px rgba(204, 190, 124, 0.18));
-    transition: opacity 0.45s ease, transform 0.45s ease;
-    z-index: 1;
-}
-
-.site-loading.media-playing .splash-loading-logo {
-    opacity: 0;
-    transform: translate3d(-50%, -50%, 0) scale(0.96);
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
 }
 
 /* Premium Crossfade Reveal */
