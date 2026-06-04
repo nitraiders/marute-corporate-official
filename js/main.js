@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('standalone');
     }
 
-    // Hide loading screen using device-specific timing logic
+    // Hide loading screen after the opening media has actually finished.
     const loader = document.getElementById('siteLoading');
     if (loader) {
         const splashImage = document.getElementById('splashImage');
@@ -19,35 +19,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (splashImage) {
             let transitionStarted = false;
+            let completionTimer = null;
             const isVideo = splashImage.tagName === 'VIDEO';
-            
-            // 1. User Agent Check for Mobile/Smartphone
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            // Covers basic mobile devices including iPhone, Android, iPad
-            const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
-            
-            // 2. Set Device Specific Timeout (Golden Ratio)
-            // PC: 2700ms (Show the logo's full dignity with a 0.3s buffer before fading)
-            // Mobile (iPhone): 3700ms (Catch the exact landing instant of the animation and melt into the site)
-            const targetTimeout = isMobile ? 3700 : 2700;
 
-            const startTransitionTimer = () => {
+            const setCompletionTimer = (delay) => {
+                if (completionTimer) {
+                    clearTimeout(completionTimer);
+                }
+                completionTimer = setTimeout(finishOpening, delay);
+            };
+
+            const getVideoCompletionDelay = () => {
+                const durationMs = splashImage.duration * 1000;
+                if (Number.isFinite(durationMs) && durationMs > 0) {
+                    return Math.min(Math.max(durationMs + 700, 3500), 8000);
+                }
+                return 8000;
+            };
+
+            const finishOpening = () => {
+                if (completionTimer) {
+                    clearTimeout(completionTimer);
+                    completionTimer = null;
+                }
+                hideLoader();
+            };
+
+            const startOpening = () => {
                 if (transitionStarted) return;
                 transitionStarted = true;
-
-                if (isVideo) {
-                    splashImage.currentTime = 0;
-                    const playPromise = splashImage.play();
-                    if (playPromise) {
-                        playPromise.catch(() => {});
-                    }
-                }
                 
                 // Show the opening media smoothly now that it is freshly loaded
                 splashImage.style.opacity = '1';
-                
-                // Trigger precise device-specific overlap
-                setTimeout(hideLoader, targetTimeout); 
+
+                if (!isVideo) {
+                    setCompletionTimer(3700);
+                    return;
+                }
+
+                splashImage.currentTime = 0;
+                setCompletionTimer(getVideoCompletionDelay());
+
+                const playPromise = splashImage.play();
+                if (playPromise) {
+                    playPromise.catch(() => {
+                        finishOpening();
+                    });
+                }
             };
 
             // Force opening media to restart from 0s by busting the browser cache
@@ -57,12 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 splashImage.muted = true;
                 splashImage.playsInline = true;
                 splashImage.autoplay = true;
-                splashImage.addEventListener('loadeddata', startTransitionTimer, { once: true });
-                splashImage.addEventListener('canplay', startTransitionTimer, { once: true });
+                splashImage.addEventListener('loadeddata', startOpening, { once: true });
+                splashImage.addEventListener('canplay', startOpening, { once: true });
+                splashImage.addEventListener('canplaythrough', startOpening, { once: true });
+                splashImage.addEventListener('ended', finishOpening, { once: true });
                 splashImage.addEventListener('error', hideLoader, { once: true });
             } else {
                 // Set up the load listener BEFORE assigning the new src
-                splashImage.onload = startTransitionTimer;
+                splashImage.onload = startOpening;
                 splashImage.onerror = hideLoader;
             }
             
@@ -73,7 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Backup in case the onload event entirely fails on extremely slow/weird browsers
-            setTimeout(startTransitionTimer, targetTimeout + 1000); 
+            setTimeout(() => {
+                if (!transitionStarted) {
+                    if (isVideo) {
+                        finishOpening();
+                    } else {
+                        startOpening();
+                    }
+                }
+            }, 8000);
         } else {
             // Fallback if no splash image found
             setTimeout(hideLoader, 1000);
