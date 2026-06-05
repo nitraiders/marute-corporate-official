@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const playPromise = splashImage.play();
                 if (playPromise) {
                     playPromise.catch(() => {
-                        finishOpening();
+                        setCompletionTimer(1400);
                     });
                 }
             };
@@ -105,8 +105,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (isVideo) {
                 splashImage.muted = true;
+                splashImage.defaultMuted = true;
                 splashImage.playsInline = true;
                 splashImage.autoplay = true;
+                splashImage.controls = false;
+                splashImage.removeAttribute('controls');
+                splashImage.setAttribute('playsinline', '');
+                splashImage.setAttribute('webkit-playsinline', '');
                 splashImage.addEventListener('loadeddata', startOpening, { once: true });
                 splashImage.addEventListener('canplay', startOpening, { once: true });
                 splashImage.addEventListener('canplaythrough', startOpening, { once: true });
@@ -114,16 +119,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 splashImage.addEventListener('playing', () => markPlaybackStarted(true));
                 splashImage.addEventListener('timeupdate', finishWhenVideoIsComplete);
                 splashImage.addEventListener('error', hideLoader, { once: true });
+                if (splashImage.readyState >= 2) {
+                    startOpening();
+                }
             } else {
                 // Set up the load listener BEFORE assigning the new src
                 splashImage.onload = startOpening;
                 splashImage.onerror = hideLoader;
             }
             
-            // Trigger the fresh load
-            splashImage.src = versionedSrc;
-            if (isVideo) {
-                splashImage.load();
+            if (!isVideo) {
+                // Trigger the fresh load
+                splashImage.src = versionedSrc;
             }
 
             // Backup in case the load events entirely fail on extremely slow/weird browsers
