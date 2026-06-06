@@ -2,8 +2,18 @@ import { verifyAdminToken } from './auth.js';
 
 export async function onRequestPost(context) {
     const { request, env } = context;
-    const GAS_URL = env.GAS_URL || 'https://script.google.com/macros/s/AKfycbzE0IFfIHFFs4tdURFfj1HIwgI95TTijbT7FU4o37gQwXL96FpTVq6q-T8qv_5PUkJ54Q/exec';
+    const GAS_URL = env.GAS_URL;
     const ADMIN_PASSWORD = env.MARUTE_ADMIN_PASSWORD;
+
+    if (!GAS_URL) {
+        return new Response(JSON.stringify({
+            error: 'Configuration Error',
+            details: 'GAS_URL environment variable is not set in Cloudflare dashboard. Please check your Pages settings.'
+        }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 
     if (!ADMIN_PASSWORD) {
         return new Response(JSON.stringify({ error: 'Admin password is not configured' }), {

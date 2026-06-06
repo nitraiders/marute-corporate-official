@@ -99,6 +99,19 @@
                     .replace(/'/g, "&#039;");
             }
 
+            function getSafePartnerUrl(url) {
+                if (!url) return "";
+                try {
+                    const parsedUrl = new URL(url);
+                    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+                        return "";
+                    }
+                    return parsedUrl.href;
+                } catch (error) {
+                    return "";
+                }
+            }
+
             const partnerList = document.getElementById('partner-list');
 
             async function loadPartners() {
@@ -111,9 +124,14 @@
                         return;
                     }
 
-                    partnerList.innerHTML = data.map(partner => `
-                        <a href="${partner.url}" target="_blank" class="btn-luxury" style="padding: 15px 40px; margin: 10px;">${escapeHTML(partner.name)}</a>
-                    `).join('');
+                    partnerList.innerHTML = data.map(partner => {
+                        const partnerName = escapeHTML(partner.name);
+                        const partnerUrl = getSafePartnerUrl(partner.url);
+                        if (!partnerUrl) {
+                            return `<span class="btn-luxury" style="padding: 15px 40px; margin: 10px;">${partnerName}</span>`;
+                        }
+                        return `<a href="${escapeHTML(partnerUrl)}" target="_blank" rel="noopener noreferrer" class="btn-luxury" style="padding: 15px 40px; margin: 10px;">${partnerName}</a>`;
+                    }).join('');
                 } catch (error) {
                     console.error('Error loading partners:', error);
                     partnerList.innerHTML = '<p style="color: #e74c3c;">データの取得に失敗しました。</p>';
