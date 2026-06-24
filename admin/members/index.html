@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Tempest Members Admin | まるて株式会社</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            min-height: 100dvh;
+            background: #070707;
+            padding: 24px;
+        }
+        .admin-shell {
+            width: min(100%, 1100px);
+            margin: 0 auto;
+            padding: 32px 0;
+        }
+        .admin-card {
+            background: #111;
+            border: 1px solid rgba(204, 190, 124, 0.25);
+            border-radius: 8px;
+            padding: 28px;
+            margin-bottom: 18px;
+        }
+        .admin-title {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+        .toolbar .form-group {
+            flex: 1;
+            min-width: 240px;
+            margin-bottom: 0;
+        }
+        .member-row {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 0.8fr 1.8fr;
+            gap: 12px;
+            align-items: center;
+            border-top: 1px solid #222;
+            padding: 16px 0;
+        }
+        .member-row:first-child { border-top: none; }
+        .member-no { color: var(--primary-gold); font-weight: 700; }
+        .muted { color: #777; font-size: 0.82rem; }
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .quick-actions button {
+            border: 1px solid rgba(204, 190, 124, 0.5);
+            background: transparent;
+            color: var(--primary-gold);
+            padding: 9px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .manual-form {
+            display: grid;
+            grid-template-columns: 90px 1fr auto;
+            gap: 8px;
+            width: 100%;
+        }
+        .manual-form input {
+            min-width: 0;
+            padding: 10px;
+        }
+        @media (max-width: 900px) {
+            .member-row { grid-template-columns: 1fr; }
+            .manual-form { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="admin-shell">
+        <section class="admin-card" id="loginCard">
+            <h1 class="serif admin-title">Tempest Members</h1>
+            <p class="muted">既存管理パスワードでログインしてください。</p>
+            <form id="loginForm" class="toolbar">
+                <div class="form-group">
+                    <label>管理パスワード</label>
+                    <input id="passwordInput" class="form-control" type="password" autocomplete="current-password" required>
+                </div>
+                <button class="btn-luxury" id="loginButton" type="submit">ログイン</button>
+            </form>
+            <div id="loginMessage" class="message"></div>
+        </section>
+
+        <section class="admin-card" id="adminPanel" style="display:none;">
+            <h1 class="serif admin-title">Point Management</h1>
+            <p class="muted">会員検索、来店ポイント、手動調整を行います。</p>
+            <div class="toolbar">
+                <div class="form-group">
+                    <label>ニックネーム / 会員番号で検索</label>
+                    <input id="searchInput" class="form-control" placeholder="MRT-0001 / ニックネーム">
+                </div>
+                <button class="btn-luxury" type="button" onclick="loadMembers()">検索</button>
+                <button class="btn-luxury" type="button" onclick="logout()">ログアウト</button>
+            </div>
+        </section>
+
+        <section class="admin-card" id="memberList" style="display:none;"></section>
+    </main>
+
+    <script>
+        let currentToken = '';
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '未記録';
+            return new Date(value).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const message = document.getElementById('loginMessage');
+            const button = document.getElementById('loginButton');
+            button.disabled = true;
+            message.textContent = '確認中...';
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: document.getElementById('passwordInput').value })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.token) {
+                    throw new Error(result.error || 'ログインできませんでした');
+                }
+                currentToken = result.token;
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('memberList').style.display = 'block';
+                await loadMembers();
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = 'message error';
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        function logout() {
+            currentToken = '';
+            location.reload();
+        }
+
+        async function loadMembers() {
+            if (!currentToken) return;
+            const list = document.getElementById('memberList');
+            list.innerHTML = '<p class="muted">読み込み中...</p>';
+            const query = document.getElementById('searchInput').value.trim();
+
+            try {
+                const response = await fetch(`/api/members?q=${encodeURIComponent(query)}`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || '会員一覧を取得できませんでした');
+                }
+                renderMembers(result.members || []);
+            } catch (error) {
+                list.innerHTML = `<p class="message error">${escapeHTML(error.message)}</p>`;
+            }
+        }
+
+        function renderMembers(members) {
+            const list = document.getElementById('memberList');
+            if (!members.length) {
+                list.innerHTML = '<p class="muted">会員が見つかりません。</p>';
+                return;
+            }
+            list.innerHTML = members.map(member => `
+                <div class="member-row" data-member-no="${escapeHTML(member.memberNo)}">
+                    <div>
+                        <div class="member-no">${escapeHTML(member.memberNo)}</div>
+                        <strong>${escapeHTML(member.nickname)}</strong>
+                        <div class="muted">誕生日 ${member.birthMonth}/${member.birthDay}</div>
+                    </div>
+                    <div>
+                        <strong>${member.points} pt</strong>
+                        <div class="muted">来店 ${member.visitCount}回</div>
+                    </div>
+                    <div class="muted">
+                        最終来店<br>${formatDate(member.lastVisitAt)}
+                    </div>
+                    <div>
+                        <div class="quick-actions">
+                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 1, 'visit', '来店')">来店 +1</button>
+                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'companion', '同伴')">同伴 +3</button>
+                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 5, 'bottle', 'ボトル')">ボトル +5</button>
+                        </div>
+                        <form class="manual-form" onsubmit="event.preventDefault(); submitManual(this, '${escapeHTML(member.memberNo)}');" style="margin-top:10px;">
+                            <input class="form-control" name="delta" type="number" placeholder="+/-" required>
+                            <input class="form-control" name="memo" maxlength="200" placeholder="メモ（必須）" required>
+                            <button class="btn-luxury" type="submit">調整</button>
+                        </form>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function submitManual(form, memberNo) {
+            const delta = Number(form.elements.delta.value);
+            const memo = form.elements.memo.value;
+            await addPoints(memberNo, delta, 'manual', '手動調整', memo);
+            form.reset();
+        }
+
+        async function addPoints(memberNo, pointDelta, operationType, reason, memo = '') {
+            if (!Number.isInteger(pointDelta) || pointDelta === 0) {
+                alert('増減ポイントを整数で入力してください');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/members/points', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        memberNo,
+                        pointDelta,
+                        operationType,
+                        reason,
+                        memo
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || 'ポイント更新に失敗しました');
+                }
+                await loadMembers();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    </script>
+</body>
+</html>

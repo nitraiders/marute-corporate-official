@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Tempest Member Register | まるて株式会社</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            min-height: 100dvh;
+            background: radial-gradient(circle at top, #181818, #050505 65%);
+            padding: 24px;
+        }
+        .member-shell {
+            width: min(100%, 520px);
+            margin: 0 auto;
+            padding: 48px 0;
+        }
+        .member-card {
+            background: rgba(17, 17, 17, 0.92);
+            border: 1px solid rgba(204, 190, 124, 0.28);
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+        .member-title {
+            color: var(--primary-gold);
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.12em;
+        }
+        .member-note {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 28px;
+        }
+        .member-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+        .member-result {
+            display: none;
+            margin-top: 28px;
+            padding: 20px;
+            border: 1px solid rgba(204, 190, 124, 0.28);
+            background: #080808;
+            border-radius: 6px;
+        }
+        .member-no {
+            color: var(--primary-gold);
+            font-size: 2rem;
+            letter-spacing: 0.08em;
+        }
+        .member-url {
+            word-break: break-all;
+            color: #ddd;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            .member-card { padding: 24px 18px; }
+            .member-actions .btn-luxury { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <main class="member-shell">
+        <section class="member-card">
+            <h1 class="serif member-title">Tempest Digital Member</h1>
+            <p class="member-note">ニックネームと誕生日（月日）のみで、試験用の会員番号を発行します。</p>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>ニックネーム</label>
+                    <input id="nickname" class="form-control" maxlength="40" autocomplete="nickname" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>誕生月</label>
+                        <select id="birthMonth" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>誕生日</label>
+                        <select id="birthDay" class="form-control" required></select>
+                    </div>
+                </div>
+                <button class="btn-luxury" type="submit" id="submitButton">会員登録</button>
+                <div id="message" class="message"></div>
+            </form>
+
+            <div class="member-result" id="resultBox">
+                <p style="color:#aaa;">登録が完了しました</p>
+                <div class="member-no" id="memberNo"></div>
+                <p style="margin-top:12px;">確認用PIN: <strong id="birthdayPin"></strong></p>
+                <p class="member-url" id="memberUrl"></p>
+                <div class="member-actions">
+                    <a class="btn-luxury" id="loginLink" href="/members/login">ポイントを確認</a>
+                    <a class="btn-luxury" href="/shop-tempest.html">Tempestページへ</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const monthSelect = document.getElementById('birthMonth');
+        const daySelect = document.getElementById('birthDay');
+        const message = document.getElementById('message');
+        const resultBox = document.getElementById('resultBox');
+
+        for (let month = 1; month <= 12; month += 1) {
+            monthSelect.insertAdjacentHTML('beforeend', `<option value="${month}">${month}月</option>`);
+        }
+        for (let day = 1; day <= 31; day += 1) {
+            daySelect.insertAdjacentHTML('beforeend', `<option value="${day}">${day}日</option>`);
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            message.textContent = '登録中...';
+            message.className = 'message';
+            resultBox.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/members/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nickname: document.getElementById('nickname').value,
+                        birthMonth: monthSelect.value,
+                        birthDay: daySelect.value
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || '登録に失敗しました');
+                }
+
+                const memberUrl = new URL(result.memberUrl, window.location.origin).href;
+                document.getElementById('memberNo').textContent = result.member.memberNo;
+                document.getElementById('birthdayPin').textContent = result.birthdayPin;
+                document.getElementById('memberUrl').textContent = memberUrl;
+                document.getElementById('loginLink').href = result.memberUrl;
+                resultBox.style.display = 'block';
+                message.textContent = '';
+                event.target.reset();
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = 'message error';
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
