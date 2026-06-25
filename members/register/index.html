@@ -54,12 +54,7 @@
             font-size: 2rem;
             letter-spacing: 0.08em;
         }
-        .member-url {
-            word-break: break-all;
-            color: #ddd;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
+        [hidden] { display: none !important; }
         @media (max-width: 600px) {
             body { padding: 16px; }
             .member-card { padding: 24px 18px; }
@@ -147,7 +142,8 @@
                 document.getElementById('memberNo').textContent = result.member.memberNo;
                 document.getElementById('loginCode').textContent = `${result.member.memberNo.replace('-', '')}${result.birthdayPin}`.toLowerCase();
                 document.getElementById('loginLink').href = result.memberUrl;
-                document.getElementById('registerInputBox').style.display = 'none';
+                document.getElementById('registerInputBox').hidden = true;
+                event.target.hidden = true;
                 resultBox.style.display = 'block';
                 message.textContent = '';
             } catch (error) {

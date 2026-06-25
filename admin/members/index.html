@@ -45,11 +45,16 @@
         }
         .member-row {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr 0.8fr 1.8fr;
+            grid-template-columns: 1.2fr 0.9fr 0.8fr 0.9fr 0.9fr 1.8fr;
             gap: 12px;
             align-items: center;
             border-top: 1px solid #222;
             padding: 16px 0;
+        }
+        .ledger-head {
+            color: #777;
+            font-size: 0.76rem;
+            padding-bottom: 8px;
         }
         .member-row:first-child { border-top: none; }
         .member-no { color: var(--primary-gold); font-weight: 700; }
@@ -102,6 +107,7 @@
         }
         .announcement-form .wide { grid-column: 1 / -1; }
         @media (max-width: 900px) {
+            .ledger-head { display: none; }
             .member-row { grid-template-columns: 1fr; }
             .manual-form { grid-template-columns: 1fr; }
             .announcement-form { grid-template-columns: 1fr; }
@@ -133,13 +139,20 @@
                     <input id="searchInput" class="form-control" placeholder="MRT-0001 / ニックネーム">
                 </div>
                 <button class="btn-luxury" type="button" onclick="loadMembers()">検索</button>
-                <button class="btn-secondary" type="button" onclick="downloadCsv('members')">会員データ出力</button>
-                <button class="btn-secondary" type="button" onclick="downloadCsv('point_logs')">ポイント履歴出力</button>
                 <button class="btn-luxury" type="button" onclick="logout()">ログアウト</button>
             </div>
         </section>
 
         <section class="admin-card" id="memberList" style="display:none;"></section>
+
+        <section class="admin-card" id="exportPanel" style="display:none;">
+            <h1 class="serif admin-title">Data Export</h1>
+            <p class="muted">CSV出力は確認用の補助機能です。通常の確認とポイント操作は上の会員一覧で行ってください。</p>
+            <div class="toolbar">
+                <button class="btn-secondary" type="button" onclick="downloadCsv('members')">会員データ出力</button>
+                <button class="btn-secondary" type="button" onclick="downloadCsv('point_logs')">ポイント履歴出力</button>
+            </div>
+        </section>
 
         <section class="admin-card" id="announcementPanel" style="display:none;">
             <h1 class="serif admin-title">Announcements</h1>
@@ -224,6 +237,7 @@
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('memberList').style.display = 'block';
+                document.getElementById('exportPanel').style.display = 'block';
                 document.getElementById('announcementPanel').style.display = 'block';
                 await loadMembers();
                 await loadAnnouncements();
@@ -269,17 +283,31 @@
             list.innerHTML = `
                 <h2 style="color:var(--primary-gold); font-size:1rem; margin-bottom:12px;">会員一覧</h2>
                 <p class="muted">現在ポイント、来店回数、最終来店日、手動調整、履歴確認をここで確認できます。</p>
+                <div class="member-row ledger-head">
+                    <div>会員番号 / ニックネーム</div>
+                    <div>誕生日</div>
+                    <div>現在ポイント</div>
+                    <div>来店回数</div>
+                    <div>最終来店日</div>
+                    <div>履歴 / ポイント増減</div>
+                </div>
             ` + members.map(member => `
                 <div class="member-row" data-member-no="${escapeHTML(member.memberNo)}">
                     <div>
                         <div class="member-no">${escapeHTML(member.memberNo)}</div>
                         <strong>${escapeHTML(member.nickname)}</strong>
-                        <div class="muted">誕生日 ${member.birthMonth}/${member.birthDay}</div>
+                    </div>
+                    <div>
+                        <div class="muted">誕生日</div>
+                        <strong>${member.birthMonth}/${member.birthDay}</strong>
                     </div>
                     <div>
                         <div class="muted">現在ポイント</div>
                         <strong>${member.points} pt</strong>
-                        <div class="muted">来店回数 ${member.visitCount}回</div>
+                    </div>
+                    <div>
+                        <div class="muted">来店回数</div>
+                        <strong>${member.visitCount}回</strong>
                     </div>
                     <div class="muted">
                         最終来店<br>${formatDate(member.lastVisitAt)}
