@@ -124,6 +124,30 @@
             margin-top: 18px;
         }
         .announcement-form .wide { grid-column: 1 / -1; }
+        .date-picker-wrap {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            cursor: pointer;
+        }
+        .date-picker-wrap input[type="date"] {
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
+        }
+        .date-picker-btn {
+            border: 1px solid #333;
+            background: #090909;
+            color: #bbb;
+            padding: 10px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        select:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
         @media (max-width: 900px) {
             .ledger-head { display: none; }
             .member-row { grid-template-columns: 1fr; }
@@ -180,7 +204,7 @@
                 </div>
                 <div class="form-group">
                     <label>対象</label>
-                    <select id="announcementTargetType" class="form-control">
+                    <select id="announcementTargetType" class="form-control" onchange="updateAnnouncementTargetControls()">
                         <option value="all">全員</option>
                         <option value="birth_month">誕生月</option>
                         <option value="member">個別会員</option>
@@ -202,11 +226,17 @@
                 </div>
                 <div class="form-group">
                     <label>表示開始日</label>
-                    <input id="announcementStartAt" class="form-control" type="date">
+                    <div class="date-picker-wrap" onclick="openDatePicker('announcementStartAt')">
+                        <input id="announcementStartAt" class="form-control date-input" type="date">
+                        <button class="date-picker-btn" type="button">日付を選択</button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>表示終了日</label>
-                    <input id="announcementEndAt" class="form-control" type="date">
+                    <div class="date-picker-wrap" onclick="openDatePicker('announcementEndAt')">
+                        <input id="announcementEndAt" class="form-control date-input" type="date">
+                        <button class="date-picker-btn" type="button">日付を選択</button>
+                    </div>
                 </div>
                 <button class="btn-luxury" type="submit">お知らせ登録</button>
             </form>
@@ -240,6 +270,26 @@
             document.getElementById('announcementPanel').style.display = showMembers ? 'none' : 'block';
             document.getElementById('memberTabButton').classList.toggle('active', showMembers);
             document.getElementById('announcementTabButton').classList.toggle('active', !showMembers);
+            if (!showMembers) updateAnnouncementTargetControls();
+        }
+
+        function openDatePicker(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            input.focus();
+            if (typeof input.showPicker === 'function') {
+                input.showPicker();
+            }
+        }
+
+        function updateAnnouncementTargetControls() {
+            const targetType = document.getElementById('announcementTargetType').value;
+            const memberSelect = document.getElementById('announcementMemberNo');
+            const isMemberTarget = targetType === 'member';
+            memberSelect.disabled = !isMemberTarget;
+            if (!isMemberTarget) {
+                memberSelect.value = '';
+            }
         }
 
         document.getElementById('loginForm').addEventListener('submit', async (event) => {
@@ -500,7 +550,7 @@
                         body: document.getElementById('announcementBody').value,
                         targetType: document.getElementById('announcementTargetType').value,
                         targetBirthMonth: document.getElementById('announcementBirthMonth').value,
-                        targetMemberNo: document.getElementById('announcementMemberNo').value,
+                        targetMemberNo: document.getElementById('announcementTargetType').value === 'member' ? document.getElementById('announcementMemberNo').value : '',
                         startAt: document.getElementById('announcementStartAt').value,
                         endAt: document.getElementById('announcementEndAt').value,
                         isActive: true
@@ -509,6 +559,7 @@
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error || '登録できませんでした');
                 event.target.reset();
+                updateAnnouncementTargetControls();
                 message.textContent = '登録しました';
                 message.className = 'message success';
                 await loadAnnouncements();
