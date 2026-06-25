@@ -149,8 +149,8 @@
         </section>
 
         <section class="admin-card" id="adminPanel" style="display:none;">
-            <h1 class="serif admin-title">Point Management</h1>
-            <p class="muted">会員検索、来店ポイント、手動調整を行います。</p>
+            <h1 class="serif admin-title">Tempest 会員台帳</h1>
+            <p class="muted">会員情報、現在ポイント、来店履歴、ポイント増減をこの画面で確認・操作します。</p>
             <div class="admin-tabs">
                 <button class="tab-button active" id="memberTabButton" type="button" onclick="showAdminTab('members')">会員一覧</button>
                 <button class="tab-button" id="announcementTabButton" type="button" onclick="showAdminTab('announcements')">お知らせ・クーポン</button>
@@ -167,15 +167,6 @@
 
         <div id="memberTab">
             <section class="admin-card" id="memberList" style="display:none;"></section>
-
-            <section class="admin-card" id="exportPanel" style="display:none;">
-                <h1 class="serif admin-title">Data Export</h1>
-                <p class="muted">CSV出力は確認用の補助機能です。通常の確認とポイント操作は上の会員一覧で行ってください。</p>
-                <div class="toolbar">
-                    <button class="btn-secondary" type="button" onclick="downloadCsv('members')">会員データ出力</button>
-                    <button class="btn-secondary" type="button" onclick="downloadCsv('point_logs')">ポイント履歴出力</button>
-                </div>
-            </section>
         </div>
 
         <section class="admin-card" id="announcementPanel" style="display:none;">
@@ -276,7 +267,6 @@
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('memberList').style.display = 'block';
-                document.getElementById('exportPanel').style.display = 'block';
                 showAdminTab('members');
                 await loadMembers();
                 await loadAnnouncements();
@@ -330,7 +320,7 @@
             }
             list.innerHTML = `
                 <h2 style="color:var(--primary-gold); font-size:1rem; margin-bottom:12px;">会員一覧</h2>
-                <p class="muted">現在ポイント、来店回数、最終来店日、手動調整、履歴確認をここで確認できます。</p>
+                <p class="muted">スプレッドシートのように、会員情報とポイント操作を一覧で確認できます。</p>
                 <div class="member-row ledger-head">
                     <div>会員番号 / ニックネーム</div>
                     <div>誕生日</div>
@@ -394,11 +384,6 @@
             } catch (error) {
                 box.textContent = error.message;
             }
-        }
-
-        function downloadCsv(type) {
-            if (!currentToken) return;
-            window.open(`/api/members/export?type=${encodeURIComponent(type)}&token=${encodeURIComponent(currentToken)}`, '_blank', 'noopener');
         }
 
         async function submitManual(form, memberNo) {
