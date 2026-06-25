@@ -157,6 +157,12 @@
             </div>
             <div class="toolbar">
                 <div class="form-group">
+                    <label>会員を選択</label>
+                    <select id="memberSelect" class="form-control" onchange="selectMemberFromDropdown()">
+                        <option value="">全員を表示</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>ニックネーム / 会員番号で検索</label>
                     <input id="searchInput" class="form-control" placeholder="MRT-0001 / ニックネーム">
                 </div>
@@ -298,7 +304,9 @@
                     throw new Error(result.error || '会員一覧を取得できませんでした');
                 }
                 latestMembers = result.members || [];
-                renderMemberOptions(latestMembers);
+                if (!query) {
+                    renderMemberOptions(latestMembers);
+                }
                 renderMembers(result.members || []);
             } catch (error) {
                 list.innerHTML = `<p class="message error">${escapeHTML(error.message)}</p>`;
@@ -306,10 +314,20 @@
         }
 
         function renderMemberOptions(members) {
-            const select = document.getElementById('announcementMemberNo');
-            select.innerHTML = '<option value="">会員を選択</option>' + members.map(member =>
+            const announcementSelect = document.getElementById('announcementMemberNo');
+            const memberSelect = document.getElementById('memberSelect');
+            announcementSelect.innerHTML = '<option value="">会員を選択</option>' + members.map(member =>
                 `<option value="${escapeHTML(member.memberNo)}">${escapeHTML(member.memberNo)} / ${escapeHTML(member.nickname)}</option>`
             ).join('');
+            memberSelect.innerHTML = '<option value="">全員を表示</option>' + members.map(member =>
+                `<option value="${escapeHTML(member.memberNo)}">${escapeHTML(member.memberNo)} / ${escapeHTML(member.nickname)} / ${member.birthMonth}月${member.birthDay}日</option>`
+            ).join('');
+        }
+
+        function selectMemberFromDropdown() {
+            const selectedMemberNo = document.getElementById('memberSelect').value;
+            document.getElementById('searchInput').value = selectedMemberNo;
+            loadMembers();
         }
 
         function renderMembers(members) {

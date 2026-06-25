@@ -26,6 +26,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
         }
         .member-card { margin-bottom: 20px; }
+        [hidden] { display: none !important; }
         #memberPanel {
             position: relative;
             overflow: hidden;
@@ -195,6 +196,7 @@
                 }
 
                 renderMember(result);
+                document.getElementById('loginBox').hidden = true;
                 message.textContent = '';
             } catch (error) {
                 message.textContent = error.message;
