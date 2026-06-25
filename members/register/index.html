@@ -44,7 +44,6 @@
         }
         .member-result {
             display: none;
-            margin-top: 28px;
             padding: 20px;
             border: 1px solid rgba(204, 190, 124, 0.28);
             background: #080808;
@@ -71,35 +70,36 @@
 <body>
     <main class="member-shell">
         <section class="member-card">
-            <h1 class="serif member-title">Tempest Digital Member</h1>
-            <p class="member-note">ニックネームと誕生日（月日）のみで、試験用の会員番号を発行します。</p>
+            <div id="registerInputBox">
+                <h1 class="serif member-title">Tempest Digital Member</h1>
+                <p class="member-note">ニックネームと誕生日（月日）のみで、試験用の会員番号を発行します。</p>
 
-            <form id="registerForm">
-                <div class="form-group">
-                    <label>ニックネーム</label>
-                    <input id="nickname" class="form-control" maxlength="40" autocomplete="nickname" required>
-                </div>
-                <div class="form-row">
+                <form id="registerForm">
                     <div class="form-group">
-                        <label>誕生月</label>
-                        <select id="birthMonth" class="form-control" required></select>
+                        <label>ニックネーム</label>
+                        <input id="nickname" class="form-control" maxlength="40" autocomplete="nickname" required>
                     </div>
-                    <div class="form-group">
-                        <label>誕生日</label>
-                        <select id="birthDay" class="form-control" required></select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>誕生月</label>
+                            <select id="birthMonth" class="form-control" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>誕生日</label>
+                            <select id="birthDay" class="form-control" required></select>
+                        </div>
                     </div>
-                </div>
-                <button class="btn-luxury" type="submit" id="submitButton">会員登録</button>
-                <div id="message" class="message"></div>
-            </form>
+                    <button class="btn-luxury" type="submit" id="submitButton">会員登録</button>
+                    <div id="message" class="message"></div>
+                </form>
+            </div>
 
             <div class="member-result" id="resultBox">
                 <p style="color:#aaa;">登録が完了しました</p>
                 <div class="member-no" id="memberNo"></div>
-                <p style="margin-top:12px;">確認用PIN: <strong id="birthdayPin"></strong></p>
-                <p style="margin-top:12px; color:#ddd;">次回からは、この画面または会員番号をスタッフにお伝えください。</p>
-                <p style="margin-top:8px;">ログイン用コード: <strong id="loginCode"></strong></p>
-                <p class="member-url" id="memberUrl"></p>
+                <p style="margin-top:8px;">ログインコード: <strong id="loginCode"></strong></p>
+                <p style="margin-top:12px; color:#ddd;">次回からはこの画面をスタッフに見せるか、会員番号をお伝えください。</p>
+                <p style="margin-top:8px; color:#aaa;">スクリーンショットしておくと便利です。</p>
                 <div class="member-actions">
                     <a class="btn-luxury" id="loginLink" href="/members/login">ポイントを確認</a>
                     <a class="btn-luxury" href="/shop-tempest.html">Tempestページへ</a>
@@ -144,15 +144,12 @@
                     throw new Error(result.error || '登録に失敗しました');
                 }
 
-                const memberUrl = new URL(result.memberUrl, window.location.origin).href;
                 document.getElementById('memberNo').textContent = result.member.memberNo;
-                document.getElementById('birthdayPin').textContent = result.birthdayPin;
-                document.getElementById('loginCode').textContent = `${result.member.memberNo.replace('-', '')}${result.birthdayPin}`;
-                document.getElementById('memberUrl').textContent = memberUrl;
+                document.getElementById('loginCode').textContent = `${result.member.memberNo.replace('-', '')}${result.birthdayPin}`.toLowerCase();
                 document.getElementById('loginLink').href = result.memberUrl;
+                document.getElementById('registerInputBox').style.display = 'none';
                 resultBox.style.display = 'block';
                 message.textContent = '';
-                event.target.reset();
             } catch (error) {
                 message.textContent = error.message;
                 message.className = 'message error';

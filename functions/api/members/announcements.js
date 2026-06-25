@@ -91,3 +91,23 @@ export async function onRequestPost(context) {
 
     return jsonResponse({ ok: true }, 201);
 }
+
+export async function onRequestPatch(context) {
+    const { request, env } = context;
+    const db = env.MARUTE_DB;
+    if (!db) {
+        return jsonResponse({ error: 'Configuration Error', details: 'MARUTE_DB D1 binding is not configured.' }, 500);
+    }
+    if (!(await requireAdmin(request, env))) {
+        return jsonResponse({ error: 'Invalid password' }, 403);
+    }
+
+    const body = await request.json();
+    const id = Number(body.id);
+    if (!Number.isInteger(id) || id < 1) {
+        return jsonResponse({ error: 'Announcement id is invalid' }, 400);
+    }
+
+    await db.prepare('UPDATE announcements SET is_active = ?1 WHERE id = ?2').bind(body.isActive ? 1 : 0, id).run();
+    return jsonResponse({ ok: true });
+}

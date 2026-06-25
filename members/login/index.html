@@ -26,6 +26,23 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
         }
         .member-card { margin-bottom: 20px; }
+        #memberPanel {
+            position: relative;
+            overflow: hidden;
+        }
+        #memberPanel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('/assets/images/marute_logo_mark.jpg') no-repeat center 42%;
+            background-size: min(62%, 280px);
+            opacity: 0.06;
+            pointer-events: none;
+        }
+        #memberPanel > * {
+            position: relative;
+            z-index: 1;
+        }
         .member-title {
             color: var(--primary-gold);
             font-size: 1.6rem;
@@ -85,17 +102,15 @@
     <main class="member-shell">
         <section class="member-card" id="loginBox">
             <h1 class="serif member-title">Tempest Member Card</h1>
-            <p class="member-note">会員番号またはログイン用コードで、現在ポイントを確認できます。</p>
+            <p class="member-note">ログインコードで、現在ポイントを確認できます。</p>
             <form id="loginForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>会員番号または会員コード</label>
-                        <input id="memberCodeInput" class="form-control" placeholder="MRT-0001 / 0001 / MRT00010601" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label>誕生日4桁</label>
-                        <input id="birthdayPinInput" class="form-control" placeholder="0105（コード入力時は省略可）" inputmode="numeric" maxlength="4" autocomplete="off">
-                    </div>
+                <div class="form-group">
+                    <label>ログインコード</label>
+                    <input id="memberCodeInput" class="form-control" placeholder="mrt00100430" autocomplete="off" required>
+                </div>
+                <div class="form-group" id="pinGroup" style="display:none;">
+                    <label>誕生日4桁</label>
+                    <input id="birthdayPinInput" class="form-control" placeholder="0510" inputmode="numeric" maxlength="4" autocomplete="off">
                 </div>
                 <button class="btn-luxury" type="submit" id="loginButton">表示する</button>
                 <div id="message" class="message"></div>
@@ -135,6 +150,7 @@
         const message = document.getElementById('message');
         if (params.get('memberNo')) {
             memberCodeInput.value = params.get('memberNo');
+            document.getElementById('pinGroup').style.display = 'block';
         }
 
         function escapeHTML(str) {
@@ -154,11 +170,22 @@
             message.className = 'message';
 
             try {
+                const memberCode = memberCodeInput.value.trim();
+                const pinGroup = document.getElementById('pinGroup');
+                const looksLikeMemberOnly = /^(MRT-?\d{4}|\d{4})$/i.test(memberCode.replace(/\s+/g, ''));
+                if (looksLikeMemberOnly && !birthdayPinInput.value.trim() && pinGroup.style.display === 'none') {
+                    pinGroup.style.display = 'block';
+                    birthdayPinInput.focus();
+                    message.textContent = '誕生日4桁を入力してください。';
+                    message.className = 'message';
+                    return;
+                }
+
                 const response = await fetch('/api/members/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        memberCode: memberCodeInput.value,
+                        memberCode,
                         birthdayPin: birthdayPinInput.value
                     })
                 });

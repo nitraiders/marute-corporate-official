@@ -40,6 +40,13 @@ function parseLoginBody(body) {
             birthdayPin: combinedMatch[2]
         };
     }
+    const numericCombinedMatch = compact.match(/^(\d{4})(\d{4})$/);
+    if (numericCombinedMatch && !body.birthdayPin) {
+        return {
+            memberNo: normalizeMemberNo(numericCombinedMatch[1]),
+            birthdayPin: numericCombinedMatch[2]
+        };
+    }
     return {
         memberNo: normalizeMemberNo(rawCode),
         birthdayPin: normalizePin(body.birthdayPin)

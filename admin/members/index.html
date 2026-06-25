@@ -67,6 +67,14 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .btn-secondary {
+            border: 1px solid #333;
+            background: transparent;
+            color: #bbb;
+            padding: 10px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
         .manual-form {
             display: grid;
             grid-template-columns: 90px 1fr auto;
@@ -125,8 +133,8 @@
                     <input id="searchInput" class="form-control" placeholder="MRT-0001 / ニックネーム">
                 </div>
                 <button class="btn-luxury" type="button" onclick="loadMembers()">検索</button>
-                <button class="btn-luxury" type="button" onclick="downloadCsv('members')">会員CSV</button>
-                <button class="btn-luxury" type="button" onclick="downloadCsv('point_logs')">履歴CSV</button>
+                <button class="btn-secondary" type="button" onclick="downloadCsv('members')">会員データ出力</button>
+                <button class="btn-secondary" type="button" onclick="downloadCsv('point_logs')">ポイント履歴出力</button>
                 <button class="btn-luxury" type="button" onclick="logout()">ログアウト</button>
             </div>
         </section>
@@ -176,6 +184,7 @@
                 <button class="btn-luxury" type="submit">お知らせ登録</button>
             </form>
             <div id="announcementMessage" class="message"></div>
+            <h2 style="color:var(--primary-gold); font-size:1rem; margin-top:22px;">登録済みのお知らせ</h2>
             <div id="announcementList" class="announcement-list"></div>
         </section>
     </main>
@@ -257,7 +266,10 @@
                 list.innerHTML = '<p class="muted">会員が見つかりません。</p>';
                 return;
             }
-            list.innerHTML = members.map(member => `
+            list.innerHTML = `
+                <h2 style="color:var(--primary-gold); font-size:1rem; margin-bottom:12px;">会員一覧</h2>
+                <p class="muted">現在ポイント、来店回数、最終来店日、手動調整、履歴確認をここで確認できます。</p>
+            ` + members.map(member => `
                 <div class="member-row" data-member-no="${escapeHTML(member.memberNo)}">
                     <div>
                         <div class="member-no">${escapeHTML(member.memberNo)}</div>
@@ -265,8 +277,9 @@
                         <div class="muted">誕生日 ${member.birthMonth}/${member.birthDay}</div>
                     </div>
                     <div>
+                        <div class="muted">現在ポイント</div>
                         <strong>${member.points} pt</strong>
-                        <div class="muted">来店 ${member.visitCount}回</div>
+                        <div class="muted">来店回数 ${member.visitCount}回</div>
                     </div>
                     <div class="muted">
                         最終来店<br>${formatDate(member.lastVisitAt)}
@@ -279,9 +292,9 @@
                             <button type="button" onclick="loadHistory('${escapeHTML(member.memberNo)}')">履歴</button>
                         </div>
                         <form class="manual-form" onsubmit="event.preventDefault(); submitManual(this, '${escapeHTML(member.memberNo)}');" style="margin-top:10px;">
-                            <input class="form-control" name="delta" type="number" placeholder="+/-" required>
-                            <input class="form-control" name="memo" maxlength="200" placeholder="メモ（必須）" required>
-                            <button class="btn-luxury" type="submit">調整</button>
+                            <input class="form-control" name="delta" type="number" placeholder="増やす/減らす" required>
+                            <input class="form-control" name="memo" maxlength="200" placeholder="理由メモ（必須）" required>
+                            <button class="btn-luxury" type="submit">反映</button>
                         </form>
                         <div class="history-box" id="history-${escapeHTML(member.memberNo)}" style="display:none;"></div>
                     </div>
@@ -358,10 +371,48 @@
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error || 'お知らせを取得できませんでした');
                 list.innerHTML = result.announcements && result.announcements.length
-                    ? result.announcements.map(item => `<div style="border-top:1px solid #222; padding:10px 0;"><strong>${escapeHTML(item.title)}</strong><div>${escapeHTML(item.body)}</div><div class="muted">${escapeHTML(item.target_type)} / ${item.is_active ? '有効' : '無効'}</div></div>`).join('')
+                    ? result.announcements.map(item => `
+                        <div style="border-top:1px solid #222; padding:10px 0;">
+                            <strong>${escapeHTML(item.title)}</strong>
+                            <div>${escapeHTML(item.body)}</div>
+                            <div class="muted">${escapeHTML(targetLabel(item))} / ${item.is_active ? '有効' : '無効'}</div>
+                            ${item.is_active ? `<button class="btn-secondary" type="button" style="margin-top:8px;" onclick="disableAnnouncement(${Number(item.id)})">無効にする</button>` : ''}
+                        </div>
+                    `).join('')
                     : 'お知らせはありません。';
             } catch (error) {
                 list.textContent = error.message;
+            }
+        }
+
+        function targetLabel(item) {
+            if (item.target_type === 'birth_month') return `${item.target_birth_month}月生まれ`;
+            if (item.target_type === 'member') return item.target_member_no ? `個別 ${item.target_member_no}` : '個別会員';
+            return '全員';
+        }
+
+        async function disableAnnouncement(id) {
+            if (!currentToken || !id) return;
+            if (!confirm('このお知らせを無効にしますか？')) return;
+            const message = document.getElementById('announcementMessage');
+            message.textContent = '無効化中...';
+            try {
+                const response = await fetch('/api/members/announcements', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ id, isActive: false })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || '無効化できませんでした');
+                message.textContent = '無効にしました';
+                message.className = 'message success';
+                await loadAnnouncements();
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = 'message error';
             }
         }
 
