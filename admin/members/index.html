@@ -413,6 +413,7 @@
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 2, 'companion', '同伴')">同伴 +2</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'bottle', 'ボトル')">ボトル +3</button>
                             <button type="button" onclick="loadHistory('${escapeHTML(member.memberNo)}')">履歴</button>
+                            <button type="button" onclick="deleteMember('${escapeHTML(member.memberNo)}', '${escapeHTML(member.nickname)}')">削除</button>
                         </div>
                         <form class="manual-form" onsubmit="event.preventDefault(); submitManual(this, '${escapeHTML(member.memberNo)}');" style="margin-top:10px;">
                             <input class="form-control" name="delta" type="number" placeholder="増やす/減らす" required>
@@ -472,6 +473,30 @@
                 const result = await response.json();
                 if (!response.ok) {
                     throw new Error(result.error || 'ポイント更新に失敗しました');
+                }
+                await loadMembers();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function deleteMember(memberNo, nickname) {
+            if (!currentToken) return;
+            const confirmed = confirm(`会員番号: ${memberNo}\nニックネーム: ${nickname}\n\nこの会員を本当に削除しますか？\n(削除するとログインおよびポイント付与ができなくなります)`);
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch('/api/members/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        memberNo
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || '会員の削除に失敗しました');
                 }
                 await loadMembers();
             } catch (error) {

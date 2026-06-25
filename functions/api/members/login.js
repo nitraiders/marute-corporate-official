@@ -64,7 +64,7 @@ export async function onRequestPost(context) {
 
     const member = await db.prepare(`
         SELECT * FROM members
-        WHERE member_no = ?1 AND birthday_pin = ?2
+        WHERE member_no = ?1 AND birthday_pin = ?2 AND deleted_at IS NULL
     `).bind(memberNo, birthdayPin).first();
 
     if (!member) {

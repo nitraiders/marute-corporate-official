@@ -49,7 +49,7 @@ export async function onRequestPost(context) {
         return jsonResponse({ error: 'Memo is required for manual point adjustments' }, 400);
     }
 
-    const member = await db.prepare('SELECT * FROM members WHERE member_no = ?1').bind(memberNo).first();
+    const member = await db.prepare('SELECT * FROM members WHERE member_no = ?1 AND deleted_at IS NULL').bind(memberNo).first();
     if (!member) {
         return jsonResponse({ error: 'Member not found' }, 404);
     }

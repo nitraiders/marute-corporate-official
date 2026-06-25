@@ -55,12 +55,14 @@ export async function onRequestGet(context) {
             SELECT * FROM members
             WHERE member_no LIKE ?1
               AND (member_no LIKE ?2 OR nickname LIKE ?2)
+              AND deleted_at IS NULL
             ORDER BY created_at DESC
             LIMIT 100
         `).bind(`${SHOP_CONFIG.memberPrefix}-%`, `%${query}%`)
         : db.prepare(`
             SELECT * FROM members
             WHERE member_no LIKE ?1
+              AND deleted_at IS NULL
             ORDER BY created_at DESC
             LIMIT 100
         `).bind(`${SHOP_CONFIG.memberPrefix}-%`);
