@@ -80,6 +80,24 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+        .tab-button {
+            border: 1px solid #333;
+            background: #090909;
+            color: #bbb;
+            padding: 10px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            border-color: rgba(204, 190, 124, 0.65);
+            color: var(--primary-gold);
+        }
         .manual-form {
             display: grid;
             grid-template-columns: 90px 1fr auto;
@@ -133,6 +151,10 @@
         <section class="admin-card" id="adminPanel" style="display:none;">
             <h1 class="serif admin-title">Point Management</h1>
             <p class="muted">会員検索、来店ポイント、手動調整を行います。</p>
+            <div class="admin-tabs">
+                <button class="tab-button active" id="memberTabButton" type="button" onclick="showAdminTab('members')">会員一覧</button>
+                <button class="tab-button" id="announcementTabButton" type="button" onclick="showAdminTab('announcements')">お知らせ・クーポン</button>
+            </div>
             <div class="toolbar">
                 <div class="form-group">
                     <label>ニックネーム / 会員番号で検索</label>
@@ -143,19 +165,21 @@
             </div>
         </section>
 
-        <section class="admin-card" id="memberList" style="display:none;"></section>
+        <div id="memberTab">
+            <section class="admin-card" id="memberList" style="display:none;"></section>
 
-        <section class="admin-card" id="exportPanel" style="display:none;">
-            <h1 class="serif admin-title">Data Export</h1>
-            <p class="muted">CSV出力は確認用の補助機能です。通常の確認とポイント操作は上の会員一覧で行ってください。</p>
-            <div class="toolbar">
-                <button class="btn-secondary" type="button" onclick="downloadCsv('members')">会員データ出力</button>
-                <button class="btn-secondary" type="button" onclick="downloadCsv('point_logs')">ポイント履歴出力</button>
-            </div>
-        </section>
+            <section class="admin-card" id="exportPanel" style="display:none;">
+                <h1 class="serif admin-title">Data Export</h1>
+                <p class="muted">CSV出力は確認用の補助機能です。通常の確認とポイント操作は上の会員一覧で行ってください。</p>
+                <div class="toolbar">
+                    <button class="btn-secondary" type="button" onclick="downloadCsv('members')">会員データ出力</button>
+                    <button class="btn-secondary" type="button" onclick="downloadCsv('point_logs')">ポイント履歴出力</button>
+                </div>
+            </section>
+        </div>
 
         <section class="admin-card" id="announcementPanel" style="display:none;">
-            <h1 class="serif admin-title">Announcements</h1>
+            <h1 class="serif admin-title">お知らせ・クーポン</h1>
             <p class="muted">会員ページに表示するお知らせ・クーポンを登録します。</p>
             <form id="announcementForm" class="announcement-form">
                 <div class="form-group">
@@ -168,6 +192,16 @@
                         <option value="all">全員</option>
                         <option value="birth_month">誕生月</option>
                         <option value="member">個別会員</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>誕生月</label>
+                    <select id="announcementBirthMonth" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>個別会員番号</label>
+                    <select id="announcementMemberNo" class="form-control">
+                        <option value="">会員を選択</option>
                     </select>
                 </div>
                 <div class="form-group wide">
@@ -183,15 +217,7 @@
                     <input id="announcementEndAt" class="form-control" type="date">
                 </div>
                 <div class="form-group">
-                    <label>誕生月</label>
-                    <input id="announcementBirthMonth" class="form-control" type="number" min="1" max="12" placeholder="6">
-                </div>
-                <div class="form-group">
-                    <label>個別会員番号</label>
-                    <input id="announcementMemberNo" class="form-control" placeholder="MRT-0001">
-                </div>
-                <div class="form-group">
-                    <label>有効</label>
+                    <label>表示する</label>
                     <input id="announcementActive" type="checkbox" checked>
                 </div>
                 <button class="btn-luxury" type="submit">お知らせ登録</button>
@@ -204,6 +230,7 @@
 
     <script>
         let currentToken = '';
+        let latestMembers = [];
 
         function escapeHTML(str) {
             if (!str) return '';
@@ -213,6 +240,18 @@
         function formatDate(value) {
             if (!value) return '未記録';
             return new Date(value).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+
+        for (let month = 1; month <= 12; month += 1) {
+            document.getElementById('announcementBirthMonth').insertAdjacentHTML('beforeend', `<option value="${month}">${month}月</option>`);
+        }
+
+        function showAdminTab(tabName) {
+            const showMembers = tabName === 'members';
+            document.getElementById('memberTab').style.display = showMembers ? 'block' : 'none';
+            document.getElementById('announcementPanel').style.display = showMembers ? 'none' : 'block';
+            document.getElementById('memberTabButton').classList.toggle('active', showMembers);
+            document.getElementById('announcementTabButton').classList.toggle('active', !showMembers);
         }
 
         document.getElementById('loginForm').addEventListener('submit', async (event) => {
@@ -238,7 +277,7 @@
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('memberList').style.display = 'block';
                 document.getElementById('exportPanel').style.display = 'block';
-                document.getElementById('announcementPanel').style.display = 'block';
+                showAdminTab('members');
                 await loadMembers();
                 await loadAnnouncements();
             } catch (error) {
@@ -268,10 +307,19 @@
                 if (!response.ok) {
                     throw new Error(result.error || '会員一覧を取得できませんでした');
                 }
+                latestMembers = result.members || [];
+                renderMemberOptions(latestMembers);
                 renderMembers(result.members || []);
             } catch (error) {
                 list.innerHTML = `<p class="message error">${escapeHTML(error.message)}</p>`;
             }
+        }
+
+        function renderMemberOptions(members) {
+            const select = document.getElementById('announcementMemberNo');
+            select.innerHTML = '<option value="">会員を選択</option>' + members.map(member =>
+                `<option value="${escapeHTML(member.memberNo)}">${escapeHTML(member.memberNo)} / ${escapeHTML(member.nickname)}</option>`
+            ).join('');
         }
 
         function renderMembers(members) {
