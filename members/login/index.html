@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Tempest Member Card | まるて株式会社</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            min-height: 100dvh;
+            background: linear-gradient(160deg, #050505, #151515 55%, #050505);
+            padding: 24px;
+        }
+        .member-shell {
+            width: min(100%, 720px);
+            margin: 0 auto;
+            padding: 42px 0;
+        }
+        .member-card, .member-panel {
+            background: rgba(17, 17, 17, 0.94);
+            border: 1px solid rgba(204, 190, 124, 0.28);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+        }
+        .member-card { margin-bottom: 20px; }
+        [hidden] { display: none !important; }
+        #memberPanel {
+            position: relative;
+            overflow: hidden;
+        }
+        #memberPanel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('/assets/images/marute_logo_mark.jpg') no-repeat center 42%;
+            background-size: min(62%, 280px);
+            opacity: 0.06;
+            pointer-events: none;
+        }
+        #memberPanel > * {
+            position: relative;
+            z-index: 1;
+        }
+        .member-title {
+            color: var(--primary-gold);
+            font-size: 1.6rem;
+            letter-spacing: 0.12em;
+            margin-bottom: 8px;
+        }
+        .member-note {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 24px 0;
+        }
+        .summary-item {
+            background: #050505;
+            border: 1px solid #222;
+            padding: 16px;
+            border-radius: 6px;
+        }
+        .summary-label {
+            color: #777;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+        .summary-value {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            line-height: 1.1;
+        }
+        .notice-card, .history-row {
+            border: 1px solid #222;
+            background: #080808;
+            border-radius: 6px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .point-plus { color: #8ee6a2; }
+        .point-minus { color: #f08a8a; }
+        .register-link {
+            display: inline-block;
+            color: var(--primary-gold);
+            border-bottom: 1px solid rgba(204, 190, 124, 0.55);
+            font-size: 0.9rem;
+            margin-bottom: 22px;
+        }
+        .register-link:hover {
+            opacity: 0.78;
+        }
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            .member-card, .member-panel { padding: 22px 16px; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .history-row { flex-direction: column; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="member-shell">
+        <section class="member-card" id="loginBox">
+            <h1 class="serif member-title">Tempest Member Card</h1>
+            <p class="member-note">ログインコードで、現在ポイントを確認できます。</p>
+            <a class="register-link" href="/tempest/members/register/">初めての方はこちら（新規会員登録）</a>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>ログインコード</label>
+                    <input id="memberCodeInput" class="form-control" placeholder="tem00100430" autocomplete="off" required>
+                </div>
+                <div class="form-group" id="pinGroup" style="display:none;">
+                    <label>誕生日4桁</label>
+                    <input id="birthdayPinInput" class="form-control" placeholder="0510" inputmode="numeric" maxlength="4" autocomplete="off">
+                </div>
+                <button class="btn-luxury" type="submit" id="loginButton">表示する</button>
+                <div id="message" class="message"></div>
+            </form>
+        </section>
+
+        <section class="member-panel" id="memberPanel" style="display:none;">
+            <p style="color:#aaa;">DIGITAL MEMBER</p>
+            <h2 class="serif member-title" id="nickname"></h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">会員番号</div>
+                    <div class="summary-value" id="memberNo"></div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">現在ポイント</div>
+                    <div class="summary-value" id="points"></div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">来店回数</div>
+                    <div class="summary-value" id="visitCount"></div>
+                </div>
+            </div>
+
+            <h3 style="color:var(--primary-gold); margin-top:28px;">お知らせ・クーポン</h3>
+            <div id="announcements"></div>
+
+            <h3 style="color:var(--primary-gold); margin-top:28px;">ポイント履歴</h3>
+            <div id="logs"></div>
+        </section>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const memberCodeInput = document.getElementById('memberCodeInput');
+        const birthdayPinInput = document.getElementById('birthdayPinInput');
+        const message = document.getElementById('message');
+        if (params.get('memberNo')) {
+            memberCodeInput.value = params.get('memberNo');
+            document.getElementById('pinGroup').style.display = 'block';
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '未記録';
+            return new Date(value).toLocaleString('ja-JP', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            document.getElementById('loginButton').disabled = true;
+            message.textContent = '確認中...';
+            message.className = 'message';
+
+            try {
+                const memberCode = memberCodeInput.value.trim();
+                const pinGroup = document.getElementById('pinGroup');
+                const looksLikeMemberOnly = /^(TEM-?\d{4}|\d{4})$/i.test(memberCode.replace(/\s+/g, ''));
+                if (looksLikeMemberOnly && !birthdayPinInput.value.trim() && pinGroup.style.display === 'none') {
+                    pinGroup.style.display = 'block';
+                    birthdayPinInput.focus();
+                    message.textContent = '誕生日4桁を入力してください。';
+                    message.className = 'message';
+                    return;
+                }
+
+                const response = await fetch('/api/members/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        memberCode,
+                        birthdayPin: birthdayPinInput.value
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || '会員情報を確認できませんでした');
+                }
+
+                renderMember(result);
+                document.getElementById('loginBox').hidden = true;
+                message.textContent = '';
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = 'message error';
+                document.getElementById('memberPanel').style.display = 'none';
+            } finally {
+                document.getElementById('loginButton').disabled = false;
+            }
+        });
+
+        function renderMember(result) {
+            const member = result.member;
+            document.getElementById('nickname').textContent = member.nickname;
+            document.getElementById('memberNo').textContent = member.memberNo;
+            document.getElementById('points').textContent = `${member.points} pt`;
+            document.getElementById('visitCount').textContent = `${member.visitCount} 回`;
+
+            const announcements = result.announcements && result.announcements.length
+                ? result.announcements
+                : [{ title: 'Tempest Member Benefit', body: 'ご来店時にこの画面をご提示ください。試験運用中の会員特典をご案内します。' }];
+            document.getElementById('announcements').innerHTML = announcements.map(item => `
+                <div class="notice-card">
+                    <strong>${escapeHTML(item.title)}</strong>
+                    <p style="color:#bbb; margin-top:6px;">${escapeHTML(item.body)}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('logs').innerHTML = result.logs && result.logs.length
+                ? result.logs.map(log => `
+                    <div class="history-row">
+                        <div>
+                            <strong>${escapeHTML(log.reason)}</strong>
+                            <div style="color:#777; font-size:0.8rem;">${formatDate(log.created_at)} ${log.memo ? ` / ${escapeHTML(log.memo)}` : ''}</div>
+                        </div>
+                        <strong class="${log.point_delta >= 0 ? 'point-plus' : 'point-minus'}">${log.point_delta > 0 ? '+' : ''}${log.point_delta} pt</strong>
+                    </div>
+                `).join('')
+                : '<p style="color:#777; margin-top:10px;">ポイント履歴はまだありません。</p>';
+
+            document.getElementById('memberPanel').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
