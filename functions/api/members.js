@@ -1,4 +1,5 @@
 import { verifyAdminToken } from './auth.js';
+import { SHOP_CONFIG } from './members/config.js';
 
 function jsonResponse(body, status = 200) {
     return new Response(JSON.stringify(body), {
@@ -52,11 +53,17 @@ export async function onRequestGet(context) {
     const statement = query
         ? db.prepare(`
             SELECT * FROM members
-            WHERE member_no LIKE ?1 OR nickname LIKE ?1
+            WHERE member_no LIKE ?1
+              AND (member_no LIKE ?2 OR nickname LIKE ?2)
             ORDER BY created_at DESC
             LIMIT 100
-        `).bind(`%${query}%`)
-        : db.prepare('SELECT * FROM members ORDER BY created_at DESC LIMIT 100');
+        `).bind(`${SHOP_CONFIG.memberPrefix}-%`, `%${query}%`)
+        : db.prepare(`
+            SELECT * FROM members
+            WHERE member_no LIKE ?1
+            ORDER BY created_at DESC
+            LIMIT 100
+        `).bind(`${SHOP_CONFIG.memberPrefix}-%`);
     const result = await statement.all();
 
     return jsonResponse({

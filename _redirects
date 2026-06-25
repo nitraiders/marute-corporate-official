@@ -1,0 +1,3 @@
+/tempest/members/login/ /members/login/ 200
+/tempest/members/register/ /members/register/ 200
+/admin/tempest/members/ /admin/members/ 200

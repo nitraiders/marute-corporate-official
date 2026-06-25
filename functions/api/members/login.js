@@ -1,3 +1,5 @@
+import { SHOP_CONFIG, normalizeMemberNo } from './config.js';
+
 function jsonResponse(body, status = 200) {
     return new Response(JSON.stringify(body), {
         status,
@@ -24,16 +26,10 @@ function normalizePin(value) {
     return String(value || '').replace(/\D/g, '').padStart(4, '0').slice(-4);
 }
 
-function normalizeMemberNo(value) {
-    const digits = String(value || '').toUpperCase().replace(/^MRT/, '').replace(/\D/g, '');
-    if (!digits) return '';
-    return `MRT-${digits.padStart(4, '0')}`;
-}
-
 function parseLoginBody(body) {
     const rawCode = String(body.memberCode || body.memberNo || '').trim().toUpperCase();
     const compact = rawCode.replace(/[^A-Z0-9]/g, '');
-    const combinedMatch = compact.match(/^MRT(\d{4,})(\d{4})$/);
+    const combinedMatch = compact.match(new RegExp(`^${SHOP_CONFIG.memberPrefix}(\\d{4,})(\\d{4})$`));
     if (combinedMatch && !body.birthdayPin) {
         return {
             memberNo: normalizeMemberNo(combinedMatch[1]),

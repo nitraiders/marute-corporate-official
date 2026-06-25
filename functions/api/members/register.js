@@ -1,3 +1,5 @@
+import { SHOP_CONFIG } from './config.js';
+
 function jsonResponse(body, status = 200) {
     return new Response(JSON.stringify(body), {
         status,
@@ -26,10 +28,10 @@ async function getNextMemberNo(db, offset = 0) {
     const maxResult = await db.prepare(`
         SELECT COALESCE(MAX(CAST(SUBSTR(member_no, 5) AS INTEGER)), 0) AS max_no
         FROM members
-        WHERE member_no LIKE 'MRT-%'
-    `).first();
+        WHERE member_no LIKE ?1
+    `).bind(`${SHOP_CONFIG.memberPrefix}-%`).first();
     const nextNumber = Number(maxResult?.max_no || 0) + 1 + offset;
-    return `MRT-${String(nextNumber).padStart(4, '0')}`;
+    return `${SHOP_CONFIG.memberPrefix}-${String(nextNumber).padStart(4, '0')}`;
 }
 
 export async function onRequestPost(context) {
@@ -85,6 +87,6 @@ export async function onRequestPost(context) {
             lastVisitAt: null
         },
         birthdayPin,
-        memberUrl: `/members/login?memberNo=${encodeURIComponent(memberNo)}`
+        memberUrl: `/${SHOP_CONFIG.shopSlug}/members/login/?memberNo=${encodeURIComponent(memberNo)}`
     }, 201);
 }

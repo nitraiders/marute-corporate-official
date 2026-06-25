@@ -410,8 +410,8 @@
                     <div>
                         <div class="quick-actions">
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 1, 'visit', '来店')">来店 +1</button>
-                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'companion', '同伴')">同伴 +3</button>
-                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 5, 'bottle', 'ボトル')">ボトル +5</button>
+                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 2, 'companion', '同伴')">同伴 +2</button>
+                            <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'bottle', 'ボトル')">ボトル +3</button>
                             <button type="button" onclick="loadHistory('${escapeHTML(member.memberNo)}')">履歴</button>
                         </div>
                         <form class="manual-form" onsubmit="event.preventDefault(); submitManual(this, '${escapeHTML(member.memberNo)}');" style="margin-top:10px;">
