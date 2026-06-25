@@ -162,11 +162,6 @@
                         <option value="">全員を表示</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>ニックネーム / 会員番号で検索</label>
-                    <input id="searchInput" class="form-control" placeholder="MRT-0001 / ニックネーム">
-                </div>
-                <button class="btn-luxury" type="button" onclick="loadMembers()">検索</button>
                 <button class="btn-luxury" type="button" onclick="logout()">ログアウト</button>
             </div>
         </section>
@@ -212,10 +207,6 @@
                 <div class="form-group">
                     <label>表示終了日</label>
                     <input id="announcementEndAt" class="form-control" type="date">
-                </div>
-                <div class="form-group">
-                    <label>表示する</label>
-                    <input id="announcementActive" type="checkbox" checked>
                 </div>
                 <button class="btn-luxury" type="submit">お知らせ登録</button>
             </form>
@@ -293,10 +284,10 @@
             if (!currentToken) return;
             const list = document.getElementById('memberList');
             list.innerHTML = '<p class="muted">読み込み中...</p>';
-            const query = document.getElementById('searchInput').value.trim();
+            const selectedMemberNo = document.getElementById('memberSelect').value;
 
             try {
-                const response = await fetch(`/api/members?q=${encodeURIComponent(query)}`, {
+                const response = await fetch(`/api/members?q=${encodeURIComponent(selectedMemberNo)}`, {
                     headers: { 'Authorization': `Bearer ${currentToken}` }
                 });
                 const result = await response.json();
@@ -304,7 +295,7 @@
                     throw new Error(result.error || '会員一覧を取得できませんでした');
                 }
                 latestMembers = result.members || [];
-                if (!query) {
+                if (!selectedMemberNo) {
                     renderMemberOptions(latestMembers);
                 }
                 renderMembers(result.members || []);
@@ -325,8 +316,6 @@
         }
 
         function selectMemberFromDropdown() {
-            const selectedMemberNo = document.getElementById('memberSelect').value;
-            document.getElementById('searchInput').value = selectedMemberNo;
             loadMembers();
         }
 
@@ -337,7 +326,7 @@
                 return;
             }
             list.innerHTML = `
-                <h2 style="color:var(--primary-gold); font-size:1rem; margin-bottom:12px;">会員一覧</h2>
+                <h2 class="serif admin-title">会員一覧</h2>
                 <p class="muted">スプレッドシートのように、会員情報とポイント操作を一覧で確認できます。</p>
                 <div class="member-row ledger-head">
                     <div>会員番号 / ニックネーム</div>
@@ -514,13 +503,12 @@
                         targetMemberNo: document.getElementById('announcementMemberNo').value,
                         startAt: document.getElementById('announcementStartAt').value,
                         endAt: document.getElementById('announcementEndAt').value,
-                        isActive: document.getElementById('announcementActive').checked
+                        isActive: true
                     })
                 });
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error || '登録できませんでした');
                 event.target.reset();
-                document.getElementById('announcementActive').checked = true;
                 message.textContent = '登録しました';
                 message.className = 'message success';
                 await loadAnnouncements();
