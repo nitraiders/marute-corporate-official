@@ -97,6 +97,8 @@
                 <p style="color:#aaa;">登録が完了しました</p>
                 <div class="member-no" id="memberNo"></div>
                 <p style="margin-top:12px;">確認用PIN: <strong id="birthdayPin"></strong></p>
+                <p style="margin-top:12px; color:#ddd;">次回からは、この画面または会員番号をスタッフにお伝えください。</p>
+                <p style="margin-top:8px;">ログイン用コード: <strong id="loginCode"></strong></p>
                 <p class="member-url" id="memberUrl"></p>
                 <div class="member-actions">
                     <a class="btn-luxury" id="loginLink" href="/members/login">ポイントを確認</a>
@@ -145,6 +147,7 @@
                 const memberUrl = new URL(result.memberUrl, window.location.origin).href;
                 document.getElementById('memberNo').textContent = result.member.memberNo;
                 document.getElementById('birthdayPin').textContent = result.birthdayPin;
+                document.getElementById('loginCode').textContent = `${result.member.memberNo.replace('-', '')}${result.birthdayPin}`;
                 document.getElementById('memberUrl').textContent = memberUrl;
                 document.getElementById('loginLink').href = result.memberUrl;
                 resultBox.style.display = 'block';

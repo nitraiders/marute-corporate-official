@@ -85,16 +85,16 @@
     <main class="member-shell">
         <section class="member-card" id="loginBox">
             <h1 class="serif member-title">Tempest Member Card</h1>
-            <p class="member-note">会員番号と誕生日4桁で、現在ポイントを確認できます。</p>
+            <p class="member-note">会員番号またはログイン用コードで、現在ポイントを確認できます。</p>
             <form id="loginForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label>会員番号</label>
-                        <input id="memberNoInput" class="form-control" placeholder="MRT-0001" autocomplete="off" required>
+                        <label>会員番号または会員コード</label>
+                        <input id="memberCodeInput" class="form-control" placeholder="MRT-0001 / 0001 / MRT00010601" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label>誕生日4桁</label>
-                        <input id="birthdayPinInput" class="form-control" placeholder="0105" inputmode="numeric" maxlength="4" autocomplete="off" required>
+                        <input id="birthdayPinInput" class="form-control" placeholder="0105（コード入力時は省略可）" inputmode="numeric" maxlength="4" autocomplete="off">
                     </div>
                 </div>
                 <button class="btn-luxury" type="submit" id="loginButton">表示する</button>
@@ -130,11 +130,11 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const memberNoInput = document.getElementById('memberNoInput');
+        const memberCodeInput = document.getElementById('memberCodeInput');
         const birthdayPinInput = document.getElementById('birthdayPinInput');
         const message = document.getElementById('message');
         if (params.get('memberNo')) {
-            memberNoInput.value = params.get('memberNo');
+            memberCodeInput.value = params.get('memberNo');
         }
 
         function escapeHTML(str) {
@@ -158,7 +158,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        memberNo: memberNoInput.value,
+                        memberCode: memberCodeInput.value,
                         birthdayPin: birthdayPinInput.value
                     })
                 });

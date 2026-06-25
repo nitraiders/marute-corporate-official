@@ -24,6 +24,28 @@ function normalizePin(value) {
     return String(value || '').replace(/\D/g, '').padStart(4, '0').slice(-4);
 }
 
+function normalizeMemberNo(value) {
+    const digits = String(value || '').toUpperCase().replace(/^MRT/, '').replace(/\D/g, '');
+    if (!digits) return '';
+    return `MRT-${digits.padStart(4, '0')}`;
+}
+
+function parseLoginBody(body) {
+    const rawCode = String(body.memberCode || body.memberNo || '').trim().toUpperCase();
+    const compact = rawCode.replace(/[^A-Z0-9]/g, '');
+    const combinedMatch = compact.match(/^MRT(\d{4,})(\d{4})$/);
+    if (combinedMatch && !body.birthdayPin) {
+        return {
+            memberNo: normalizeMemberNo(combinedMatch[1]),
+            birthdayPin: combinedMatch[2]
+        };
+    }
+    return {
+        memberNo: normalizeMemberNo(rawCode),
+        birthdayPin: normalizePin(body.birthdayPin)
+    };
+}
+
 export async function onRequestPost(context) {
     const db = context.env.MARUTE_DB;
     if (!db) {
@@ -31,8 +53,7 @@ export async function onRequestPost(context) {
     }
 
     const body = await context.request.json();
-    const memberNo = String(body.memberNo || '').trim().toUpperCase();
-    const birthdayPin = normalizePin(body.birthdayPin);
+    const { memberNo, birthdayPin } = parseLoginBody(body);
 
     if (!memberNo || birthdayPin.length !== 4) {
         return jsonResponse({ error: 'Member number and birthday PIN are required' }, 400);

@@ -77,9 +77,27 @@
             min-width: 0;
             padding: 10px;
         }
+        .history-box, .announcement-list {
+            margin-top: 10px;
+            padding: 12px;
+            border: 1px solid #222;
+            background: #070707;
+            border-radius: 4px;
+            color: #bbb;
+            font-size: 0.85rem;
+        }
+        .announcement-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .announcement-form .wide { grid-column: 1 / -1; }
         @media (max-width: 900px) {
             .member-row { grid-template-columns: 1fr; }
             .manual-form { grid-template-columns: 1fr; }
+            .announcement-form { grid-template-columns: 1fr; }
+            .announcement-form .wide { grid-column: auto; }
         }
     </style>
 </head>
@@ -107,11 +125,59 @@
                     <input id="searchInput" class="form-control" placeholder="MRT-0001 / ニックネーム">
                 </div>
                 <button class="btn-luxury" type="button" onclick="loadMembers()">検索</button>
+                <button class="btn-luxury" type="button" onclick="downloadCsv('members')">会員CSV</button>
+                <button class="btn-luxury" type="button" onclick="downloadCsv('point_logs')">履歴CSV</button>
                 <button class="btn-luxury" type="button" onclick="logout()">ログアウト</button>
             </div>
         </section>
 
         <section class="admin-card" id="memberList" style="display:none;"></section>
+
+        <section class="admin-card" id="announcementPanel" style="display:none;">
+            <h1 class="serif admin-title">Announcements</h1>
+            <p class="muted">会員ページに表示するお知らせ・クーポンを登録します。</p>
+            <form id="announcementForm" class="announcement-form">
+                <div class="form-group">
+                    <label>タイトル</label>
+                    <input id="announcementTitle" class="form-control" maxlength="80" required>
+                </div>
+                <div class="form-group">
+                    <label>対象</label>
+                    <select id="announcementTargetType" class="form-control">
+                        <option value="all">全員</option>
+                        <option value="birth_month">誕生月</option>
+                        <option value="member">個別会員</option>
+                    </select>
+                </div>
+                <div class="form-group wide">
+                    <label>本文</label>
+                    <textarea id="announcementBody" class="form-control" rows="3" maxlength="500" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>表示開始日</label>
+                    <input id="announcementStartAt" class="form-control" type="date">
+                </div>
+                <div class="form-group">
+                    <label>表示終了日</label>
+                    <input id="announcementEndAt" class="form-control" type="date">
+                </div>
+                <div class="form-group">
+                    <label>誕生月</label>
+                    <input id="announcementBirthMonth" class="form-control" type="number" min="1" max="12" placeholder="6">
+                </div>
+                <div class="form-group">
+                    <label>個別会員番号</label>
+                    <input id="announcementMemberNo" class="form-control" placeholder="MRT-0001">
+                </div>
+                <div class="form-group">
+                    <label>有効</label>
+                    <input id="announcementActive" type="checkbox" checked>
+                </div>
+                <button class="btn-luxury" type="submit">お知らせ登録</button>
+            </form>
+            <div id="announcementMessage" class="message"></div>
+            <div id="announcementList" class="announcement-list"></div>
+        </section>
     </main>
 
     <script>
@@ -149,7 +215,9 @@
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('memberList').style.display = 'block';
+                document.getElementById('announcementPanel').style.display = 'block';
                 await loadMembers();
+                await loadAnnouncements();
             } catch (error) {
                 message.textContent = error.message;
                 message.className = 'message error';
@@ -208,15 +276,40 @@
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 1, 'visit', '来店')">来店 +1</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'companion', '同伴')">同伴 +3</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 5, 'bottle', 'ボトル')">ボトル +5</button>
+                            <button type="button" onclick="loadHistory('${escapeHTML(member.memberNo)}')">履歴</button>
                         </div>
                         <form class="manual-form" onsubmit="event.preventDefault(); submitManual(this, '${escapeHTML(member.memberNo)}');" style="margin-top:10px;">
                             <input class="form-control" name="delta" type="number" placeholder="+/-" required>
                             <input class="form-control" name="memo" maxlength="200" placeholder="メモ（必須）" required>
                             <button class="btn-luxury" type="submit">調整</button>
                         </form>
+                        <div class="history-box" id="history-${escapeHTML(member.memberNo)}" style="display:none;"></div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        async function loadHistory(memberNo) {
+            const box = document.getElementById(`history-${memberNo}`);
+            box.style.display = 'block';
+            box.textContent = '履歴を読み込み中...';
+            try {
+                const response = await fetch(`/api/members/history?memberNo=${encodeURIComponent(memberNo)}`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || '履歴を取得できませんでした');
+                box.innerHTML = result.logs && result.logs.length
+                    ? result.logs.map(log => `<div>${formatDate(log.created_at)} / ${escapeHTML(log.reason)} / ${log.point_delta > 0 ? '+' : ''}${log.point_delta}pt ${log.memo ? `/ ${escapeHTML(log.memo)}` : ''}</div>`).join('')
+                    : '履歴はありません。';
+            } catch (error) {
+                box.textContent = error.message;
+            }
+        }
+
+        function downloadCsv(type) {
+            if (!currentToken) return;
+            window.open(`/api/members/export?type=${encodeURIComponent(type)}&token=${encodeURIComponent(currentToken)}`, '_blank', 'noopener');
         }
 
         async function submitManual(form, memberNo) {
@@ -254,6 +347,58 @@
                 alert(error.message);
             }
         }
+
+        async function loadAnnouncements() {
+            const list = document.getElementById('announcementList');
+            list.textContent = '読み込み中...';
+            try {
+                const response = await fetch('/api/members/announcements', {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'お知らせを取得できませんでした');
+                list.innerHTML = result.announcements && result.announcements.length
+                    ? result.announcements.map(item => `<div style="border-top:1px solid #222; padding:10px 0;"><strong>${escapeHTML(item.title)}</strong><div>${escapeHTML(item.body)}</div><div class="muted">${escapeHTML(item.target_type)} / ${item.is_active ? '有効' : '無効'}</div></div>`).join('')
+                    : 'お知らせはありません。';
+            } catch (error) {
+                list.textContent = error.message;
+            }
+        }
+
+        document.getElementById('announcementForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const message = document.getElementById('announcementMessage');
+            message.textContent = '登録中...';
+            try {
+                const response = await fetch('/api/members/announcements', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({
+                        title: document.getElementById('announcementTitle').value,
+                        body: document.getElementById('announcementBody').value,
+                        targetType: document.getElementById('announcementTargetType').value,
+                        targetBirthMonth: document.getElementById('announcementBirthMonth').value,
+                        targetMemberNo: document.getElementById('announcementMemberNo').value,
+                        startAt: document.getElementById('announcementStartAt').value,
+                        endAt: document.getElementById('announcementEndAt').value,
+                        isActive: document.getElementById('announcementActive').checked
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || '登録できませんでした');
+                event.target.reset();
+                document.getElementById('announcementActive').checked = true;
+                message.textContent = '登録しました';
+                message.className = 'message success';
+                await loadAnnouncements();
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = 'message error';
+            }
+        });
     </script>
 </body>
 </html>
