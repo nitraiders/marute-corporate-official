@@ -372,7 +372,7 @@
         function renderMembers(members) {
             const list = document.getElementById('memberList');
             if (!members.length) {
-                list.innerHTML = '<p class="muted">会員が見つかりません。</p>';
+                list.innerHTML = '<h2 class="serif admin-title">会員一覧</h2><p class="muted">登録済みの会員はまだありません。会員登録後、こちらに表示されます。</p>';
                 return;
             }
             list.innerHTML = `
