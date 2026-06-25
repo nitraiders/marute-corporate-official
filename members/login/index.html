@@ -91,6 +91,16 @@
         }
         .point-plus { color: #8ee6a2; }
         .point-minus { color: #f08a8a; }
+        .register-link {
+            display: inline-block;
+            color: var(--primary-gold);
+            border-bottom: 1px solid rgba(204, 190, 124, 0.55);
+            font-size: 0.9rem;
+            margin-bottom: 22px;
+        }
+        .register-link:hover {
+            opacity: 0.78;
+        }
         @media (max-width: 600px) {
             body { padding: 16px; }
             .member-card, .member-panel { padding: 22px 16px; }
@@ -104,6 +114,7 @@
         <section class="member-card" id="loginBox">
             <h1 class="serif member-title">Tempest Member Card</h1>
             <p class="member-note">ログインコードで、現在ポイントを確認できます。</p>
+            <a class="register-link" href="/members/register/">初めての方はこちら（新規会員登録）</a>
             <form id="loginForm">
                 <div class="form-group">
                     <label>ログインコード</label>
