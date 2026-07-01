@@ -256,12 +256,16 @@
         <section class="admin-card" id="catalogPanel" style="display:none;">
             <h1 class="serif admin-title">ポイント交換メニュー設定</h1>
             <p class="muted">会員ページで表示するポイント交換メニューを管理します。</p>
-            <form id="catalogForm" onsubmit="event.preventDefault(); submitAddCatalog();" class="manual-form" style="grid-template-columns: 80px 1fr 60px auto; margin-bottom: 20px;">
-                <input class="form-control" type="number" id="catalogPoints" placeholder="必要Pt" required>
-                <input class="form-control" type="text" id="catalogTitle" placeholder="交換アイテム名" required>
-                <input class="form-control" type="number" id="catalogOrder" placeholder="順序" value="0" required>
+
+            <h3 style="color:var(--primary-gold); margin-top:20px; margin-bottom:12px;">新しい交換メニューを追加</h3>
+            <form id="catalogForm" onsubmit="event.preventDefault(); submitAddCatalog();" class="manual-form" style="grid-template-columns: 150px 1fr 200px auto; gap: 8px; margin-bottom: 24px;">
+                <input class="form-control" type="number" id="catalogPoints" placeholder="必要ポイント (例: 5)" required>
+                <input class="form-control" type="text" id="catalogTitle" placeholder="交換内容 (例: 1,000円off)" required>
+                <input class="form-control" type="number" id="catalogOrder" placeholder="表示順 (空欄で最後に追加)">
                 <button class="btn-luxury" type="submit">追加</button>
             </form>
+
+            <h3 style="color:var(--primary-gold); margin-top:20px; margin-bottom:12px;">登録済みメニュー</h3>
             <div id="catalogListContainer">
                 読み込み中...
             </div>
@@ -798,7 +802,7 @@
 
                 document.getElementById('catalogPoints').value = '';
                 document.getElementById('catalogTitle').value = '';
-                document.getElementById('catalogOrder').value = '0';
+                document.getElementById('catalogOrder').value = '';
                 await loadCatalog();
             } catch (error) {
                 alert(error.message);
