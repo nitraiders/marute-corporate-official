@@ -517,7 +517,7 @@
                     ? result.announcements.map(item => `
                         <div style="border-top:1px solid #222; padding:10px 0;">
                             <strong>${escapeHTML(item.title)}</strong>
-                            <div>${escapeHTML(item.body)}</div>
+                            <div style="white-space: pre-line;">${escapeHTML(item.body)}</div>
                             <div class="muted">${escapeHTML(targetLabel(item))} / ${item.is_active ? '有効' : '無効'}</div>
                             ${item.is_active ? `<button class="btn-secondary" type="button" style="margin-top:8px;" onclick="disableAnnouncement(${Number(item.id)})">無効にする</button>` : ''}
                         </div>

@@ -231,7 +231,7 @@
             document.getElementById('announcements').innerHTML = announcements.map(item => `
                 <div class="notice-card">
                     <strong>${escapeHTML(item.title)}</strong>
-                    <p style="color:#bbb; margin-top:6px;">${escapeHTML(item.body)}</p>
+                    <p style="color:#bbb; margin-top:6px; white-space: pre-line;">${escapeHTML(item.body)}</p>
                 </div>
             `).join('');
 
