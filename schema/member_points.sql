@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS members (
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     last_visit_at TEXT,
-    deleted_at TEXT
+    deleted_at TEXT,
+    admin_memo TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_members_member_no ON members(member_no);

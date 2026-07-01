@@ -11,7 +11,8 @@ const QUICK_REASONS = {
     visit: '来店',
     companion: '同伴',
     bottle: 'ボトル',
-    manual: '手動調整'
+    manual: '手動調整',
+    visit_cancel: '来店取消 -1'
 };
 
 function hasAdminPassword(value) {
@@ -54,19 +55,38 @@ export async function onRequestPost(context) {
         return jsonResponse({ error: 'Member not found' }, 404);
     }
 
+    let visitIncrement = 0;
+    if (operationType === 'visit') {
+        visitIncrement = 1;
+    } else if (operationType === 'visit_cancel') {
+        visitIncrement = -1;
+        if (Number(member.visit_count || 0) <= 0) {
+            return jsonResponse({ error: 'Visit count is already 0' }, 400);
+        }
+    }
+
     const now = new Date().toISOString();
     const nextPoints = Math.max(0, Number(member.points || 0) + pointDelta);
-    const visitIncrement = operationType === 'visit' ? 1 : 0;
 
-    await db.batch([
-        db.prepare(`
+    const updateQuery = operationType === 'visit_cancel'
+        ? db.prepare(`
+            UPDATE members
+            SET points = ?1,
+                visit_count = visit_count + ?2,
+                updated_at = ?3
+            WHERE id = ?4
+        `)
+        : db.prepare(`
             UPDATE members
             SET points = ?1,
                 visit_count = visit_count + ?2,
                 updated_at = ?3,
                 last_visit_at = ?3
             WHERE id = ?4
-        `).bind(nextPoints, visitIncrement, now, member.id),
+        `);
+
+    await db.batch([
+        updateQuery.bind(nextPoints, visitIncrement, now, member.id),
         db.prepare(`
             INSERT INTO point_logs (
                 member_id, point_delta, reason, operation_type, memo, created_at
@@ -81,7 +101,7 @@ export async function onRequestPost(context) {
             nickname: member.nickname,
             points: nextPoints,
             visitCount: Number(member.visit_count || 0) + visitIncrement,
-            lastVisitAt: now
+            lastVisitAt: operationType === 'visit_cancel' ? member.last_visit_at : now
         }
     });
 }

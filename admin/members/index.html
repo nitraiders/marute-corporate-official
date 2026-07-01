@@ -410,6 +410,7 @@
                     <div>
                         <div class="quick-actions">
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 1, 'visit', '来店')">来店 +1</button>
+                            <button type="button" ${member.visitCount <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''} onclick="cancelVisit('${escapeHTML(member.memberNo)}', '${escapeHTML(member.nickname)}', ${member.visitCount})">来店取消 -1</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 2, 'companion', '同伴')">同伴 +2</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'bottle', 'ボトル')">ボトル +3</button>
                             <button type="button" onclick="loadHistory('${escapeHTML(member.memberNo)}')">履歴</button>
@@ -420,6 +421,10 @@
                             <input class="form-control" name="memo" maxlength="200" placeholder="理由メモ（必須）" required>
                             <button class="btn-luxury" type="submit">反映</button>
                         </form>
+                        <div class="memo-container" style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+                            <input class="form-control memo-input" id="memo-input-${escapeHTML(member.memberNo)}" type="text" placeholder="管理者メモ（内部用）" value="${escapeHTML(member.adminMemo || '')}" style="flex:1; font-size:0.9rem;">
+                            <button class="btn-secondary" type="button" style="padding: 4px 10px; font-size: 0.85rem;" onclick="saveMemo('${escapeHTML(member.memberNo)}')">保存</button>
+                        </div>
                         <div class="history-box" id="history-${escapeHTML(member.memberNo)}" style="display:none;"></div>
                     </div>
                 </div>
@@ -498,6 +503,63 @@
                 if (!response.ok) {
                     throw new Error(result.error || '会員の削除に失敗しました');
                 }
+                await loadMembers();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function cancelVisit(memberNo, nickname, visitCount) {
+            if (!currentToken) return;
+            if (Number(visitCount || 0) <= 0) {
+                alert('来店回数が0回のため、来店取消はできません。');
+                return;
+            }
+
+            const confirmed = confirm(`${nickname}様の来店回数とポイントを1ずつ戻します。よろしいですか？`);
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch('/api/members/points', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        memberNo,
+                        pointDelta: -1,
+                        operationType: 'visit_cancel',
+                        reason: '来店取消 -1'
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || '来店取消に失敗しました');
+                }
+                await loadMembers();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function saveMemo(memberNo) {
+            if (!currentToken) return;
+            const adminMemo = document.getElementById(`memo-input-${memberNo}`).value;
+
+            try {
+                const response = await fetch('/api/members/update-memo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        memberNo,
+                        adminMemo
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || 'メモの保存に失敗しました');
+                }
+                alert('メモを保存しました');
                 await loadMembers();
             } catch (error) {
                 alert(error.message);

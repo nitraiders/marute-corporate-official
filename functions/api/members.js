@@ -26,7 +26,8 @@ function publicMember(row) {
         visitCount: row.visit_count,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
-        lastVisitAt: row.last_visit_at
+        lastVisitAt: row.last_visit_at,
+        adminMemo: row.admin_memo
     };
 }
 
