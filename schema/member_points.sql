@@ -47,3 +47,16 @@ CREATE TABLE IF NOT EXISTS announcements (
 
 CREATE INDEX IF NOT EXISTS idx_announcements_active ON announcements(is_active, start_at, end_at);
 CREATE INDEX IF NOT EXISTS idx_announcements_target ON announcements(target_type, target_member_id, target_birth_month);
+
+CREATE TABLE IF NOT EXISTS point_catalog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    shop_code TEXT NOT NULL,
+    points INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    display_order INTEGER DEFAULT 0,
+    is_active INTEGER DEFAULT 1,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_point_catalog_shop ON point_catalog(shop_code, is_active, display_order);

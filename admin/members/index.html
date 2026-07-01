@@ -189,6 +189,31 @@
                 font-size: 0.95rem !important;
             }
         }
+        .catalog-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 60px auto;
+            gap: 12px;
+            align-items: center;
+            border-top: 1px solid #222;
+            padding: 12px 0;
+        }
+        @media (max-width: 600px) {
+            .catalog-row {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .catalog-row div {
+                width: 100%;
+            }
+            #catalogForm {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -208,10 +233,10 @@
 
         <section class="admin-card" id="adminPanel" style="display:none;">
             <h1 class="serif admin-title">Tempest 会員台帳</h1>
-            <p class="muted">会員情報、現在ポイント、来店履歴、ポイント増減をこの画面で確認・操作します。</p>
             <div class="admin-tabs">
                 <button class="tab-button active" id="memberTabButton" type="button" onclick="showAdminTab('members')">会員一覧</button>
                 <button class="tab-button" id="announcementTabButton" type="button" onclick="showAdminTab('announcements')">お知らせ・クーポン</button>
+                <button class="tab-button" id="catalogTabButton" type="button" onclick="showAdminTab('catalog')">ポイント交換メニュー設定</button>
             </div>
             <div class="toolbar">
                 <div class="form-group">
@@ -227,6 +252,20 @@
         <div id="memberTab">
             <section class="admin-card" id="memberList" style="display:none;"></section>
         </div>
+
+        <section class="admin-card" id="catalogPanel" style="display:none;">
+            <h1 class="serif admin-title">ポイント交換メニュー設定</h1>
+            <p class="muted">会員ページで表示するポイント交換メニューを管理します。</p>
+            <form id="catalogForm" onsubmit="event.preventDefault(); submitAddCatalog();" class="manual-form" style="grid-template-columns: 80px 1fr 60px auto; margin-bottom: 20px;">
+                <input class="form-control" type="number" id="catalogPoints" placeholder="必要Pt" required>
+                <input class="form-control" type="text" id="catalogTitle" placeholder="交換アイテム名" required>
+                <input class="form-control" type="number" id="catalogOrder" placeholder="順序" value="0" required>
+                <button class="btn-luxury" type="submit">追加</button>
+            </form>
+            <div id="catalogListContainer">
+                読み込み中...
+            </div>
+        </section>
 
         <section class="admin-card" id="announcementPanel" style="display:none;">
             <h1 class="serif admin-title">お知らせ・クーポン</h1>
@@ -300,11 +339,19 @@
 
         function showAdminTab(tabName) {
             const showMembers = tabName === 'members';
+            const showAnnouncements = tabName === 'announcements';
+            const showCatalog = tabName === 'catalog';
+
             document.getElementById('memberTab').style.display = showMembers ? 'block' : 'none';
-            document.getElementById('announcementPanel').style.display = showMembers ? 'none' : 'block';
+            document.getElementById('announcementPanel').style.display = showAnnouncements ? 'block' : 'none';
+            document.getElementById('catalogPanel').style.display = showCatalog ? 'block' : 'none';
+
             document.getElementById('memberTabButton').classList.toggle('active', showMembers);
-            document.getElementById('announcementTabButton').classList.toggle('active', !showMembers);
-            if (!showMembers) updateAnnouncementTargetControls();
+            document.getElementById('announcementTabButton').classList.toggle('active', showAnnouncements);
+            document.getElementById('catalogTabButton').classList.toggle('active', showCatalog);
+
+            if (showAnnouncements) updateAnnouncementTargetControls();
+            if (showCatalog) loadCatalog();
         }
 
         function openDatePicker(inputId) {
@@ -692,6 +739,122 @@
                 message.className = 'message error';
             }
         });
+
+        async function loadCatalog() {
+            const container = document.getElementById('catalogListContainer');
+            container.textContent = '読み込み中...';
+            try {
+                const response = await fetch(`/api/members/admin-point-catalog?token=${currentToken}`);
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'ポイント交換メニューを取得できませんでした');
+
+                if (!result.items || result.items.length === 0) {
+                    container.textContent = 'ポイント交換メニューが登録されていません。';
+                    return;
+                }
+
+                container.innerHTML = result.items.map(item => `
+                    <div class="catalog-row">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input class="form-control" type="number" id="edit-points-${item.id}" value="${item.points}" style="width: 70px;" required> Pt
+                        </div>
+                        <input class="form-control" type="text" id="edit-title-${item.id}" value="${escapeHTML(item.title)}" required>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            順序<input class="form-control" type="number" id="edit-order-${item.id}" value="${item.display_order}" style="width: 60px;" required>
+                        </div>
+                        <div class="quick-actions" style="justify-content: flex-end;">
+                            <button type="button" onclick="submitEditCatalog(${item.id})">更新</button>
+                            <button type="button" class="${item.is_active ? 'btn-secondary' : 'btn-luxury'}" onclick="toggleCatalogActive(${item.id}, ${item.is_active})">
+                                ${item.is_active ? '無効にする' : '有効にする'}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.textContent = error.message;
+            }
+        }
+
+        async function submitAddCatalog() {
+            if (!currentToken) return;
+            const points = Number(document.getElementById('catalogPoints').value);
+            const title = document.getElementById('catalogTitle').value;
+            const displayOrder = Number(document.getElementById('catalogOrder').value);
+
+            try {
+                const response = await fetch('/api/members/admin-point-catalog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        action: 'add',
+                        points,
+                        title,
+                        displayOrder
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || '追加できませんでした');
+
+                document.getElementById('catalogPoints').value = '';
+                document.getElementById('catalogTitle').value = '';
+                document.getElementById('catalogOrder').value = '0';
+                await loadCatalog();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function submitEditCatalog(id) {
+            if (!currentToken) return;
+            const points = Number(document.getElementById(`edit-points-${id}`).value);
+            const title = document.getElementById(`edit-title-${id}`).value;
+            const displayOrder = Number(document.getElementById(`edit-order-${id}`).value);
+
+            try {
+                const response = await fetch('/api/members/admin-point-catalog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        action: 'edit',
+                        id,
+                        points,
+                        title,
+                        displayOrder
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || '更新できませんでした');
+                alert('更新しました');
+                await loadCatalog();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function toggleCatalogActive(id, currentActive) {
+            if (!currentToken) return;
+            const nextActive = currentActive ? 0 : 1;
+
+            try {
+                const response = await fetch('/api/members/admin-point-catalog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        action: 'toggle_active',
+                        id,
+                        isActive: nextActive
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || '切り替えできませんでした');
+                await loadCatalog();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
     </script>
 </body>
 </html>
