@@ -155,6 +155,40 @@
             .announcement-form { grid-template-columns: 1fr; }
             .announcement-form .wide { grid-column: auto; }
         }
+        .sp-text { display: none; }
+        @media (max-width: 600px) {
+            .sp-text { display: inline; }
+            .pc-text { display: none; }
+            body {
+                padding: 12px;
+            }
+            .admin-card {
+                padding: 16px;
+            }
+            .member-row {
+                padding: 16px 8px;
+            }
+            .quick-actions {
+                gap: 10px;
+            }
+            .quick-actions button {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            .memo-container {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 6px !important;
+            }
+            .memo-container input {
+                width: 100% !important;
+            }
+            .memo-container button {
+                width: 100% !important;
+                padding: 10px !important;
+                font-size: 0.95rem !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -410,7 +444,10 @@
                     <div>
                         <div class="quick-actions">
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 1, 'visit', '来店')">来店 +1</button>
-                            <button type="button" ${member.visitCount <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''} onclick="cancelVisit('${escapeHTML(member.memberNo)}', '${escapeHTML(member.nickname)}', ${member.visitCount})">来店取消 -1</button>
+                            <button type="button" ${member.visitCount <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''} onclick="cancelVisit('${escapeHTML(member.memberNo)}', '${escapeHTML(member.nickname)}', ${member.visitCount})">
+                                <span class="pc-text">来店取消 -1</span>
+                                <span class="sp-text">取消 -1</span>
+                            </button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 2, 'companion', '同伴')">同伴 +2</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'bottle', 'ボトル')">ボトル +3</button>
                             <button type="button" onclick="loadHistory('${escapeHTML(member.memberNo)}')">履歴</button>
