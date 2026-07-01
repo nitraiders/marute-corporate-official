@@ -446,7 +446,7 @@
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 1, 'visit', '来店')">来店 +1</button>
                             <button type="button" ${member.visitCount <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''} onclick="cancelVisit('${escapeHTML(member.memberNo)}', '${escapeHTML(member.nickname)}', ${member.visitCount})">
                                 <span class="pc-text">来店取消 -1</span>
-                                <span class="sp-text">取消 -1</span>
+                                <span class="sp-text">来店-1</span>
                             </button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 2, 'companion', '同伴')">同伴 +2</button>
                             <button type="button" onclick="addPoints('${escapeHTML(member.memberNo)}', 3, 'bottle', 'ボトル')">ボトル +3</button>
